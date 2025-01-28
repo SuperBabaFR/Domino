@@ -44,7 +44,6 @@ class Session(models.Model):
 
 class Game(models.Model):
     session_id = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
-    round_id = models.ForeignKey('Round', models.CASCADE, null=True, db_column="round_id")
     statut = models.ForeignKey(Statut, models.SET_NULL, null=True)
     round_count = models.IntegerField(default=0)
     last_winner = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True, db_column="last_winner_id")

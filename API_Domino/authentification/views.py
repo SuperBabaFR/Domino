@@ -1,7 +1,7 @@
 from http import HTTPStatus
+import datetime
 
 import jwt
-from django.db.models.functions import datetime
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import BasePermission
 
@@ -39,15 +39,16 @@ def generate_tokens(player_id):
 
 def verify_token(token, token_type="access"):
     """Vérifie et décode un token JWT."""
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         if payload.get("type") != token_type:
             raise jwt.InvalidTokenError("Type de token invalide")
         return payload
     except jwt.ExpiredSignatureError:
-        raise InvalidRefreshTokenException()
+        raise InvalidRefreshTokenException() # Token expiré
     except jwt.InvalidTokenError:
-        raise InvalidAccessTokenException()
+        raise InvalidAccessTokenException() # Token invalide
 
 
 # AUTHENTIFICATION
@@ -79,7 +80,7 @@ class InvalidAccessTokenException(APIException):
 class InvalidRefreshTokenException(APIException):
     """Exception personnalisée pour les erreurs de refresh token JWT."""
     status_code = HTTPStatus.UNAUTHORIZED
-    default_detail = {"code": 401, "message": "Refresh token expiré, reconnexion nécessaire"}
+    default_detail = {"code": 401, "message": "Token expiré, reconnexion nécessaire"}
     default_code = "token_invalid"
 
 

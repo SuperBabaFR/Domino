@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'rest_framework',
     'authentification',
+    'daphne',
+    'channels',
     'session',
     'game'
 ]
@@ -42,6 +44,18 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+}
+
+# WSGI_APPLICATION = 'API_Domino.wsgi.application'
+ASGI_APPLICATION = 'API_Domino.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.getenv('REDIS_URL')],
+        },
+    },
 }
 
 MIDDLEWARE = [
@@ -73,7 +87,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'API_Domino.wsgi.application'
 
 
 # Database

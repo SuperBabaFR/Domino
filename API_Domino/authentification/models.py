@@ -53,10 +53,10 @@ class Game(models.Model):
 
 
 class Round(models.Model):
-    game_id = models.ForeignKey(Game, models.CASCADE, db_column="game_id")
-    session_id = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
-    player = models.ForeignKey(Player, models.CASCADE, db_column="player_id")
-    dominos = models.TextField()
+    game = models.ForeignKey(Game, models.CASCADE, db_column="game_id")
+    session = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
+    table = models.TextField(blank=True, null=True)
+    last_player = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = 'Round'
@@ -75,11 +75,11 @@ class Infosession(models.Model):
         unique_together = ('session', 'player')  # Définir l'unicité combinée
 
 
-class Gametable(models.Model):
+class HandPlayer(models.Model):
     round = models.OneToOneField(Round, models.CASCADE, primary_key=True)
     session = models.ForeignKey(Session, models.CASCADE)
-    table = models.TextField(blank=True, null=True)
-    last_player = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
+    player = models.ForeignKey(Player, models.CASCADE, db_column="player_id")
+    dominoes = models.TextField()
 
     class Meta:
-        db_table = 'GameTable'
+        db_table = 'HandPlayer'

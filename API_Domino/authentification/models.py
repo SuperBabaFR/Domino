@@ -45,7 +45,7 @@ class Session(models.Model):
 class Game(models.Model):
     session_id = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
     statut = models.ForeignKey(Statut, models.SET_NULL, null=True)
-    round_count = models.IntegerField(default=0)
+    round_count = models.IntegerField(default=1)
     last_winner = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True, db_column="last_winner_id")
 
     class Meta:
@@ -76,7 +76,7 @@ class Infosession(models.Model):
 
 
 class HandPlayer(models.Model):
-    round = models.OneToOneField(Round, models.CASCADE, primary_key=True)
+    round = models.OneToOneField(Round, models.CASCADE)
     session = models.ForeignKey(Session, models.CASCADE)
     player = models.ForeignKey(Player, models.CASCADE, db_column="player_id")
     dominoes = models.TextField()

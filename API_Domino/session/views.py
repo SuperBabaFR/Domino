@@ -37,58 +37,61 @@ class CreateSessionView(APIView):
     def post(self, request):
         data_request = request.data
 
+        # Vérifie les entrées communes
         response = verify_entry(data_request)
         if response:
             return response
 
-        player_id = data_request.get('player_id')
+        # Récupère les infos
+        player_hote = Player.objects.filter(id=data_request.get('player_id')).first()
         max_players_count = data_request.get('max_players_count')
         reflexion_time = data_request.get('reflexion_time')
         definitive_leave = data_request.get('definitive_leave', False)
+
+        # Vérifie reflexion_time
         if not reflexion_time:
             return Response(dict(code=400, message="reflexion_time manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        if not max_players_count:
-            return Response(dict(code=400, message="max_players_count manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        if  definitive_leave == None:
-            return Response(dict(code=400, message="definitive_leave manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-        if max_players_count < 2 or max_players_count > 4:
-            return Response({"code": 400, "message": "Le nombre de joueurs doit être compris entre 2 et 4."},
                             status=status.HTTP_400_BAD_REQUEST)
 
         if reflexion_time < 20 or reflexion_time > 60:
             return Response(
                 {"code": 400, "message": "Le temps de réflexion doit être compris entre 20 et 60 secondes."},
                 status=status.HTTP_400_BAD_REQUEST)
-            """
-        return Response({
-            "code": 201,
-            "message": "Session créée",
-            "data":None})
-           """
-        session_code = generate_session_code()
-        player_hote = Player.objects.filter(id=player_id).first()
-        order = [player_hote.id]
-        order_str = str(order)
 
+        # Vérifie max_players_count
+        if not max_players_count:
+            return Response(dict(code=400, message="max_players_count manquant", data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if max_players_count < 2 or max_players_count > 4:
+            return Response({"code": 400, "message": "Le nombre de joueurs doit être compris entre 2 et 4."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Vérifie definitive_leave
+        if definitive_leave is None:
+            return Response(dict(code=400, message="definitive_leave manquant", data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Génère un code de session
+        session_code = generate_session_code()
+        # Stocke l'hôte dans la liste des joueurs
+        order_str = str([player_hote.id])
+
+        # Crée la session
         session = Session.objects.create(
             code=session_code,
             hote=player_hote,
-            statut=None,
+            statut=Statut.objects.get(id=3),
             order=order_str,
             max_players_count=max_players_count,
             reflexion_time=reflexion_time,
             definitive_leave=definitive_leave
         )
-
+        # Renseigne les infos de session du joueur hôte
         infosess = Infosession.objects.create(
             session=session,
-            player=player_hote
-            #  statut=session.statut
+            player=player_hote,
+            statut=Statut.objects.get(id=6)
         )
 
         return Response({
@@ -111,50 +114,55 @@ class JoinSessionView(APIView):
     # permission_classes = [IsAuthenticatedWithJWT]
     def post(self, request):
         data_request = request.data
+
+        # Vérifie les entrées communes
         response = verify_entry(data_request)
         if response:
             return response
 
-
-        player_id = data_request.get('player_id')
+        # Récupère les infos
+        player = Player.objects.filter(id=data_request.get('player_id')).first()
         session_code = data_request.get('session_code')
 
-        if not player_id:
-            return Response({"code": 400, "message": "player_id manque"}, status=status.HTTP_400_BAD_REQUEST)
-
+        # Vérifie que le code est fourni
         if not session_code:
             return Response({"code": 400, "message": "code de session est requis"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Vérifie si la session existe
         session = Session.objects.filter(code=session_code).first()
         if not session:
             return Response({"code": 404, "message": "Session introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        player = Player.objects.filter(id=player_id).first()
-
+        # Charge la liste des joueurs présents
         order = json.loads(session.order)
-        if len(order) >= session.max_players_count:
-            return Response({"code": 400, "message": "La session est déjà pleine"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if player_id in order:
-            return Response({"code": 400, "message": "Deja dans la session"}, status=status.HTTP_400_BAD_REQUEST)
+        # Vérifie si le joueur à déjà été dans la session
+        if player.id not in order:
+            # Si y'a de la place pour lui
+            if len(order) >= session.max_players_count:
+                return Response({"code": 400, "message": "La session est déjà pleine"},
+                                status=status.HTTP_400_BAD_REQUEST)
+            # On l'ajoute
+            order.append(player.id)
+            session.order = str(order)
+            session.save()
 
-        order.append(player_id)
-        session.order = str(order)
-        info_player = Infosession.objects.filter(session=session, player=player).exists()
-
+        # Récupère les infos du joueur
         if not Infosession.objects.filter(session=session, player=player).exists():
-            Infosession.objects.create(session=session, player=player)
+            # sinon on les crée
+            Infosession.objects.create(session=session, player=player, statut=Statut.objects.get(id=6))
 
-
-
+        # Charge les infos des joueurs présenta dans la session
         players_info = []
         for player_id in order:
             player_x = Player.objects.get(id=player_id)
+            info_player_x = Infosession.objects.get(session=session, player_id=player_id)
             player_data = {
                 "pseudo": player_x.pseudo,
-                "image": player_x.image if player_x.image else "",
-                "games_win": player_x.games,
-                "ping_count": player_x.pigs
+                "image": player_x.image,
+                "statut": info_player_x.statut.name,
+                "games_win": info_player_x.games_win,
+                "ping_count": info_player_x.pig_count
             }
             players_info.append(player_data)
 

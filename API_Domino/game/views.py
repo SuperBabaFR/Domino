@@ -137,6 +137,7 @@ class PlaceDomino(APIView):
         data_request = request.data
         data_return = dict(code=201, message="Domino joué", data=None)
 
+        # Vérifie les entrées communes
         response = verify_entry(data_request)
         if response:
             return response

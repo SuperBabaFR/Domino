@@ -179,3 +179,44 @@ class JoinSessionView(APIView):
                 "players": players_info
             }
         }, status=status.HTTP_201_CREATED)
+
+
+class LeaveSessionView(APIView):
+
+    def get(self, request):
+        data_request = request.data
+        response = verify_entry(data_request)
+        if response:
+            return response
+
+
+        session_id = data_request.get('session_id')
+        player = Player.objects.filter(id=data_request.get('player_id')).first()
+
+        if not session_id:
+            return Response(dict(code=400, message="session_id manquant", data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        session = Session.objects.filter(id=session_id).first()
+        if not session:
+            return Response({"code": 404, "message": "Session introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+        order = json.loads(session.order)
+        # if player.id in order:
+        #     return
+
+        # Vérifie si le joueur à déjà été dans la session
+        if player.id not in order:
+            return Response({"code": 400, "message": "Le joueur n'appartiens pas à la partie."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        order.remove(player.id)
+        session.order = str(order)
+        session.save()
+
+        # Récupère les infos du joueur
+        infosession_player = Infosession.objects.filter(session=session, player=player).first()
+        if infosession_player:
+            Infosession.objects.filter(session=session, player=player).delete()
+
+    #TODO PREVOIR LA CAS DE L'HOTE

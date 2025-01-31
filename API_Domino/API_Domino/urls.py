@@ -19,7 +19,7 @@ from django.urls import path
 import game
 from game.views import CreateGame, PlaceDomino
 from authentification.views import *
-from session.views import CreateSessionView, JoinSessionView
+from session.views import CreateSessionView, JoinSessionView, LeaveSessionView
 
 urlpatterns = [
     # Authentification
@@ -28,6 +28,7 @@ urlpatterns = [
     # Session
     path('create', CreateSessionView.as_view(), name='create'),
     path('rejoindre', JoinSessionView.as_view(), name='rejoindre'),
+    path('leave',LeaveSessionView.as_view(), name='leave'),
     # Partie
     path('start', CreateGame.as_view(), name='start'),
     path('play', PlaceDomino.as_view(), name='play'),

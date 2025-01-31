@@ -1,3 +1,7 @@
+import time
+from datetime import datetime, UTC, timedelta
+from typing import Optional
+
 from django.shortcuts import render
 import random
 from rest_framework import status
@@ -17,6 +21,8 @@ def verify_entry(data, need_to_be_hote=False):
     session_id = data.get("session_id")
     player_id = data.get("player_id")
 
+    print(data)
+
     # session_id et player_id renseignés
     if not session_id:
         return Response(dict(code=400, message="session_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
@@ -24,8 +30,8 @@ def verify_entry(data, need_to_be_hote=False):
     if not player_id:
         return Response(dict(code=400, message="player_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
 
-    session = Session.objects.get(id=session_id)
-    player = Player.objects.get(id=player_id)
+    player = Player.objects.filter(id=player_id).first()
+    session = Session.objects.filter(id=session_id).first()
 
     # Session et Joueur existants
     if not session:
@@ -33,9 +39,15 @@ def verify_entry(data, need_to_be_hote=False):
     if not player:
         return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
     # Joueur pas hote de session
+
+    print(session.hote.pseudo)
+    print(player.pseudo)
+
     if need_to_be_hote and session.hote != player:
         return Response(dict(code=404, message="joueur non hote de la session", data=None),
-                        status=status.HTTP_404_NOT_FOUND)
+                status=status.HTTP_404_NOT_FOUND)
+
+    return None
 
 
 class CreateGame(APIView):
@@ -48,12 +60,18 @@ class CreateGame(APIView):
         data_return = dict(code=201, message="Nouvelle partie lancée", data=None)
 
         # Vérifier les premières entrées
-        verify_entry(data_return, need_to_be_hote=True)
+        response = verify_entry(data_request, need_to_be_hote=True)
+        if response:
+            return response
+
+        player_hote = Player.objects.get(id=data_request.get("player_id")) # Vérifié
 
         # Vérifie si une partie n'est pas déjà en cours
         session = Session.objects.get(id=data_request.get("session_id"))
         if session.game_id:
             return Response(dict(code=400, message="Une partie est déjà en cours", data=None), status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data_return, status=status.HTTP_201_CREATED)
 
         # Crée une partie
         game = Game.objects.create(session) # NE PAS OUBLIER LE STATUT
@@ -63,8 +81,11 @@ class CreateGame(APIView):
 
         # Distribue 7 dominos pour chaque joueurs de la session
 
-        player_id_list = json.loads(session.order)
-        domino_list = Domino.objects.all()
+        player_id_list = json.loads(session.order) # Liste des joueurs
+        domino_list = Domino.objects.all() # Liste des dominos
+
+        # Le joueur qui a le domino le plus fort
+        strongest_domino_owner = dict(player_id=0, domino_id=0)
 
         # Pour chacun des joueurs dans la partie
         for player_id in player_id_list:
@@ -74,20 +95,35 @@ class CreateGame(APIView):
                 new_domino = random.choice(domino_list)
                 domino_list.remove(new_domino)
                 dominoes.append(new_domino)
+                if strongest_domino_owner["domino_id"] <= new_domino.domino_id:
+                    strongest_domino_owner["domino_id"] = new_domino.domino_id
+                    strongest_domino_owner["player_id"] = player_id
             # Lie les dominos au joueur
             HandPlayer.objects.create(round, session, player=Player.objects.get(id=player_id), dominoes=dominoes)
 
-        player_hoto_dominoes = HandPlayer.objects.get(session=session, round=round.id, player=Player.objects.get(id=data_request.get("player_id"))).dominoes
+        player_hote_dominoes_value = json.loads(HandPlayer.objects.get(session=session, round=round.id, player=player_hote).dominoes)
+
+        player_hote_dominoes = []
+        for domino_id in player_hote_dominoes_value:
+            player_hote_dominoes.append(Domino.objects.get(id=domino_id))
+
+        # Première personne à jouer
+        first_to_play = Player.objects.get(id=strongest_domino_owner.get("player_id"))
 
 
+        # Son temps de reflexion
+        reflexion_time_param = session.reflexion_time
+        player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
 
         #     8. **notifie tout les joueurs sauf hote via le websocket de la session**
         #         1. **renvoie les dominos qui ont été distribués aux joueurs**
 
-        # if not round or not player_hoto_dominoes
 
-        #     7. Transmet à l’hôte ses dominos
-        data_return["data"] = dict(round_id=round.id)
+        # Transmet à l’hôte ses dominos
+        data_return["data"] = dict(round_id=round.id,
+                                   dominoes=player_hote_dominoes,
+                                   player_turn=first_to_play.pseudo,
+                                   player_time_end=player_time_end)
 
         return Response(data_return, status=status.HTTP_201_CREATED)
 
@@ -101,7 +137,10 @@ class PlaceDomino(APIView):
         data_request = request.data
         data_return = dict(code=201, message="Domino joué", data=None)
 
-        verify_entry(data_return)
+        response = verify_entry(data_request)
+        if response:
+            return response
+
         # Objets validés
         session = Session.objects.get(id=data_request.get("session_id"))
         player = Player.objects.get(id=data_request.get("player_id"))
@@ -132,9 +171,17 @@ class PlaceDomino(APIView):
         if not domino:
             return Response(dict(code=404, message="Domino inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
 
-        # Dominoes du joueurs
-        player_dominoes = json.loads(HandPlayer.objects.get(player, round, session).dominoes)
+        if side != "left" or side != "right":
+            return Response(dict(code=400, message="side mal renseigné (left or right)", data=None), status=status.HTTP_400_BAD_REQUEST)
 
+        # Dominoes du joueurs
+        player_dominoes = HandPlayer.objects.get(player, round, session).dominoes
+
+
+        if not player_dominoes:
+            return Response(dict(code=404, message="Le joueur n'a pas de données dans ce round", data=None), status=status.HTTP_404_NOT_FOUND)
+
+        player_dominoes = json.loads(HandPlayer.objects.get(player, round, session).dominoes)
         #  Vérifie qu’il possède bien le domino
         if domino.id in player_dominoes:
             return Response(dict(code=404, message="Le joueur ne possède pas le domino mentionné", data=None),
@@ -153,7 +200,6 @@ class PlaceDomino(APIView):
 
         # Dominos sur la table
         table_de_jeu = json.loads(round.table_de_jeu)
-        playable_values = []
 
         # Valeur de gauche disponible
         domino_left = Domino.objects.get(id=table_de_jeu[0]["id"])
@@ -161,9 +207,9 @@ class PlaceDomino(APIView):
                            orientation=table_de_jeu[0]["orientation"])
 
         if domino_left["orientation"] == "normal":
-            playable_values.append(domino_left["left"])
+            value_left = domino_left["left"]
         else:
-            playable_values.append(domino_left["right"])
+            value_left = domino_left["right"]
 
         # Valeur de droite disponible
         domino_right = table_de_jeu[len(table_de_jeu) - 1]["id"]
@@ -171,13 +217,17 @@ class PlaceDomino(APIView):
                             orientation=table_de_jeu[len(table_de_jeu) - 1]["orientation"])
 
         if domino_right["orientation"] == "normal":
-            playable_values.append(domino_right["right"])
+            value_right = domino_left["right"]
         else:
-            playable_values.append(domino_right["left"])
+            value_right = domino_left["left"]
+
 
         # Domino bien jouable là ou il est placé
-        if domino.left not in playable_values or domino.right not in playable_values:
+        if (side == "left" and (domino.left != value_left or domino.right != value_left)) or (side == "right" and (domino.left != value_right or domino.right != value_right)): # Domino non jouable
             return Response(dict(code=400, message="Domino non jouable", data=None), status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
         #  - **Opérations réalisées :**
         #      1. Ajoute l’id du domino au début ou à la fin du champ table en fonction de si il est joué à gauche ou a droite de la table

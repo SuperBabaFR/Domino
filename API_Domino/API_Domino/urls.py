@@ -17,8 +17,9 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 import game
-from game.views import CreateGame
+from game.views import CreateGame, PlaceDomino
 
 urlpatterns = [
     path('start', CreateGame.as_view(), name='start'),
+    path('play', PlaceDomino.as_view(), name='play'),
 ]

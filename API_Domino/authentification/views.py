@@ -54,20 +54,6 @@ def verify_token(token, token_type="access"):
     except jwt.InvalidTokenError:
         raise InvalidAccessTokenException() # Token invalide
 
-
-
-class tokenView(APIView):
-    """Fournit un token."""
-    permission_classes = []
-
-    def post(self, request):
-        print(request)
-        print(request.data)
-        tokens = generate_tokens(request.data["player_id"])
-        return JsonResponse({'msg': 'ok', 'data': tokens})
-
-
-
 class tokenRefreshView(APIView):
     """Refresh un token."""
     permission_classes = []
@@ -129,15 +115,4 @@ class NoTokenException(APIException):
     status_code = HTTPStatus.UNAUTHORIZED
     default_detail = {"code": 401, "message": "Token nécessaire"}
     default_code = "token_invalid"
-
-# TESTS
-
-class ProtectedView(APIView):
-    """Test en vue protegée."""
-    permission_classes = [IsAuthenticatedWithJWT]
-
-    def get(self, request):
-        print(request.player_id)
-        return JsonResponse({'msg': 'Bienvenue' + str(request.player_id)})
-
 

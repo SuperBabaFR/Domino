@@ -17,12 +17,14 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 import game
+from authentification import views
 from game.views import CreateGame, PlaceDomino
 from session.views import CreateSessionView, JoinSessionView
-
 urlpatterns = [
     path('start', CreateGame.as_view(), name='start'),
     path('play', PlaceDomino.as_view(), name='play'),
     path('create', CreateSessionView.as_view(), name='create'),
     path('rejoindre', JoinSessionView.as_view(), name='rejoindre'),
+    path('token/', views.tokenView.as_view(), name='token'),
+    path('token/refresh', views.tokenRefreshView.as_view(), name='tokenRefresh')
 ]

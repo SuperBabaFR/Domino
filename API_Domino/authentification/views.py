@@ -2,10 +2,12 @@ from http import HTTPStatus
 import datetime
 
 import jwt
+from django.http import JsonResponse
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import BasePermission
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from API_Domino.settings import SECRET_KEY, REFRESH_TOKEN_LIFETIME, ACCESS_TOKEN_LIFETIME
 
@@ -53,6 +55,42 @@ def verify_token(token, token_type="access"):
         raise InvalidAccessTokenException() # Token invalide
 
 
+
+class tokenView(APIView):
+    """Fournit un token."""
+    permission_classes = []
+
+    def post(self, request):
+        print(request)
+        print(request.data)
+        tokens = generate_tokens(request.data["player_id"])
+        return JsonResponse({'msg': 'ok', 'data': tokens})
+
+
+
+class tokenRefreshView(APIView):
+    """Refresh un token."""
+    permission_classes = []
+
+    def post(self, request):
+
+        refresh_token = request.data["refresh_token"]
+
+        if not refresh_token:
+            return Response({'msg': 'POTO ENVOIE MOI LE TRUC'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            payload = verify_token(refresh_token, token_type="refresh")
+            id_player = payload.get("id_player")
+
+            tokens = generate_tokens(id_player)
+            return Response({'msg': 'ok', 'data': tokens["access_token"]}, status=status.HTTP_200_OK)
+
+        except ValueError as e:
+            return Response({'msg': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
 # AUTHENTIFICATION
 
 class IsAuthenticatedWithJWT(BasePermission):
@@ -91,3 +129,15 @@ class NoTokenException(APIException):
     status_code = HTTPStatus.UNAUTHORIZED
     default_detail = {"code": 401, "message": "Token nécessaire"}
     default_code = "token_invalid"
+
+# TESTS
+
+class ProtectedView(APIView):
+    """Test en vue protegée."""
+    permission_classes = [IsAuthenticatedWithJWT]
+
+    def get(self, request):
+        print(request.player_id)
+        return JsonResponse({'msg': 'Bienvenue' + str(request.player_id)})
+
+

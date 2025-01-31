@@ -17,7 +17,7 @@ def verify_entry(data):
     player_id = data.get("player_id")
     if not player_id:
         return Response(dict(code=400, message="player_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
-    player = Player.objects.get(id=player_id)
+    player = Player.objects.filter(id=player_id).first()
 
     if not player:
         return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
@@ -53,7 +53,7 @@ class CreateSessionView(APIView):
             return Response(dict(code=400, message="max_players_count manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-        if not definitive_leave:
+        if  definitive_leave == None:
             return Response(dict(code=400, message="definitive_leave manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
         if max_players_count < 2 or max_players_count > 4:
@@ -64,16 +64,21 @@ class CreateSessionView(APIView):
             return Response(
                 {"code": 400, "message": "Le temps de réflexion doit être compris entre 20 et 60 secondes."},
                 status=status.HTTP_400_BAD_REQUEST)
-
+            """
+        return Response({
+            "code": 201,
+            "message": "Session créée",
+            "data":None})
+           """
         session_code = generate_session_code()
-        player_hote = Player.objects.get(id=player_id)
+        player_hote = Player.objects.filter(id=player_id).first()
         order = [player_hote.id]
         order_str = str(order)
 
         session = Session.objects.create(
             code=session_code,
             hote=player_hote,
-            statut=Statut.objects.get(name="En cours"),
+            statut=None,
             order=order_str,
             max_players_count=max_players_count,
             reflexion_time=reflexion_time,
@@ -106,6 +111,10 @@ class JoinSessionView(APIView):
     # permission_classes = [IsAuthenticatedWithJWT]
     def post(self, request):
         data_request = request.data
+        response = verify_entry(data_request)
+        if response:
+            return response
+
 
         player_id = data_request.get('player_id')
         session_code = data_request.get('session_code')
@@ -120,7 +129,7 @@ class JoinSessionView(APIView):
         if not session:
             return Response({"code": 404, "message": "Session introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        player = Player.objects.get(id=player_id)
+        player = Player.objects.filter(id=player_id).first()
 
         order = json.loads(session.order)
         if len(order) >= session.max_players_count:
@@ -131,9 +140,12 @@ class JoinSessionView(APIView):
 
         order.append(player_id)
         session.order = str(order)
+        info_player = Infosession.objects.filter(session=session, player=player).exists()
 
         if not Infosession.objects.filter(session=session, player=player).exists():
             Infosession.objects.create(session=session, player=player)
+
+
 
         players_info = []
         for player_id in order:
@@ -151,8 +163,8 @@ class JoinSessionView(APIView):
             "message": "Session disponible",
             "data": {
                 "session_id": session.id,
-                "code": session.code,
-                "hote": session.hote.id,
+                "session_code": session.code,
+                "hote": session.hote.pseudo,
                 "max_players_count": session.max_players_count,
                 "reflexion_time": session.reflexion_time,
                 "definitive_leave": session.definitive_leave,

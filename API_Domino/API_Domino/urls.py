@@ -18,8 +18,11 @@ Including another URLconf
 from django.urls import path
 import game
 from game.views import CreateGame, PlaceDomino
+from session.views import CreateSessionView, JoinSessionView
 
 urlpatterns = [
     path('start', CreateGame.as_view(), name='start'),
     path('play', PlaceDomino.as_view(), name='play'),
+    path('create', CreateSessionView.as_view(), name='create'),
+    path('rejoindre', JoinSessionView.as_view(), name='rejoindre'),
 ]

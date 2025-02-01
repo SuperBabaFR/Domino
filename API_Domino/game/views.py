@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.utils import json
 from rest_framework.views import APIView
 
-from authentification.models import Session, Player, Game, Domino, Round, HandPlayer
+from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Statut
 from authentification.views import IsAuthenticatedWithJWT
 
 
@@ -64,24 +64,28 @@ class CreateGame(APIView):
         if response:
             return response
 
+        session = Session.objects.get(id=data_request.get("session_id"))
         player_hote = Player.objects.get(id=data_request.get("player_id")) # Vérifié
+        player_id_list = json.loads(session.order) # Liste des joueurs
+
+        # Vérifie qu'il y a au moins deux joueurs
+        if len(player_id_list) < 2:
+            return Response(dict(code=400, message="Il n'y a pas assez de joueurs dans la session", data=None), status=status.HTTP_400_BAD_REQUEST)
+
 
         # Vérifie si une partie n'est pas déjà en cours
-        session = Session.objects.get(id=data_request.get("session_id"))
         if session.game_id:
             return Response(dict(code=400, message="Une partie est déjà en cours", data=None), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data_return, status=status.HTTP_201_CREATED)
 
         # Crée une partie
-        game = Game.objects.create(session) # NE PAS OUBLIER LE STATUT
+        game = Game.objects.create(session=session, statut=Statut.objects.get(id=1)) # NE PAS OUBLIER LE STATUT
 
         # Crée un round
         round = Round.objects.create(game, session, table="[]")
 
         # Distribue 7 dominos pour chaque joueurs de la session
 
-        player_id_list = json.loads(session.order) # Liste des joueurs
         domino_list = Domino.objects.all() # Liste des dominos
 
         # Le joueur qui a le domino le plus fort

@@ -24,7 +24,8 @@ from session.views import CreateSessionView, JoinSessionView, LeaveSessionView
 urlpatterns = [
     # Authentification
     path('token/refresh', tokenRefreshView.as_view(), name='tokenRefresh'),
-
+    path('signup', SignupView.as_view(), name='signup'),
+    path('login', LoginView.as_view(), name='login'),
     # Session
     path('create', CreateSessionView.as_view(), name='create'),
     path('rejoindre', JoinSessionView.as_view(), name='rejoindre'),

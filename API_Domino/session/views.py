@@ -97,7 +97,7 @@ class CreateSessionView(APIView):
         # Génère un code de session
         session_code = generate_session_code()
         # Stocke l'hôte dans la liste des joueurs
-        order_str = str([player_hote.id])
+        order_str = json.dumps([player_hote.id])
 
 
         # Crée la session
@@ -167,7 +167,7 @@ class JoinSessionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             # On l'ajoute
             order.append(player.id)
-            session.order = str(order)
+            session.order = json.dumps(order)
             session.save()
 
         # Récupère les infos du joueur
@@ -234,7 +234,7 @@ class LeaveSessionView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         order.remove(player.id)
-        session.order = str(order)
+        session.order = json.dumps(order)
         session.save()
 
         # Récupère les infos du joueur

@@ -57,7 +57,7 @@ class Round(models.Model):
     session = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
     statut = models.ForeignKey(Statut, models.SET_NULL, null=True)
     table = models.TextField(blank=True, null=True)
-    last_player = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
+    player_turn = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
 
     class Meta:
         db_table = 'Round'
@@ -77,7 +77,7 @@ class Infosession(models.Model):
 
 
 class HandPlayer(models.Model):
-    round = models.OneToOneField(Round, models.CASCADE)
+    round = models.ForeignKey(Round, models.CASCADE)
     session = models.ForeignKey(Session, models.CASCADE)
     player = models.ForeignKey(Player, models.CASCADE, db_column="player_id")
     dominoes = models.TextField()

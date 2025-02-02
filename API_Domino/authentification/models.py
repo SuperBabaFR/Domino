@@ -55,6 +55,7 @@ class Game(models.Model):
 class Round(models.Model):
     game = models.ForeignKey(Game, models.CASCADE, db_column="game_id")
     session = models.ForeignKey(Session, models.CASCADE, db_column="session_id")
+    statut = models.ForeignKey(Statut, models.SET_NULL, null=True)
     table = models.TextField(blank=True, null=True)
     last_player = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
 

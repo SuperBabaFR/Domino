@@ -82,10 +82,9 @@ class CreateGame(APIView):
         game = Game.objects.create(session=session, statut=Statut.objects.get(id=1)) # NE PAS OUBLIER LE STATUT
 
         # Crée un round
-        round = Round.objects.create(game, session, table="[]")
+        round = Round.objects.create(game, session, table="[]", statut=Statut.objects.get(id=11))
 
         # Distribue 7 dominos pour chaque joueurs de la session
-
         domino_list = Domino.objects.all() # Liste des dominos
 
         # Le joueur qui a le domino le plus fort
@@ -120,8 +119,8 @@ class CreateGame(APIView):
         player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
 
         #     8. **notifie tout les joueurs sauf hote via le websocket de la session**
-        #         1. **renvoie les dominos qui ont été distribués aux joueurs**
-
+        #         1. **renvoie les dominos qui ont été distribués aux joueurs*
+        # Un timer pour la fin du tour du joueur
 
         # Transmet à l’hôte ses dominos
         data_return["data"] = dict(round_id=round.id,

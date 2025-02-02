@@ -28,7 +28,7 @@ urlpatterns = [
     path('login', LoginView.as_view(), name='login'),
     # Session
     path('create', CreateSessionView.as_view(), name='create'),
-    path('rejoindre', JoinSessionView.as_view(), name='rejoindre'),
+    path('join', JoinSessionView.as_view(), name='join'),
     path('leave',LeaveSessionView.as_view(), name='leave'),
     # Partie
     path('start', CreateGame.as_view(), name='start'),

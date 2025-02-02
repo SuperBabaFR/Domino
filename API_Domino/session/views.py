@@ -72,10 +72,33 @@ class CreateSessionView(APIView):
             return Response(dict(code=400, message="definitive_leave manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
+
+        # Supprime la session existante si il essaye de creer une nouvelle 
+        if Session.objects.filter(hote_id=player_hote).exists():
+            session_exist = Session.objects.filter(hote_id=player_hote)
+            session_id = session_exist.first().id
+            infosession =  Infosession.objects.filter(session_id=session_id)
+            game = Game.objects.filter(session_id=session_id)
+            round = Round.objects.filter(session_id=session_id)
+            handplayer = HandPlayer.objects.filter(session_id=session_id)
+            if handplayer:
+                handplayer.delete()
+            if infosession:
+                infosession.delete()
+            if game:
+                game.delete()
+            if round:
+                round.delete()
+            session_exist.delete()
+
+
+
+
         # Génère un code de session
         session_code = generate_session_code()
         # Stocke l'hôte dans la liste des joueurs
         order_str = str([player_hote.id])
+
 
         # Crée la session
         session = Session.objects.create(
@@ -87,7 +110,7 @@ class CreateSessionView(APIView):
             reflexion_time=reflexion_time,
             definitive_leave=definitive_leave
         )
-        # Renseigne les infos de session du joueur hôte
+        # Renseigne les infos de session du joueurhôte
         infosess = Infosession.objects.create(
             session=session,
             player=player_hote,

@@ -1,5 +1,6 @@
 import json
 
+import jwt
 from django.shortcuts import render
 
 # Create your views here.
@@ -8,8 +9,12 @@ import string
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from authentification.views import IsAuthenticatedWithJWT
+from authentification.views import IsAuthenticatedWithJWT, verify_token
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
+from django.contrib.auth.models import AnonymousUser
+from channels.middleware import BaseMiddleware
+from channels.db import database_sync_to_async
+from urllib.parse import parse_qs
 
 
 def verify_entry(data):
@@ -28,6 +33,10 @@ def generate_session_code(length=8):
         session_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
         if not Session.objects.filter(code=session_code).exists():
             return session_code
+
+
+
+
 
 
 class CreateSessionView(APIView):

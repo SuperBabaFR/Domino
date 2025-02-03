@@ -4,14 +4,17 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 
-import authentification.routing
+from session.routing import websocket_urlpatterns as session_websockets
+from middleware import JWTAuthMiddleware  # Middleware personnalisé
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'API_Domino.settings')
-
-# import authentification.routing
 
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": URLRouter(authentification.routing.websocket_urlpatterns),
+    "websocket": JWTAuthMiddleware(
+    URLRouter(
+        session_websockets
+    )
+),
 })

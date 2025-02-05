@@ -29,7 +29,7 @@ urlpatterns = [
     # Session
     path('create', CreateSessionView.as_view(), name='create'),
     path('join', JoinSessionView.as_view(), name='join'),
-    path('leave',LeaveSessionView.as_view(), name='leave'),
+    path('kill',LeaveSessionView.as_view(), name='kill'),
     # Partie
     path('start', CreateGame.as_view(), name='start'),
     path('play', PlaceDomino.as_view(), name='play'),

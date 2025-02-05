@@ -82,7 +82,7 @@ class CreateSessionView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-        # Supprime la session existante si il essaye de creer une nouvelle 
+        # Supprime la session existante s'il essaye de creer une nouvelle
         if Session.objects.filter(hote_id=player_hote).exists():
             session_exist = Session.objects.filter(hote_id=player_hote)
             session_id = session_exist.first().id
@@ -99,8 +99,6 @@ class CreateSessionView(APIView):
             if round:
                 round.delete()
             session_exist.delete()
-
-
 
 
         # Génère un code de session
@@ -221,7 +219,6 @@ class LeaveSessionView(APIView):
         if response:
             return response
 
-
         session_id = data_request.get('session_id')
         player = Player.objects.filter(id=data_request.get('player_id')).first()
 
@@ -233,22 +230,48 @@ class LeaveSessionView(APIView):
         if not session:
             return Response({"code": 404, "message": "Session introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        order = json.loads(session.order)
-        # if player.id in order:
-        #     return
+        if session.hote == player:
+            # Supprime la session existante s'il essaye de creer une nouvelle
+            infosession = Infosession.objects.filter(session_id=session_id)
+            game = Game.objects.filter(session_id=session_id)
+            round = Round.objects.filter(session_id=session_id)
+            handplayer = HandPlayer.objects.filter(session_id=session_id)
+            if handplayer:
+                handplayer.delete()
+            if infosession:
+                infosession.delete()
+            if game:
+                game.delete()
+            if round:
+                round.delete()
+            session.delete()
 
-        # Vérifie si le joueur à déjà été dans la session
-        if player.id not in order:
-            return Response({"code": 400, "message": "Le joueur n'appartiens pas à la partie."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "code": 200,
+                "message": "Session supprimée",
+                "data": None
+            }, status=status.HTTP_200_OK)
 
-        order.remove(player.id)
-        session.order = json.dumps(order)
-        session.save()
 
-        # Récupère les infos du joueur
-        infosession_player = Infosession.objects.filter(session=session, player=player).first()
-        if infosession_player:
-            Infosession.objects.filter(session=session, player=player).delete()
 
-    #TODO PREVOIR LA CAS DE L'HOTE
+        if not session.game_id:
+
+            order = json.loads(session.order)
+
+            # Vérifie si le joueur à déjà été dans la session
+            if player.id not in order:
+                return Response({"code": 400, "message": "Le joueur n'appartiens pas à la partie."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            order.remove(player.id)
+            session.order = json.dumps(order)
+            session.save()
+        else:
+            player_info = Infosession.objects.filter(session=session,player=player).first()
+            player_info.statut = Statut.objects.get(id=10)
+
+        return Response({
+                "code": 200,
+                "message": "Session quittée",
+                "data": None
+        }, status=status.HTTP_200_OK)

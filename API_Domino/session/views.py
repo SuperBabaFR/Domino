@@ -1,20 +1,25 @@
 import json
-
-import jwt
-from django.shortcuts import render
-
-# Create your views here.
 import random
 import string
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from authentification.views import IsAuthenticatedWithJWT, verify_token
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
-from django.contrib.auth.models import AnonymousUser
-from channels.middleware import BaseMiddleware
-from channels.db import database_sync_to_async
-from urllib.parse import parse_qs
+
+
+def notify_session(session_id, action, data=None):
+    channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
+    async_to_sync(channel_layer.group_send)(
+        f"session_{session_id}",  # Nom du groupe WebSocket
+        {
+            "type": "session_players_activity",
+            "action": action,
+            "data": data
+        }
+    )
 
 
 def verify_entry(data):
@@ -81,12 +86,11 @@ class CreateSessionView(APIView):
             return Response(dict(code=400, message="definitive_leave manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-
         # Supprime la session existante s'il essaye de creer une nouvelle
         if Session.objects.filter(hote_id=player_hote).exists():
             session_exist = Session.objects.filter(hote_id=player_hote)
             session_id = session_exist.first().id
-            infosession =  Infosession.objects.filter(session_id=session_id)
+            infosession = Infosession.objects.filter(session_id=session_id)
             game = Game.objects.filter(session_id=session_id)
             round = Round.objects.filter(session_id=session_id)
             handplayer = HandPlayer.objects.filter(session_id=session_id)
@@ -100,12 +104,10 @@ class CreateSessionView(APIView):
                 round.delete()
             session_exist.delete()
 
-
         # Génère un code de session
         session_code = generate_session_code()
         # Stocke l'hôte dans la liste des joueurs
         order_str = json.dumps([player_hote.id])
-
 
         # Crée la session
         session = Session.objects.create(
@@ -177,10 +179,12 @@ class JoinSessionView(APIView):
             session.order = json.dumps(order)
             session.save()
 
+        info_player = Infosession.objects.filter(session=session, player=player)
+
         # Récupère les infos du joueur
-        if not Infosession.objects.filter(session=session, player=player).exists():
+        if not info_player:
             # sinon on les crée
-            Infosession.objects.create(session=session, player=player, statut=Statut.objects.get(id=6))
+            info_player = Infosession.objects.create(session=session, player=player, statut=Statut.objects.get(id=6))
 
         # Charge les infos des joueurs présenta dans la session
         players_info = []
@@ -196,6 +200,15 @@ class JoinSessionView(APIView):
             }
             players_info.append(player_data)
 
+        # Notifie les joueurs connectés à la session du nouveau joueur
+        data_notify = dict(
+                player=player.pseudo,
+                image=player.image,
+                wins=info_player.games_win,
+                pigs=info_player.pig_count
+            )
+        notify_session(session.id, "join", data_notify)
+
         return Response({
             "code": 201,
             "message": "Session disponible",
@@ -209,7 +222,6 @@ class JoinSessionView(APIView):
                 "players": players_info
             }
         }, status=status.HTTP_201_CREATED)
-
 
 class LeaveSessionView(APIView):
 
@@ -246,6 +258,9 @@ class LeaveSessionView(APIView):
                 round.delete()
             session.delete()
 
+            # Notifie les joueurs connectés à la session qu'elle a été supprimée
+            notify_session(session.id, "exit")
+
             return Response({
                 "code": 200,
                 "message": "Session supprimée",
@@ -269,6 +284,12 @@ class LeaveSessionView(APIView):
         else:
             player_info = Infosession.objects.filter(session=session,player=player).first()
             player_info.statut = Statut.objects.get(id=10)
+
+        # Notifie les joueurs connectés à la session du joueur qui a quitté
+        data_notify = dict(
+                player=player.pseudo
+            )
+        notify_session(session.id, "leave", data_notify)
 
         return Response({
                 "code": 200,

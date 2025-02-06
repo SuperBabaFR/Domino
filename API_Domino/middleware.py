@@ -4,6 +4,7 @@ import jwt
 from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
 
+from API_Domino.settings import SECRET_KEY
 from authentification.models import Player
 from authentification.views import verify_token, InvalidAccessTokenException, InvalidRefreshTokenException
 
@@ -18,21 +19,45 @@ class JWTAuthMiddleware(BaseMiddleware):
 
         scope["player"] = None  # Par défaut, utilisateur inexistant
 
-        if token:
-            try:
-                payload = verify_token(token)  # Vérifie et décode le token
-                player = await self.get_player(payload["player_id"])  # Récupère le joueur en BDD
-                scope["player"] = player # Associe le joueur à la connexion
-            except jwt.DecodeError:
-                raise InvalidAccessTokenException()  # Token invalide
-            except jwt.ExpiredSignatureError:
-                raise InvalidRefreshTokenException()  # Token expiré
-            except jwt.InvalidTokenError:
-                raise InvalidAccessTokenException()  # Token invalide
-            except Player.DoesNotExist:
-                print("Joueur introuvable")
+        # Ferme si y'a pas de tokens
+        if not token:
+            await self.close_connection(send, "Token Requis", 400)
+            return
 
+        # Vérifie le token
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])  # Vérifie et décode le token
+            if payload.get("type") != "access":
+                await self.close_connection(send, "Type de token invalide", 400)
+                return
+        except jwt.DecodeError:
+            await self.close_connection(send, "Token invalide", 400)
+            return
+        except jwt.ExpiredSignatureError:
+            await self.close_connection(send, "Token expiré, reconnexion nécessaire", 400)
+            return
+        except jwt.InvalidTokenError:
+            await self.close_connection(send, "Token invalide, veuillez en générer un nouveau", 400)
+            return
+        except Player.DoesNotExist:
+            print("Joueur introuvable")
+
+        player = await self.get_player(payload["player_id"])  # Récupère le joueur en BDD
+
+        if not player:
+            await self.close_connection(send, "Joueur inexistant", 404)
+            return
+
+        scope["player"] = player  # Associe le joueur à la connexion
         return await super().__call__(scope, receive, send)
+
+    async def close_connection(self, send, message, code=401):
+        """Ferme proprement la connexion avec un message explicite"""
+        await send({
+            "type": "websocket.close",
+            "code": code,
+            "reason": message
+        })
 
     @database_sync_to_async
     def get_player(self, player_id):

@@ -3,6 +3,7 @@ from urllib.parse import parse_qs
 import jwt
 from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
+from rest_framework.utils import json
 
 from API_Domino.settings import SECRET_KEY
 from authentification.models import Player
@@ -28,16 +29,16 @@ class JWTAuthMiddleware(BaseMiddleware):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])  # Vérifie et décode le token
             if payload.get("type") != "access":
-                await self.close_connection(send, "Type de token invalide", 400)
+                await self.close_connection(send, "Type de token invalide", 4400)
                 return
         except jwt.DecodeError:
-            await self.close_connection(send, "Token invalide", 400)
+            await self.close_connection(send, "Token invalide", 4400)
             return
         except jwt.ExpiredSignatureError:
-            await self.close_connection(send, "Token expiré, reconnexion nécessaire", 400)
+            await self.close_connection(send, "Token access expire, refresh necessaire", 4400)
             return
         except jwt.InvalidTokenError:
-            await self.close_connection(send, "Token invalide, veuillez en générer un nouveau", 400)
+            await self.close_connection(send, "Token invalide, veuillez en generer un nouveau", 4400)
             return
         except Player.DoesNotExist:
             print("Joueur introuvable")
@@ -45,7 +46,7 @@ class JWTAuthMiddleware(BaseMiddleware):
         player = await self.get_player(payload["player_id"])  # Récupère le joueur en BDD
 
         if not player:
-            await self.close_connection(send, "Joueur inexistant", 404)
+            await self.close_connection(send, "Joueur inexistant", 4404)
             return
 
         scope["player"] = player  # Associe le joueur à la connexion
@@ -53,10 +54,14 @@ class JWTAuthMiddleware(BaseMiddleware):
 
     async def close_connection(self, send, message, code=401):
         """Ferme proprement la connexion avec un message explicite"""
+        await send({"type": "websocket.accept"})  # Accepter TEMPORAIREMENT
+        await send({
+            "type": "websocket.send",
+            "text": json.dumps({"message": message, "code": code, "data": None})
+        })
         await send({
             "type": "websocket.close",
-            "code": code,
-            "reason": message
+            "code": code
         })
 
     @database_sync_to_async

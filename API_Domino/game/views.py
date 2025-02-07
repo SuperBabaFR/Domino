@@ -1,5 +1,8 @@
 from datetime import datetime, UTC, timedelta
 import random
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.utils import json
@@ -9,6 +12,16 @@ from authentification.models import Session, Player, Game, Domino, Round, HandPl
 
 
 # Create your views here.
+def notify_websocket(cible, id, data, type="send_session_updates"):
+    channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
+    async_to_sync(channel_layer.group_send)(
+        f"{cible}_{id}",  # Nom du groupe WebSocket
+        {
+            "type": type,
+            "data": data
+        }
+    )
+
 def verify_values(data, keys):
     for key in keys:
         value = data.get(key)
@@ -24,7 +37,23 @@ def verify_objets(objets):
     return None
 
 
+def get_domino_player(session, round, player):
+    player_dominoes_value = json.loads(
+        HandPlayer.objects.get(session=session, round=round, player=player).dominoes)
+
+    player_dominoes = []
+    for domino_id in player_dominoes_value:
+        domino = Domino.objects.get(id=domino_id)
+        player_dominoes.append(dict(id=domino.id, left=domino.left, right=domino.right))
+
+    return player_dominoes
+
+
 def domino_playable(domino, table_de_jeu, side):
+    # Si y'a aucun domino
+    if len(table_de_jeu) == 0:
+        return dict(left=domino.left, right=domino.right)
+
     # si y'a qu'un domino
     if len(table_de_jeu) == 1:
         domino_one = Domino.objects.get(id=table_de_jeu[0]["id"])
@@ -79,9 +108,6 @@ class CreateGame(APIView):
         if response:
             return response
 
-        session = Session.objects.get(id=data_request.get("session_id"))
-        player_hote = Player.objects.get(id=data_request.get("player_id"))  # Vérifié
-
         # Joueur pas hote de session
         if session.hote != player_hote:
             return Response(dict(code=404, message="joueur non hote de la session", data=None),
@@ -101,15 +127,17 @@ class CreateGame(APIView):
 
         # Si un joueur n'est pas prêt on crée pas de partie
         for player_id in player_id_list:
-            info_player = Infosession.objects.get(session=session, player=Player.objects.get(id=player_id))
+            this_player = Player.objects.filter(id=player_id).first()
+            info_player = Infosession.objects.get(session=session, player=this_player)
 
             if info_player.statut.name == "player.not_ready":
                 return Response(dict(code=400, message="Tout les joueurs ne sont pas prêts", data=None),
                                 status=status.HTTP_400_BAD_REQUEST)
 
         # Crée une partie
-        game = Game.objects.create(session_id=session, statut=Statut.objects.get(id=1))  # NE PAS OUBLIER LE STATUT
+        game = Game.objects.create(session_id=session, statut=Statut.objects.get(id=1))
         session.game_id = game
+        session.statut = Statut.objects.get(id=5)
         session.save()
 
         # Crée un round
@@ -119,49 +147,60 @@ class CreateGame(APIView):
         domino_list = list(Domino.objects.all())  # Liste des dominos
 
         # Le joueur qui a le domino le plus fort
-        strongest_domino_owner = dict(player_id=0, domino_id=0)
+        heaviest_domino_owner = dict(player=None, domino_id=0)
 
         # Pour chacun des joueurs dans la partie
         for player_id in player_id_list:
             dominoes = []
+            player_x = Player.objects.filter(id=player_id).first()
             # Choisis 7 Dominos dans la liste
             for i in range(0, 7):
                 new_domino = random.choice(domino_list)
                 domino_list.remove(new_domino)
                 dominoes.append(new_domino.id)
-                if strongest_domino_owner["domino_id"] <= new_domino.id:
-                    strongest_domino_owner["domino_id"] = new_domino.id
-                    strongest_domino_owner["player_id"] = player_id
+                if heaviest_domino_owner["domino_id"] <= new_domino.id:
+                    heaviest_domino_owner = dict(player=player_x, domino_id=new_domino.id)
             # Lie les dominos au joueur
-            HandPlayer.objects.create(round=round, session=session, player=Player.objects.get(id=player_id),
-                                      dominoes=dominoes)
+            HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=dominoes)
 
-        player_hote_dominoes_value = json.loads(
-            HandPlayer.objects.get(session=session, round=round.id, player=player_hote).dominoes)
-
-        player_hote_dominoes = []
-        for domino_id in player_hote_dominoes_value:
-            domino = Domino.objects.get(id=domino_id)
-            domino_data = dict(id=domino.id, left=domino.left, right=domino.right)
-            player_hote_dominoes.append(domino_data)
+        # Dominos du joueur hôte
+        player_hote_dominoes = get_domino_player(session, round, player_hote)
 
         # Première personne à jouer
-        first_to_play = Player.objects.get(id=strongest_domino_owner.get("player_id"))
-        # Ecrit dans la base a qui le tour
-        round.player_turn(first_to_play)
+        player_turn = heaviest_domino_owner.get("player")
+
+        round.player_turn = player_turn
+        round.save()  # Ecrit dans la base a qui le tour
 
         # Son temps de reflexion
         reflexion_time_param = session.reflexion_time
         player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+        player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        #     8. **notifie tout les joueurs sauf hote via le websocket de la session**
-        #         1. **renvoie les dominos qui ont été distribués aux joueurs*
-        # Un timer pour la fin du tour du joueur
+        # notifie tout les joueurs sauf hote via le websocket de la session
+        for player_id in player_id_list:
+            if player_hote.id == player_id:
+                pass
+            # Récupère le joueur
+            player_x = Player.objects.filter(id=player_id).first()
+            # Ses dominos
+            player_x_dominoes = get_domino_player(session, round, player_x)
+            # Prépare son petit message
+            data_notify = dict(
+                action="session.start_game",
+                data=dict(
+                    round_id=round.id,
+                    dominoes=player_x_dominoes,
+                    player_turn=player_turn.pseudo,
+                    player_time_end=player_time_end
+                )
+            )
+            notify_websocket("player", player_id, data_notify) # Lui envoie
 
         # Transmet à l’hôte ses dominos
         data_return["data"] = dict(round_id=round.id,
                                    dominoes=player_hote_dominoes,
-                                   player_turn=first_to_play.pseudo,
+                                   player_turn=player_turn.pseudo,
                                    player_time_end=player_time_end)
 
         return Response(data_return, status=status.HTTP_201_CREATED)
@@ -229,13 +268,11 @@ class PlaceDomino(APIView):
             return Response(dict(code=400, message="Le joueur doit jouer son plus gros domino", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Si ce n'est pas le premier domino à poser, on vérifie qu'il est bien jouable
         playable_values = domino_playable(domino, table_de_jeu, side)
+        # Si ce n'est pas le premier domino à poser, on vérifie qu'il est bien jouable
         if len(table_de_jeu) > 0 and playable_values == False:
             return Response(dict(code=400, message="Domino non jouable", data=None),
                             status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
-
-        #  - **Opérations réalisées :**
 
         # Détermine dans quelle orientation le domino sera joué
         orientation = "normal"
@@ -274,6 +311,47 @@ class PlaceDomino(APIView):
         # Son temps de reflexion
         reflexion_time_param = session.reflexion_time
         player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+        player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+        # Notifie la session qu'un domino a été joué
+        data_session = dict(action="game.someone_played",
+                            data=dict(
+                                pseudo=player.pseudo,
+                                domino=dict(id=domino.id, left=domino.left, right=domino.right),
+                                side=side,
+                                player_turn=round.player_turn.pseudo,
+                                player_time_end=player_time_end
+                            )
+        )
+        notify_websocket("session", session.id, data_session)
+
+
+        # Récupère les dominos jouables du prochain joueur
+        hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, round=round, session=session).first()
+        hand_player_turn = json.loads(hand_player_turn.dominoes)
+        playable_dominoes = []
+        for domino_id in hand_player_turn:
+            domino_x = Domino.objects.get(id=domino_id)
+            if not domino_playable(domino_x, table_de_jeu, "left") and not domino_playable(domino_x, table_de_jeu, "right"):
+                continue
+            playable_dominoes.append(dict(id=domino_id, left=domino_x.left, right=domino_x.right))
+
+
+        # Notifie la personne qui doit jouer
+        if len(playable_dominoes) == 0:
+            data_next_player = dict(action="game.your_turn_no_match",
+                                    data=dict(player_time_end=player_time_end)
+                                    )
+            notify_websocket("player", round.player_turn.id, data_next_player)
+        else:
+            data_next_player = dict(action="game.your_turn",
+                                    data=dict(
+                                        playable_dominoes=playable_dominoes,
+                                        player_time_end=player_time_end
+                                    )
+            )
+            notify_websocket("player", round.player_turn.id, data_next_player)
 
         # Transmet au joueur les informations à jour
         data_return["data"] = dict(dominoes=player_dominoes,

@@ -191,6 +191,9 @@ class JoinSessionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             # On l'ajoute
             order.append(player.id)
+            # Met le statut de la session à full si elle est pleine
+            if len(order) == session.max_players_count:
+                session.statut = Statut.objects.get(id=4)
             session.order = json.dumps(order)
             session.save()
 
@@ -276,6 +279,11 @@ class LeaveSessionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
             order.remove(player.id)
+
+            # Met le statut de la session à open si elle libère une place
+            if session.statut.name == "session.is_full":
+                session.statut = Statut.objects.get(id=3)
+
             session.order = json.dumps(order)
             session.save()
         else:

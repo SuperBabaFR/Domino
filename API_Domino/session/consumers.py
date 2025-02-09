@@ -1,8 +1,11 @@
+from datetime import datetime, timedelta, UTC
+
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-from authentification.models import Statut, Infosession, Session
+from authentification.models import Statut, Infosession, Session, Round, Player
+from game.views import notify_player_for_his_turn
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -34,7 +37,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         if not self.scope["authorized"]:  # Vérifie si le joueur est authentifié
             return  # Ferme DIRECTEMENT la connexion si non authentifié
 
-        if self.group_name and self.custom_channel_name:
+        if self.group_name and self.individual_group_name:
             # Retirer la connexion du groupe de la session
             await self.channel_layer.group_discard(
                 self.group_name,
@@ -65,6 +68,15 @@ class SessionConsumer(AsyncWebsocketConsumer):
                 {
                     "type": "statut_player",
                     "statut": dict(id=statut.id, name=statut.name)
+                }
+            )
+        # Un joueur boudé passe son tour
+        if "game.pass" in data["action"]:
+            group_name = f"player_{self.scope["player"].id}"
+            await self.channel_layer.group_send(
+                group_name, {
+                    "type": "player_pass",
+                    "round_id": data["data"]["round_id"]
                 }
             )
         print(f"Message reçu de {self.scope['player'].pseudo} : {data}")
@@ -131,16 +143,64 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     # Envoi de messages
     async def send_session_updates(self, event):
+        print(event)
         await self.send(text_data=json.dumps(event["data"]))
 
     # ------------ GAME METHODES ------------ #
 
-    #
+    # Un joueur boudé passe son tour
+    async def player_pass(self, event):
+        player = self.scope.get("player")
+        round_id = event["round_id"]
+        session = self.scope.get("session")
+
+        data = await self.update_next_player(round_id, session)
+        if not data:
+            return
+        next_player = data[0]
+        round = data[1]
+
+        reflexion_time_param = session.reflexion_time
+        player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+        player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+        data_return = dict(action="game.someone_pass", data=dict(pseudo=player.pseudo, player_turn=next_player.pseudo, player_time_end=player_time_end))
+
+        group_name = f"session_{self.scope['session'].id}"
+        await self.channel_layer.group_send(
+            group_name,
+            {
+                "type": "send_session_updates",
+                "data": data_return
+            }
+        )
+
+        notify_player_for_his_turn(round, session, player_time_end=player_time_end)
+
+
 
     # ------------ DATABASES METHODES ------------ #
     @database_sync_to_async
     def get_session(self, session_id):
         return Session.objects.filter(id=session_id).first()
+
+    @database_sync_to_async
+    def update_next_player(self, round_id, session):
+        round = Round.objects.filter(id=round_id).first()
+        if round.game != session.game_id or round.statut.id != 11:
+            self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
+            return False
+
+        # Met à jour qui doit jouer mtn
+        order = json.loads(session.order)
+        index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(round.player_turn.id) + 1
+
+        next_player = Player.objects.filter(id=order[index_next_player]).first()
+
+        round.player_turn = next_player
+        round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
+        return [next_player, round]
+
 
     @database_sync_to_async
     def get_statut(self, statut_id):

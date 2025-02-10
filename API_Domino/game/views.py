@@ -59,7 +59,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list=None):
         if not domino_list:
             domino_one = Domino.objects.get(id=table_de_jeu[0]["id"])
         else:
-            domino_one = domino_list[table_de_jeu[0]["id"]]
+            domino_one = domino_list[table_de_jeu[0]["id"] - 1]
 
         if (side == "left" and domino_one.left not in [domino.left, domino.right]) or (
                 side == "right" and domino_one.right not in [domino.left, domino.right]):
@@ -72,7 +72,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list=None):
         domino_right = Domino.objects.get(id=table_de_jeu[len(table_de_jeu) - 1]["id"])
     else:
         domino_left = domino_list[table_de_jeu[0]["id"] - 1]
-        domino_right = domino_list[table_de_jeu[len(table_de_jeu) - 1]["id"]]
+        domino_right = domino_list[table_de_jeu[len(table_de_jeu) - 1]["id"] - 1]
 
     # Domino tout à gauche
     domino_left = dict(left=domino_left.left, right=domino_left.right, orientation=table_de_jeu[0]["orientation"])
@@ -102,7 +102,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
     table_de_jeu = json.loads(round.table)
 
     # Récupère les dominos jouables du prochain joueur
-    hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, round=round, session=session).first()
+    hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, session=session).first()
     hand_player_turn = json.loads(hand_player_turn.dominoes)
     playable_dominoes = []
     for domino_id in hand_player_turn:
@@ -131,9 +131,9 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
         notify_websocket("player", round.player_turn.id, data_next_player)
 
 
-def new_round(game, session, first=False):
+def new_round(session, first=False):
     # Crée un round
-    round = Round.objects.create(game=game, session=session, table="[]", statut=Statut.objects.get(id=11))
+    round = Round.objects.create(game=session.game_id, session=session, table="[]", statut=Statut.objects.get(id=11))
 
     # Distribue 7 dominos pour chaque joueurs de la session
     domino_list = list(Domino.objects.all())  # Liste des dominos
@@ -142,7 +142,7 @@ def new_round(game, session, first=False):
 
     # Le joueur qui a le domino le plus fort
     heaviest_domino_owner = dict(player=None, domino_id=0)
-    player_hote_dominoes = None
+    player_hote_hand = None
     hands_list = []
 
     # Pour chacun des joueurs dans la partie
@@ -158,16 +158,19 @@ def new_round(game, session, first=False):
                 heaviest_domino_owner = dict(player=player_x, domino_id=new_domino.id)
         # Lie les dominos au joueur
         if player_id == session.hote.id:
-            player_hote_dominoes = HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=dominoes)
+            player_hote_hand = HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=json.dumps(dominoes))
         else:
-            hands_list.append(HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=dominoes))
+            hands_list.append(HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=json.dumps(dominoes)))
 
 
     # Dominos du joueur hôte
-    player_hote_dominoes = get_full_domino_player(player_hote_dominoes, domino_list_full)
+    player_hote_dominoes = get_full_domino_player(player_hote_hand.dominoes, domino_list_full)
+
+    # dernier gagnant
+    last_winner = session.game_id.last_winner
 
     # Première personne à jouer
-    player_turn = heaviest_domino_owner.get("player")
+    player_turn = heaviest_domino_owner.get("player") if not last_winner else last_winner
 
     round.player_turn = player_turn
     round.save()  # Ecrit dans la base a qui le tour
@@ -198,7 +201,8 @@ def new_round(game, session, first=False):
                player_time_end=player_time_end)
 
     if not first:
-        notify_websocket("player", session.player.id, data_hote)
+        msg_hote = dict(action="session.start_round", data=data_hote)
+        notify_websocket("player", session.hote.id, msg_hote)
 
     return data_hote
 
@@ -250,7 +254,7 @@ class CreateGame(APIView):
         for player_id in player_id_list:
             info_player = Infosession.objects.select_related('player').get(session=session, player_id=player_id)
 
-            if info_player.statut.name != "player.ready":
+            if info_player.statut.id != 7: # player.is_ready
                 return Response(dict(code=400, message="Tout les joueurs ne sont pas prêts", data=None),
                                 status=status.HTTP_400_BAD_REQUEST)
 
@@ -263,7 +267,7 @@ class CreateGame(APIView):
         session.statut = Statut.objects.get(id=5)
         session.save()
 
-        data_return["data"] = new_round(game, session, True)
+        data_return["data"] = new_round(session, True)
 
         # Transmet à l’hôte ses dominos
         return Response(data_return, status=status.HTTP_201_CREATED)
@@ -394,7 +398,7 @@ class PlaceDomino(APIView):
 
             notify_player_for_his_turn(round, session, domino_list, player_time_end)
 
-            player_dominoes = get_full_domino_player(session, round, player.id, domino_list)
+            player_dominoes = get_full_domino_player(hand_player.dominoes, domino_list)
 
             # Transmet au joueur qui a joué les informations à jour
             data_return["data"] = dict(dominoes=player_dominoes,
@@ -432,16 +436,10 @@ class PlaceDomino(APIView):
                                      data=dict(results=dict(winner=player.pseudo, pigs=pigs)))
 
             # regarde si il a gagné déjà auparavent
-            have_winstreak = True if session.id_game.last_winner == player else False
+            have_winstreak = True if session.game_id.last_winner == player else False
             # Met a jour le dernier gagnant
-            session.id_game.last_winner = player
-            session.id_game.statut = Statut.objects.get(id=2) # Met a jour le statut de la partie
-            # Met a jour le statut du round
-            round.statut = Statut.objects.get(id=12)
-            round.save()
-            session.id_game.save()
-            info_player.save()
-            player.save()
+            session.game_id.last_winner = player
+            session.game_id.statut = Statut.objects.get(id=2) # Met a jour le statut de la partie
 
             # Notifie la session qu'un domino a été joué
             data_session = dict(action="game.someone_win",
@@ -458,6 +456,14 @@ class PlaceDomino(APIView):
             # envoie aux joueurs les résultats de la partie
             if data_end_game:
                 notify_websocket("session", session.id, data_end_game)
+
+
+            # Met a jour le statut du round
+            round.statut = Statut.objects.get(id=12)
+            round.save()
+            session.game_id.save()
+            info_player.save()
+            player.save()
 
             # données pour la requete http
             data_return["message"] = "Tu as gagne"

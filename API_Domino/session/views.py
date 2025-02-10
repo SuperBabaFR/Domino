@@ -11,6 +11,7 @@ from authentification.models import Session, Player, Game, Domino, Round, HandPl
 
 
 def notify_session(session_id, action, data=None):
+    print(f"notify_session : session_{session_id}, {action}, {data}")
     channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
     async_to_sync(channel_layer.group_send)(
         f"session_{session_id}",  # Nom du groupe WebSocket

@@ -5,7 +5,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 from authentification.models import Statut, Infosession, Session, Round, Player
-from game.views import notify_player_for_his_turn
+from game.views import notify_player_for_his_turn, new_round
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -55,7 +55,23 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     # TRAITEMENT DES MESSAGES RECUS
     async def receive(self, text_data):
-        data = json.loads(text_data)
+        try:
+            data = json.loads(text_data)
+        except ValueError:
+            await self.send(text_data=json.dumps({"message": "Invalid JSON"}))
+            return
+
+        if not data["action"]:
+            return
+
+        if "mix_the_dominoes" in data["action"]:
+            group_name = f"player_{self.scope["player"].id}"
+            await self.channel_layer.group_send(
+                group_name,
+                {
+                    "type": "prepare_new_round"
+                }
+            )
 
         if "player_statut" in data["action"]:
             group_name = f"player_{self.scope["player"].id}"
@@ -138,7 +154,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
                 wins=wins,
                 pigs=pigs
             )
-
         await self.send(text_data=json.dumps(message))
 
     # Envoi de messages
@@ -164,7 +179,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
         player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
         player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        data_return = dict(action="game.someone_pass", data=dict(pseudo=player.pseudo, player_turn=next_player.pseudo, player_time_end=player_time_end))
+        data_return = dict(action="game.someone_pass", data=dict(pseudo=player.pseudo, player_turn=next_player.pseudo,
+                                                                 player_time_end=player_time_end))
 
         group_name = f"session_{self.scope['session'].id}"
         await self.channel_layer.group_send(
@@ -175,11 +191,34 @@ class SessionConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        notify_player_for_his_turn(round, session, player_time_end=player_time_end)
+        await self.notify_player_for_his_turn_async(player_time_end, round, session)
 
-
+    # Un joueur remue les dominos pour lancer un nouveau round
+    async def prepare_new_round(self, event):
+        player = self.scope.get("player")
+        session = self.scope.get("session")
+        # Envoie a tout le monde que quelqu'un remue
+        group_name = f"session_{session.id}"
+        data_session = dict(action="game.someone_mix_the_dominoes", data=dict(pseudo=player.pseudo))
+        await self.channel_layer.group_send(
+            group_name,
+            {
+                "type": "send_session_updates",
+                "data": data_session
+            }
+        )
+        await self.launch_new_round(session)
 
     # ------------ DATABASES METHODES ------------ #
+
+    @database_sync_to_async
+    def launch_new_round(self, session):
+        new_round(session)
+
+    @database_sync_to_async
+    def notify_player_for_his_turn_async(self, player_time_end, round, session):
+        notify_player_for_his_turn(round, session, player_time_end=player_time_end)
+
     @database_sync_to_async
     def get_session(self, session_id):
         return Session.objects.filter(id=session_id).first()
@@ -193,14 +232,14 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
         # Met à jour qui doit jouer mtn
         order = json.loads(session.order)
-        index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(round.player_turn.id) + 1
+        index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(
+            round.player_turn.id) + 1
 
         next_player = Player.objects.filter(id=order[index_next_player]).first()
 
         round.player_turn = next_player
         round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
         return [next_player, round]
-
 
     @database_sync_to_async
     def get_statut(self, statut_id):
@@ -211,22 +250,3 @@ class SessionConsumer(AsyncWebsocketConsumer):
         info_player = Infosession.objects.filter(session=session, player=player).first()
         info_player.statut = statut
         info_player.save()
-
-        # group_name = f"session_{self.session_id}"
-        #
-        # player = self.scope["player"]
-        #
-        # await self.channel_layer.group_send(
-        #     group_name,
-        #     {
-        #         "type": "chat_message",
-        #         "message": f"{player.pseudo} : {data["message"]}"
-        #     }
-        # )
-        # {
-        #     "type": "session.player_statut",
-        #     "data": {
-        #         "player": string,
-        #         "statut": string
-        #     }
-        # }

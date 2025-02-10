@@ -4,8 +4,8 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-from authentification.models import Statut, Infosession, Session, Round, Player
-from game.views import notify_player_for_his_turn, new_round
+from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino
+from game.views import notify_player_for_his_turn, new_round, notify_websocket
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -225,10 +225,61 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_next_player(self, round_id, session):
+
         round = Round.objects.filter(id=round_id).first()
         if round.game != session.game_id or round.statut.id != 11:
             self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
             return False
+
+
+        hand_player = list(HandPlayer.objects.filter(session=session, round=round).all())
+        partie_blocked = True
+
+        # Vérifier si quelqu'un n'est pas boudé
+        for hand in hand_player:
+            if not hand.blocked:
+                partie_blocked = False
+                break
+
+        # si tout le monde est boudé
+        if partie_blocked:
+            # Finir le round
+            winner = dict(score=999, player=Player())
+            player_id_list = json.loads(session.order)
+
+            data_players = []
+
+            for player_id in player_id_list:
+                hand_player = HandPlayer.objects.filter(player_id=player_id, session=session, round=round).first()
+                dominoes = json.loads(hand_player.dominoes)
+                sum_of_dominoes = 0
+                for domino_id in dominoes:
+                    domino = Domino.objects.get(id=domino_id)
+                    sum_of_dominoes += domino.left + domino.right
+
+                if sum_of_dominoes < winner.get("score"):
+                    winner = dict(score=sum_of_dominoes, player=hand_player.player)
+
+                data_players.append(dict(pseudo=hand_player.player.pseudo, dominoes=hand_player.dominoes, points_remaining=sum_of_dominoes))
+
+            info_player = Infosession.objects.filter(player=winner["player"], session=session).first()
+            info_player.round_win += 1
+            info_player.save()
+            type_finish = "game" if info_player.round_win == 3 else "round"
+            win_streak = True if session.game_id.last_winner == winner["player"] else False
+
+            data_finish = dict(action="game.blocked",
+                               data=dict(
+                                   list_players=data_players,
+                                   winner_pseudo=winner["player"].pseudo,
+                                   points_remaining=winner["score"],
+                                   type_finish=type_finish,
+                                   win_streak=win_streak))
+            notify_websocket("session", session.id, data_finish)
+            return False
+        else:
+            hand_player.blocked = True
+            hand_player.save()
 
         # Met à jour qui doit jouer mtn
         order = json.loads(session.order)

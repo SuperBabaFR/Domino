@@ -129,7 +129,7 @@ class CreateSessionView(APIView):
         session = Session.objects.create(
             code=session_code,
             hote=player_hote,
-            statut=Statut.objects.get(id=3),
+            statut_id=3,
             order=order_str,
             max_players_count=max_players_count,
             reflexion_time=reflexion_time,
@@ -139,7 +139,7 @@ class CreateSessionView(APIView):
         infosess = Infosession.objects.create(
             session=session,
             player=player_hote,
-            statut=Statut.objects.get(id=6)
+            statut_id=6
         )
 
         return Response({
@@ -194,7 +194,7 @@ class JoinSessionView(APIView):
             order.append(player.id)
             # Met le statut de la session à full si elle est pleine
             if len(order) == session.max_players_count:
-                session.statut = Statut.objects.get(id=4)
+                session.statut_id = 4
             session.order = json.dumps(order)
             session.save()
 
@@ -203,7 +203,7 @@ class JoinSessionView(APIView):
         # Récupère les infos du joueur
         if not info_player:
             # sinon on les crée
-            info_player = Infosession.objects.create(session=session, player=player, statut=Statut.objects.get(id=6))
+            info_player = Infosession.objects.create(session=session, player=player, statut_id=6)
 
         # Charge les infos des joueurs présenta dans la session
         players_info = []
@@ -283,13 +283,13 @@ class LeaveSessionView(APIView):
 
             # Met le statut de la session à open si elle libère une place
             if session.statut.name == "session.is_full":
-                session.statut = Statut.objects.get(id=3)
+                session.statut_id = 3
 
             session.order = json.dumps(order)
             session.save()
         else:
-            player_info = Infosession.objects.filter(session=session, player=player).first()
-            player_info.statut = Statut.objects.get(id=10)
+            Infosession.objects.filter(session=session, player=player).update(statut_id=10)
+
 
         # Notifie les joueurs connectés à la session du joueur qui a quitté
         data_notify = dict(

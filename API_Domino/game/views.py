@@ -133,7 +133,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
 
 def new_round(session, first=False):
     # Crée un round
-    round = Round.objects.create(game=session.game_id, session=session, table="[]", statut=Statut.objects.get(id=11))
+    round = Round.objects.create(game=session.game_id, session=session, table="[]", statut_id=11)
 
     # Distribue 7 dominos pour chaque joueurs de la session
     domino_list = list(Domino.objects.all())  # Liste des dominos
@@ -252,7 +252,7 @@ class CreateGame(APIView):
 
         # Si un joueur n'est pas prêt on crée pas de partie
         for player_id in player_id_list:
-            info_player = Infosession.objects.select_related('player').get(session=session, player_id=player_id)
+            info_player = Infosession.objects.get(session=session, player_id=player_id)
 
             if info_player.statut.id != 7: # player.is_ready
                 return Response(dict(code=400, message="Tout les joueurs ne sont pas prêts", data=None),
@@ -262,9 +262,9 @@ class CreateGame(APIView):
             info_player.save()
 
         # Crée une partie
-        game = Game.objects.create(session_id=session, statut=Statut.objects.get(id=1))
+        game = Game.objects.create(session_id=session, statut_id=1)
         session.game_id = game
-        session.statut = Statut.objects.get(id=5)
+        session.statut_id = 5
         session.save()
 
         data_return["data"] = new_round(session, True)
@@ -439,7 +439,7 @@ class PlaceDomino(APIView):
             have_winstreak = True if session.game_id.last_winner == player else False
             # Met a jour le dernier gagnant
             session.game_id.last_winner = player
-            session.game_id.statut = Statut.objects.get(id=2) # Met a jour le statut de la partie
+            session.game_id.statut_id = 2 # Met a jour le statut de la partie
 
             # Notifie la session qu'un domino a été joué
             data_session = dict(action="game.someone_win",
@@ -459,7 +459,7 @@ class PlaceDomino(APIView):
 
 
             # Met a jour le statut du round
-            round.statut = Statut.objects.get(id=12)
+            round.statut_id = 12
             round.save()
             session.game_id.save()
             info_player.save()

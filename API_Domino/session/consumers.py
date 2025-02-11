@@ -5,7 +5,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino
-from game.views import notify_player_for_his_turn, new_round, notify_websocket
+from game.views import notify_player_for_his_turn, new_round, notify_websocket, get_full_domino_player
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -232,22 +232,27 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return False
 
 
-        hand_player = list(HandPlayer.objects.filter(session=session, round=round).all())
+        hand_players = list(HandPlayer.objects.filter(session=session, round=round).all())
         partie_blocked = True
+        hand_player = HandPlayer()
 
         # Vérifier si quelqu'un n'est pas boudé
-        for hand in hand_player:
-            if not hand.blocked:
+        for hand in hand_players:
+            if not hand.blocked and hand.player != self.scope["player"]:
                 partie_blocked = False
-                break
+            if hand.player == self.scope["player"]:
+                hand_player = hand
 
         # si tout le monde est boudé
         if partie_blocked:
+            player = self.scope["player"]
             # Finir le round
             winner = dict(score=999, player=Player())
             player_id_list = json.loads(session.order)
 
             data_players = []
+
+            list_dominoes = list(Domino.objects.all())
 
             for player_id in player_id_list:
                 hand_player = HandPlayer.objects.filter(player_id=player_id, session=session, round=round).first()
@@ -260,11 +265,10 @@ class SessionConsumer(AsyncWebsocketConsumer):
                 if sum_of_dominoes < winner.get("score"):
                     winner = dict(score=sum_of_dominoes, player=hand_player.player)
 
-                data_players.append(dict(pseudo=hand_player.player.pseudo, dominoes=hand_player.dominoes, points_remaining=sum_of_dominoes))
+                data_players.append(dict(pseudo=hand_player.player.pseudo, dominoes=get_full_domino_player(hand_player.dominoes,list_dominoes), points_remaining=sum_of_dominoes))
 
             info_player = Infosession.objects.filter(player=winner["player"], session=session).first()
             info_player.round_win += 1
-            info_player.save()
             type_finish = "game" if info_player.round_win == 3 else "round"
             win_streak = True if session.game_id.last_winner == winner["player"] else False
 
@@ -276,6 +280,41 @@ class SessionConsumer(AsyncWebsocketConsumer):
                                    type_finish=type_finish,
                                    win_streak=win_streak))
             notify_websocket("session", session.id, data_finish)
+
+            # Met a jour le dernier gagnant
+            session.game_id.last_winner = self.scope["player"]
+
+            if type_finish == "game":
+                session.game_id.statut_id = 2  # Met a jour le statut de la partie
+
+                info_players = list(Infosession.objects.filter(session=session).all())
+                info_players.remove(info_player)
+
+                info_player.games_win += 1
+                player.wins += 1
+
+                pigs = []
+
+                for info in info_players:
+                    if info.round_win > 0:
+                        continue
+                    # COCHON pour ceux qui ont pas de points
+                    pigs.append(info.player.pseudo)
+                    info.pig_count += 1
+                    info.player.pigs += 1
+                    info.save()
+                    info.player.save()
+                data_end_game = dict(action="session.end_game",
+                                     data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
+                notify_websocket("session", session.id, data_end_game)
+
+            # Met a jour le statut du round
+            round.statut_id = 12
+            round.save()
+            session.game_id.save()
+            info_player.save()
+            player.save()
+
             return False
         else:
             hand_player.blocked = True

@@ -315,6 +315,11 @@ class PlaceDomino(APIView):
             return Response(dict(code=400, message="Ce n'est pas ton tour", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
+        #  Vérifier que c’est bien le round en cours
+        if round.statut.name == "round.is_terminated":
+            return Response(dict(code=400, message="Ce round est déjà fini", data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
         # Dominos du joueurs
         hand_player = HandPlayer.objects.filter(player=player, round=round, session=session).first()
 
@@ -435,11 +440,12 @@ class PlaceDomino(APIView):
                 data_end_game = dict(action="session.end_game",
                                      data=dict(results=dict(winner=player.pseudo, pigs=pigs)))
 
+                # Met a jour le dernier gagnant
+                session.game_id.last_winner = player
+                session.game_id.statut_id = 2  # Met a jour le statut de la partie
+
             # regarde si il a gagné déjà auparavent
             have_winstreak = True if session.game_id.last_winner == player else False
-            # Met a jour le dernier gagnant
-            session.game_id.last_winner = player
-            session.game_id.statut_id = 2 # Met a jour le statut de la partie
 
             # Notifie la session qu'un domino a été joué
             data_session = dict(action="game.someone_win",

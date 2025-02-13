@@ -94,17 +94,30 @@ class tokenRefreshView(APIView):
         refresh_token = request.data["refresh_token"]
 
         if not refresh_token:
-            return Response({'msg': 'POTO ENVOIE MOI LE TRUC'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    'code': 400,
+                    'message': "Le token n'à pas été envoyé",
+                    'data': None
+                }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             payload = verify_token(refresh_token, token_type="refresh")
             id_player = payload.get("id_player")
 
             tokens = generate_tokens(id_player)
-            return Response({'msg': 'ok', 'data': tokens["access_token"]}, status=status.HTTP_200_OK)
+            return Response({
+                'code': 200,
+                'message': 'Le token à bien été actualisé',
+                'data': tokens["access_token"]
+            }, status=status.HTTP_200_OK)
 
         except ValueError as e:
-            return Response({'msg': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({
+                'code': 401,
+                'message': 'Erreur : '+str(e),
+                'data': None
+            }, status=status.HTTP_401_UNAUTHORIZED)
 
 # LOGIN et INSCRIPTION
 def is_base64_image(image_data):

@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Domino_2D"
 run/main_scene="res://principal.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/bg_color=Color(0.301961, 0.431373, 0.576471, 1)
 config/icon="res://icon.svg"
 

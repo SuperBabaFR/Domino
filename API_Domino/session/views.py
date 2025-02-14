@@ -1,23 +1,29 @@
 import json
-
-import jwt
-from django.shortcuts import render
-
-# Create your views here.
 import random
 import string
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from authentification.views import IsAuthenticatedWithJWT, verify_token
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
-from django.contrib.auth.models import AnonymousUser
-from channels.middleware import BaseMiddleware
-from channels.db import database_sync_to_async
-from urllib.parse import parse_qs
 
 
-def verify_entry(data):
+def notify_session(session_id, action, data=None):
+    print(f"notify_session : session_{session_id}, {action}, {data}")
+    channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
+    async_to_sync(channel_layer.group_send)(
+        f"session_{session_id}",  # Nom du groupe WebSocket
+        {
+            "type": "session_players_activity",
+            "action": action,
+            "data": data
+        }
+    )
+
+
+def verify_player(data):
     # - Validation des entrées :
     player_id = data.get("player_id")
     if not player_id:
@@ -28,6 +34,23 @@ def verify_entry(data):
         return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
 
 
+def verify_player_session(player_id, session_id):
+    # - Validation des entrées :
+    if not player_id:
+        return Response(dict(code=400, message="player_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
+    player = Player.objects.filter(id=player_id).first()
+
+    if not player:
+        return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
+
+    if not session_id:
+        return Response(dict(code=400, message="session_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
+    session = Session.objects.filter(id=session_id).first()
+
+    if not session:
+        return Response(dict(code=404, message="session inexistante", data=None), status=status.HTTP_404_NOT_FOUND)
+
+
 def generate_session_code(length=8):
     while True:
         session_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
@@ -35,9 +58,20 @@ def generate_session_code(length=8):
             return session_code
 
 
-
-
-
+def nuke_session(session):
+    infosession = Infosession.objects.filter(session=session)
+    game = Game.objects.filter(session=session)
+    round = Round.objects.filter(session=session)
+    handplayer = HandPlayer.objects.filter(session=session)
+    if handplayer:
+        handplayer.delete()
+    if infosession:
+        infosession.delete()
+    if game:
+        game.delete()
+    if round:
+        round.delete()
+    session.delete()
 
 class CreateSessionView(APIView):
     permission_classes = []
@@ -47,7 +81,7 @@ class CreateSessionView(APIView):
         data_request = request.data
 
         # Vérifie les entrées communes
-        response = verify_entry(data_request)
+        response = verify_player(data_request)
         if response:
             return response
 
@@ -81,39 +115,21 @@ class CreateSessionView(APIView):
             return Response(dict(code=400, message="definitive_leave manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-
-        # Supprime la session existante si il essaye de creer une nouvelle 
+        # Supprime la session existante s'il essaye de creer une nouvelle
         if Session.objects.filter(hote_id=player_hote).exists():
-            session_exist = Session.objects.filter(hote_id=player_hote)
-            session_id = session_exist.first().id
-            infosession =  Infosession.objects.filter(session_id=session_id)
-            game = Game.objects.filter(session_id=session_id)
-            round = Round.objects.filter(session_id=session_id)
-            handplayer = HandPlayer.objects.filter(session_id=session_id)
-            if handplayer:
-                handplayer.delete()
-            if infosession:
-                infosession.delete()
-            if game:
-                game.delete()
-            if round:
-                round.delete()
-            session_exist.delete()
-
-
-
+            old_session = Session.objects.filter(hote_id=player_hote).first()
+            nuke_session(old_session)
 
         # Génère un code de session
         session_code = generate_session_code()
         # Stocke l'hôte dans la liste des joueurs
         order_str = json.dumps([player_hote.id])
 
-
         # Crée la session
         session = Session.objects.create(
             code=session_code,
             hote=player_hote,
-            statut=Statut.objects.get(id=3),
+            statut_id=3,
             order=order_str,
             max_players_count=max_players_count,
             reflexion_time=reflexion_time,
@@ -123,7 +139,7 @@ class CreateSessionView(APIView):
         infosess = Infosession.objects.create(
             session=session,
             player=player_hote,
-            statut=Statut.objects.get(id=6)
+            statut_id=6
         )
 
         return Response({
@@ -132,7 +148,7 @@ class CreateSessionView(APIView):
             "data": {
                 "session_id": session.id,
                 "code": session.code,
-                "hote": player_hote.id,
+                "hote": player_hote.pseudo,
                 "max_players_count": session.max_players_count,
                 "reflexion_time": session.reflexion_time,
                 "definitive_leave": session.definitive_leave
@@ -148,7 +164,7 @@ class JoinSessionView(APIView):
         data_request = request.data
 
         # Vérifie les entrées communes
-        response = verify_entry(data_request)
+        response = verify_player(data_request)
         if response:
             return response
 
@@ -176,13 +192,18 @@ class JoinSessionView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             # On l'ajoute
             order.append(player.id)
+            # Met le statut de la session à full si elle est pleine
+            if len(order) == session.max_players_count:
+                session.statut_id = 4
             session.order = json.dumps(order)
             session.save()
 
+        info_player = Infosession.objects.filter(session=session, player=player).first()
+
         # Récupère les infos du joueur
-        if not Infosession.objects.filter(session=session, player=player).exists():
+        if not info_player:
             # sinon on les crée
-            Infosession.objects.create(session=session, player=player, statut=Statut.objects.get(id=6))
+            info_player = Infosession.objects.create(session=session, player=player, statut_id=6)
 
         # Charge les infos des joueurs présenta dans la session
         players_info = []
@@ -197,6 +218,16 @@ class JoinSessionView(APIView):
                 "ping_count": info_player_x.pig_count
             }
             players_info.append(player_data)
+
+        # Notifie les joueurs connectés à la session du nouveau joueur
+        data_notify = dict(
+            player=player.pseudo,
+            image=player.image,
+            wins=info_player.games_win,
+            pigs=info_player.pig_count
+        )
+
+        notify_session(session.id, "join", data_notify)
 
         return Response({
             "code": 201,
@@ -216,39 +247,59 @@ class JoinSessionView(APIView):
 class LeaveSessionView(APIView):
 
     def get(self, request):
-        data_request = request.data
-        response = verify_entry(data_request)
+        player_id = request.query_params.get('player_id', None)
+        session_id = request.query_params.get('session_id', None)
+
+        response = verify_player_session(player_id, session_id)
         if response:
             return response
 
-
-        session_id = data_request.get('session_id')
-        player = Player.objects.filter(id=data_request.get('player_id')).first()
-
-        if not session_id:
-            return Response(dict(code=400, message="session_id manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-
+        player = Player.objects.filter(id=player_id).first()
         session = Session.objects.filter(id=session_id).first()
-        if not session:
-            return Response({"code": 404, "message": "Session introuvable"}, status=status.HTTP_404_NOT_FOUND)
 
-        order = json.loads(session.order)
-        # if player.id in order:
-        #     return
+        if session.hote == player:
+            # Notifie les joueurs connectés à la session qu'elle a été supprimée
+            notify_session(session.id, "exit")
 
-        # Vérifie si le joueur à déjà été dans la session
-        if player.id not in order:
-            return Response({"code": 400, "message": "Le joueur n'appartiens pas à la partie."},
-                            status=status.HTTP_400_BAD_REQUEST)
+            # Supprime la session
+            nuke_session(session)
 
-        order.remove(player.id)
-        session.order = json.dumps(order)
-        session.save()
+            return Response({
+                "code": 200,
+                "message": "Session supprimée",
+                "data": None
+            }, status=status.HTTP_200_OK)
 
-        # Récupère les infos du joueur
-        infosession_player = Infosession.objects.filter(session=session, player=player).first()
-        if infosession_player:
-            Infosession.objects.filter(session=session, player=player).delete()
+        if not session.game_id:
 
-    #TODO PREVOIR LA CAS DE L'HOTE
+            order = json.loads(session.order)
+
+            # Vérifie si le joueur à déjà été dans la session
+            if player.id not in order:
+                return Response({"code": 400, "message": "Le joueur n'appartiens pas à la partie."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            order.remove(player.id)
+
+            # Met le statut de la session à open si elle libère une place
+            if session.statut.name == "session.is_full":
+                session.statut_id = 3
+
+            session.order = json.dumps(order)
+            session.save()
+        else:
+            Infosession.objects.filter(session=session, player=player).update(statut_id=10)
+
+
+        # Notifie les joueurs connectés à la session du joueur qui a quitté
+        data_notify = dict(
+            player=player.pseudo
+        )
+
+        notify_session(session.id, "leave", data_notify)
+
+        return Response({
+            "code": 200,
+            "message": "Session quittée",
+            "data": None
+        }, status=status.HTTP_200_OK)

@@ -58,6 +58,12 @@ CHANNEL_LAYERS = {
     },
 }
 
+# Configuration Celery avec Redis
+CELERY_BROKER_URL = os.getenv('REDIS_URL') + '/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',

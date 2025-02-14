@@ -81,6 +81,7 @@ class HandPlayer(models.Model):
     session = models.ForeignKey(Session, models.CASCADE)
     player = models.ForeignKey(Player, models.CASCADE, db_column="player_id")
     dominoes = models.TextField()
+    blocked = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'HandPlayer'

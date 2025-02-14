@@ -3,5 +3,5 @@ from session.consumers import SessionConsumer
 
 
 websocket_urlpatterns = [
-    path('ws/session/<int:session_id>/', SessionConsumer.as_asgi()),
+    path('ws/session/', SessionConsumer.as_asgi()),
 ]

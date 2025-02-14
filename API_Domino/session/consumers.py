@@ -5,7 +5,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino
-from game.views import notify_player_for_his_turn, new_round, notify_websocket, get_full_domino_player
+from game.views import notify_player_for_his_turn, new_round, notify_websocket, get_full_domino_player, \
+    update_player_turn
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -169,15 +170,9 @@ class SessionConsumer(AsyncWebsocketConsumer):
         round_id = event["round_id"]
         session = self.scope.get("session")
 
-        data = await self.update_next_player(round_id, session)
-        if not data:
+        next_player, round, player_time_end = await self.update_next_player(round_id, session)
+        if not next_player or not round or not player_time_end:
             return
-        next_player = data[0]
-        round = data[1]
-
-        reflexion_time_param = session.reflexion_time
-        player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
-        player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
         data_return = dict(action="game.someone_pass", data=dict(pseudo=player.pseudo, player_turn=next_player.pseudo,
                                                                  player_time_end=player_time_end))
@@ -192,6 +187,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         )
 
         await self.notify_player_for_his_turn_async(player_time_end, round, session)
+
 
     # Un joueur remue les dominos pour lancer un nouveau round
     async def prepare_new_round(self, event):
@@ -320,16 +316,9 @@ class SessionConsumer(AsyncWebsocketConsumer):
             hand_player.blocked = True
             hand_player.save()
 
-        # Met à jour qui doit jouer mtn
-        order = json.loads(session.order)
-        index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(
-            round.player_turn.id) + 1
+        player_time_end, next_player = update_player_turn(round, session)
 
-        next_player = Player.objects.filter(id=order[index_next_player]).first()
-
-        round.player_turn = next_player
-        round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
-        return [next_player, round]
+        return [next_player, round, player_time_end]
 
     @database_sync_to_async
     def get_statut(self, statut_id):

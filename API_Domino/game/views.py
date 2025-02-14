@@ -9,6 +9,7 @@ from rest_framework.utils import json
 from rest_framework.views import APIView
 
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Statut, Infosession
+from tasks import player_pass, auto_play_player
 
 
 # Create your views here.
@@ -93,11 +94,6 @@ def domino_playable(domino, table_de_jeu, side, domino_list=None):
 
 
 def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
-    #
-    # if not player_time_end:
-    #     reflexion_time_param = session.reflexion_time
-    #     player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
-    #     player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     table_de_jeu = json.loads(round.table)
 
@@ -115,12 +111,16 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                                                                        "right", domino_list):
             continue
         playable_dominoes.append(dict(id=domino_id, left=domino_x.left, right=domino_x.right))
+
+    dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=UTC)
     # Notifie la personne qui doit jouer
     if len(playable_dominoes) == 0:
         data_next_player = dict(action="game.your_turn_no_match",
                                 data=dict(player_time_end=player_time_end)
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
+
+        player_pass.apply_async((round.player_turn.id, round.id), countdown=session.reflexion_time/4)
     else:
         data_next_player = dict(action="game.your_turn",
                                 data=dict(
@@ -129,6 +129,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                 )
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
+        auto_play_player.apply_async((round.player_turn.id, round.id), eta=dt_utc)
 
 
 def new_round(session, first=False):
@@ -205,6 +206,24 @@ def new_round(session, first=False):
         notify_websocket("player", session.hote.id, msg_hote)
 
     return data_hote
+
+def update_player_turn(round, session):
+    # Met à jour qui doit jouer mtn
+    order = json.loads(session.order)
+    index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(
+        round.player_turn.id) + 1
+    next_player = Player.objects.filter(id=order[index_next_player]).first()
+    round.player_turn = next_player
+    round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
+    # Son temps de reflexion
+    reflexion_time_param = session.reflexion_time
+    player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+    player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+    return player_time_end, next_player
+
+def r():
+    pass
+
 
 class CreateGame(APIView):
     permission_classes = []
@@ -374,20 +393,7 @@ class PlaceDomino(APIView):
         hand_player.save()
 
         if not is_Last_domino:
-            # Met à jour qui doit jouer mtn
-            order = json.loads(session.order)
-            index_next_player = 0 if order.index(round.player_turn.id) + 1 >= len(order) else order.index(
-                round.player_turn.id) + 1
-
-            next_player = Player.objects.filter(id=order[index_next_player]).first()
-
-            round.player_turn = next_player
-            round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
-
-            # Son temps de reflexion
-            reflexion_time_param = session.reflexion_time
-            player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
-            player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+            player_time_end, next_player = update_player_turn(round, session)
 
             # Notifie la session qu'un domino a été joué
             data_session = dict(action="game.someone_played",

@@ -34,7 +34,6 @@ class IsAuthenticatedWithJWT(BasePermission):
             raise InvalidAccessTokenException()
 
 
-
 # Create your views here.
 def generate_tokens(player_id):
     """Génère les tokens JWT."""
@@ -73,9 +72,10 @@ def verify_token(token, token_type="access"):
             raise jwt.InvalidTokenError("Type de token invalide")
         return payload
     except jwt.ExpiredSignatureError:
-        raise InvalidRefreshTokenException() # Token expiré
+        raise InvalidRefreshTokenException()  # Token expiré
     except jwt.InvalidTokenError:
-        raise InvalidAccessTokenException() # Token invalide
+        raise InvalidAccessTokenException()  # Token invalide
+
 
 class tokenRefreshView(APIView):
     """Refresh un token."""
@@ -119,6 +119,7 @@ class tokenRefreshView(APIView):
                 'data': None
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+
 # LOGIN et INSCRIPTION
 def is_base64_image(image_data):
     try:
@@ -158,7 +159,8 @@ class SignupView(APIView):
 
         # Vérifie si le pseudo n'existe pas
         if Player.objects.filter(pseudo=pseudo).exists():
-            return Response(dict(code=400, message='Pseudo déjà utilisé', data=None), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(code=400, message='Pseudo déjà utilisé', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Vérifie si le password est fourni
         if not password:
@@ -166,7 +168,8 @@ class SignupView(APIView):
 
         # Vérifie si le password est conforme
         if len(password) > 25 or len(password) < 8:
-            return Response(dict(code=400, message='Le Password doit être compris entre 8 et 25', data=None), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(code=400, message='Le Password doit être compris entre 8 et 25', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Vérifie la taille de l'image
         if (len(image_data) * 3) / 4 - image_data.count('=', -2) > max_image_file_size:
@@ -183,7 +186,6 @@ class SignupView(APIView):
 
         except (base64.binascii.Error, IOError):
             return Response(dict(code=400, message='Image incorrecte', data=None), status=status.HTTP_400_BAD_REQUEST)
-
 
         # Réduit la taille de l'image à 300x300
         image = Image.open(io.BytesIO(image_data_base64))
@@ -213,6 +215,7 @@ class SignupView(APIView):
 
 class LoginView(APIView):
     permission_classes = []
+
     def post(self, request):
         # Message retour de réussite
         data_return = dict(code=200, message="Connexion réussie", data=None)
@@ -253,6 +256,7 @@ class LoginView(APIView):
 
         return Response(data=data_return, status=status.HTTP_200_OK)
 
+
 # ERRORS
 class InvalidAccessTokenException(APIException):
     """Exception personnalisée pour les erreurs d'access token JWT."""
@@ -273,4 +277,3 @@ class NoTokenException(APIException):
     status_code = HTTPStatus.UNAUTHORIZED
     default_detail = {"code": 401, "message": "Token nécessaire"}
     default_code = "token_invalid"
-

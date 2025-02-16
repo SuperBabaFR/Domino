@@ -1,15 +1,42 @@
 import json
 import random
+from datetime import datetime, UTC
 
 from asgiref.sync import async_to_sync
 from celery import shared_task
 from channels.layers import get_channel_layer
-from rest_framework.response import Response
 
 from authentification.models import Player, HandPlayer, Infosession
-from game.views import get_all_playable_dominoes, update_player_turn, notify_websocket, notify_player_for_his_turn, \
-    get_full_domino_player, domino_playable
+from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket, \
+    get_full_domino_player
 
+
+def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
+    table_de_jeu = json.loads(round.table)
+
+    # Récupère les dominos jouables du prochain joueur
+    hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, session=session).first()
+    hand_player_turn = json.loads(hand_player_turn.dominoes)
+    playable_dominoes = get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu)
+
+    dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=UTC)
+    # Notifie la personne qui doit jouer
+    if len(playable_dominoes) == 0:
+        data_next_player = dict(action="game.your_turn_no_match",
+                                data=dict(player_time_end=player_time_end)
+                                )
+        notify_websocket("player", round.player_turn.id, data_next_player)
+
+        player_pass.apply_async((round.player_turn.id, round.id), eta=dt_utc)
+    else:
+        data_next_player = dict(action="game.your_turn",
+                                data=dict(
+                                    playable_dominoes=playable_dominoes,
+                                    player_time_end=player_time_end
+                                )
+                                )
+        notify_websocket("player", round.player_turn.id, data_next_player)
+        play_domino.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
 
 @shared_task
 def player_pass(player_id, round_id):
@@ -166,6 +193,9 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
 
         # données pour la requete http
         data_return["message"] = "Tu as gagne"
-        data_return["data"] = dict(domino=dict(id=domino.id, left=domino.left, right=domino.right), side=side,
+        data_return["data"] = dict(domino=dict(id=domino.id,
+                                               left=domino.left,
+                                               right=domino.right),
+                                   side=side,
                                    type_finish=type_finish)
     return data_return

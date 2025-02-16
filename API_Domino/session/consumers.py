@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta, UTC
 
 from channels.db import database_sync_to_async
@@ -5,8 +6,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino
-from game.views import notify_player_for_his_turn, new_round, notify_websocket, get_full_domino_player, \
+from game.methods import new_round, notify_websocket, get_full_domino_player, \
     update_player_turn
+from game.tasks import notify_player_for_his_turn
 
 
 class SessionConsumer(AsyncWebsocketConsumer):
@@ -203,6 +205,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
                 "data": data_session
             }
         )
+        await asyncio.sleep(3)
         await self.launch_new_round(session)
 
     # ------------ DATABASES METHODES ------------ #

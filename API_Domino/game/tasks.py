@@ -1,6 +1,6 @@
 import json
 import random
-from datetime import datetime, UTC, timedelta
+from datetime import datetime, timedelta, timezone
 
 from asgiref.sync import async_to_sync
 from celery import shared_task
@@ -20,7 +20,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
     hand_player_turn = json.loads(hand_player_turn.dominoes)
     playable_dominoes = get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu)
 
-    dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=UTC)
+    dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
 
     # Notifie la personne qui doit jouer
     if len(playable_dominoes) == 0:

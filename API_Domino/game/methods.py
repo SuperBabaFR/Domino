@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, UTC, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 
 from asgiref.sync import async_to_sync
@@ -154,7 +154,7 @@ def new_round(session, first=False):
 
     # Son temps de reflexion
     reflexion_time_param = session.reflexion_time
-    player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+    player_time_end = datetime.now(timezone.utc) + timedelta(seconds=reflexion_time_param)
     player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     # notifie tout les joueurs sauf hote via le websocket de la session
@@ -194,6 +194,6 @@ def update_player_turn(round, session):
     round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
     # Son temps de reflexion
     reflexion_time_param = session.reflexion_time
-    player_time_end = datetime.now(UTC) + timedelta(seconds=reflexion_time_param)
+    player_time_end = datetime.now(timezone.utc) + timedelta(seconds=reflexion_time_param)
     player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
     return player_time_end, next_player

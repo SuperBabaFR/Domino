@@ -1,5 +1,5 @@
+from datetime import datetime, timezone
 from http import HTTPStatus
-import datetime
 import base64
 from PIL import Image, ImageOps
 import jwt
@@ -37,7 +37,7 @@ class IsAuthenticatedWithJWT(BasePermission):
 # Create your views here.
 def generate_tokens(player_id):
     """Génère les tokens JWT."""
-    now = datetime.datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     # Access Token
     access_payload = {

@@ -230,7 +230,7 @@ class JoinSessionView(APIView):
         notify_session(session.id, "join", data_notify)
 
         return Response({
-            "code": 201,
+            "code": 200,
             "message": "Session disponible",
             "data": {
                 "session_id": session.id,
@@ -241,7 +241,7 @@ class JoinSessionView(APIView):
                 "definitive_leave": session.definitive_leave,
                 "players": players_info
             }
-        }, status=status.HTTP_201_CREATED)
+        }, status=status.HTTP_200_OK)
 
 
 class LeaveSessionView(APIView):

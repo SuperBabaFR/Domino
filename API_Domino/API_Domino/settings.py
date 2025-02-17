@@ -24,6 +24,7 @@ REFRESH_TOKEN_LIFETIME = timedelta(days=1)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
+PROD = False
 
 
 ALLOWED_HOSTS = []
@@ -64,6 +65,14 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 # Celery doit aussi être en UTC
 CELERY_TIMEZONE = "UTC"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+if not PROD:
+    CELERY_REDIS_BACKEND_USE_SSL = {"ssl_cert_reqs": None}
+    CELERY_BROKER_USE_SSL = None  # Désactiver SSL si ton serveur Redis n'est pas configuré correctement
+    # CELERY_BROKER_USE_SSL = {
+    #     "ssl_cert_reqs": "CERT_NONE"  # Mettre "CERT_REQUIRED" si tu as un certificat CA
+    # }
 
 
 MIDDLEWARE = [

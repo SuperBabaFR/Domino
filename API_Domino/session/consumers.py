@@ -230,9 +230,11 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
         round = Round.objects.filter(id=round_id).first()
         if not round:
+            print("Round not found")
             return False
 
         if round.game != session.game_id or round.statut.id != 11:
+            print("Round terminé ou round plus de la game")
             return False
 
 

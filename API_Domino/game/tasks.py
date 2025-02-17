@@ -41,11 +41,15 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
         # Ajouter la tâche avec un ETA
-        player_pass.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
+        play_domino.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
 
 
 @shared_task
 def player_pass(player_id, round_id):
+
+    print(f'Player {player_id} is now playing.')
+    print(f'Round {round_id}')
+
     still_his_turn = Round.objects.get(id=round_id).player_turn.id == player_id
     if not still_his_turn:
         return

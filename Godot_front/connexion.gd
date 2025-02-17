@@ -12,7 +12,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _on_connexion_reussie():
 	if $Pseudo.text != "" and $Mdp.text != "":  
-		var body = JSON.new().stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
+		var body = JSON.stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
+		#print(body)
 		var headers = ["Content-Type: application/json"]
 		$LoginRequest.request("http://localhost:8000/login", headers, HTTPClient.METHOD_POST, body)
 		
@@ -20,7 +21,12 @@ func _on_traiter_resultat(result, response_code, headers, body):
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
+	print("dsqddqdqdqdq")
 	print(response)
+	if (response_code == 200):
+		get_tree().change_scene_to_file("res://home_menu.tscn")
+		
+		
 	
 	
 	

@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'channels',
     'session',
     'daphne',
-    'game'
+    'game',
 ]
 
 REST_FRAMEWORK = {
@@ -62,6 +62,8 @@ CHANNEL_LAYERS = {
 CELERY_BROKER_URL = os.getenv('REDIS_URL') + '/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+# Celery doit aussi être en UTC
+CELERY_TIMEZONE = "UTC"
 
 
 MIDDLEWARE = [

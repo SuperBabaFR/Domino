@@ -172,9 +172,12 @@ class SessionConsumer(AsyncWebsocketConsumer):
         round_id = event["round_id"]
         session = self.scope.get("session")
 
-        next_player, round, player_time_end = await self.update_next_player(round_id, session)
-        if not next_player or not round or not player_time_end:
+        response = await self.update_next_player(round_id, session)
+        if not response:
+            await self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
             return
+
+        next_player, round, player_time_end = response
 
         data_return = dict(action="game.someone_pass", data=dict(pseudo=player.pseudo, player_turn=next_player.pseudo,
                                                                  player_time_end=player_time_end))
@@ -226,8 +229,10 @@ class SessionConsumer(AsyncWebsocketConsumer):
     def update_next_player(self, round_id, session):
 
         round = Round.objects.filter(id=round_id).first()
+        if not round:
+            return False
+
         if round.game != session.game_id or round.statut.id != 11:
-            self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
             return False
 
 

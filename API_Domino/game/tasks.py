@@ -1,16 +1,17 @@
 import json
 import random
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timedelta
 
 from asgiref.sync import async_to_sync
 from celery import shared_task
 from channels.layers import get_channel_layer
 
-from authentification.models import Player, HandPlayer, Infosession
+from authentification.models import Player, HandPlayer, Infosession, Round
 from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket, \
     get_full_domino_player
 
 
+@shared_task
 def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
     table_de_jeu = json.loads(round.table)
 
@@ -20,6 +21,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
     playable_dominoes = get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu)
 
     dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=UTC)
+
     # Notifie la personne qui doit jouer
     if len(playable_dominoes) == 0:
         data_next_player = dict(action="game.your_turn_no_match",
@@ -27,6 +29,8 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
 
+        # Récupérer la file d'attente
+        # Ajouter la tâche avec un ETA
         player_pass.apply_async((round.player_turn.id, round.id), eta=dt_utc)
     else:
         data_next_player = dict(action="game.your_turn",
@@ -36,10 +40,16 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                 )
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
-        play_domino.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
+        # Ajouter la tâche avec un ETA
+        player_pass.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
+
 
 @shared_task
 def player_pass(player_id, round_id):
+    still_his_turn = Round.objects.get(id=round_id).player_turn.id == player_id
+    if not still_his_turn:
+        return
+
     data = dict(round_id=round_id)
     group_name = f"player_{player_id}"
     print(f"player_pass : {group_name}, {data}")
@@ -53,8 +63,12 @@ def player_pass(player_id, round_id):
     )
 
 
-@shared_task
 def play_domino(player, session, round, domino_list, side=None, playable_values=None, domino=None):
+    round = Round.objects.get(id=round.id)
+
+    if not round.player_turn.id == player:
+        return
+
     data_return = dict(code=200, message="Domino joué", data=None)
     # Dominos du joueurs
     hand_player = HandPlayer.objects.filter(player=player, round=round, session=session).first()
@@ -79,7 +93,6 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
 
     if not playable_values:
         playable_values = is_playable
-
 
     is_last_domino = True if len(player_dominoes) == 1 else False
 

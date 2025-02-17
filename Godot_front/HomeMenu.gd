@@ -12,8 +12,8 @@ func _ready():
 	else:
 		print("Erreur lors du chargement de l'image")
 	$CreateBtn.connect("pressed", _on_start_pressed)
-	$JoinBtn.connect("pressed", _on_join_pressed())
-	$DisconnectBtn.connect("pressed", _on_disconnect_pressed())
+	$JoinBtn.connect("pressed", _on_join_pressed)
+	$DisconnectBtn.connect("pressed", _on_disconnect_pressed)
 func _on_start_pressed():
 	get_tree().change_scene_to_file("res://scenes/GameScene.tscn")
 

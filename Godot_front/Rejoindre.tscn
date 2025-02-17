@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://w2v4ampeupyp"]
+
+[ext_resource type="Script" path="res://rejoindre.gd" id="1_cx6d4"]
+
+[node name="Rejoindre" type="Control"]
+layout_mode = 3
+anchor_left = 0.013
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.64
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_cx6d4")
+
+[node name="LabelCodeSession" type="Label" parent="."]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 100.0
+offset_right = 183.0
+offset_bottom = 123.0
+text = "Entrez le code Session"
+
+[node name="CodeSession" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 325.0
+offset_top = 97.0
+offset_right = 455.0
+offset_bottom = 128.0
+
+[node name="Valider" type="Button" parent="."]
+layout_mode = 0
+offset_left = 486.0
+offset_top = 96.0
+offset_right = 549.0
+offset_bottom = 127.0
+text = "Valider"
+
+[node name="JoinRequest" type="HTTPRequest" parent="."]

@@ -14,7 +14,14 @@ class SessionConsumer(AsyncWebsocketConsumer):
     # Connexion au WEBSOCKET
     async def connect(self):
         # Crée le nom du groupe
-        self.group_name = f"session_{self.scope['session'].id}"
+        session = self.scope['session']
+        self.group_name = f"session_{session.id}"
+
+        # Met a jour le statut du joueur
+        if session.game_id is None: # Si y'a aucune game en cours
+            await self.update_statut_player(6) # on met a active
+        else:
+            await self.update_statut_player(8) # on met a active
 
         # Group name individuel
         self.individual_group_name = f"player_{self.scope["player"].id}"
@@ -39,6 +46,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         if not self.scope["authorized"]:  # Vérifie si le joueur est authentifié
             return  # Ferme DIRECTEMENT la connexion si non authentifié
 
+        await self.update_statut_player(10)  # on met a active
         if self.group_name and self.individual_group_name:
             # Retirer la connexion du groupe de la session
             await self.channel_layer.group_discard(
@@ -51,7 +59,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
                 self.individual_group_name,
                 self.channel_name
             )
-
         print(f"Joueur déconnecté : {self.scope['player'].pseudo}")
         print(f"Groupes quittés : {self.group_name}, {self.individual_group_name}")
 
@@ -217,6 +224,14 @@ class SessionConsumer(AsyncWebsocketConsumer):
         await self.launch_new_round(session)
 
     # ------------ DATABASES METHODES ------------ #
+
+    @database_sync_to_async
+    def update_statut_player(self, statut_id):
+        player = self.scope.get("player")
+        session = self.scope.get("session")
+        info_player = Infosession.objects.get(player=player, session=session)
+        info_player.statut_id = statut_id
+        info_player.save()
 
     @database_sync_to_async
     def launch_new_round(self, session):

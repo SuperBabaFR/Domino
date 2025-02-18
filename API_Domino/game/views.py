@@ -140,6 +140,11 @@ class PlaceDomino(APIView):
         # Dominos sur la table
         table_de_jeu: list = json.loads(round.table)
 
+        for domino_on_table in table_de_jeu:
+            if domino_on_table['id'] == domino.id:
+                return Response(dict(code=400, message="Le domino est déjà sur la table ...", data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
+
         # Vérifie si le joueur qui commence joue bien son plus gros domino
         if len(table_de_jeu) == 0 and round.game.last_winner is None and max(player_dominoes) != domino.id:
             return Response(dict(code=400, message="Le joueur doit jouer son plus gros domino", data=None),

@@ -168,6 +168,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         if type_finish == "game":
             info_player.games_win += 1
             player.wins += 1
+            info_player.statut_id = 6
 
             pigs = []
 
@@ -178,6 +179,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 pigs.append(info.player.pseudo)
                 info.pig_count += 1
                 info.player.pigs += 1
+                info.statut_id = 6
                 info.save()
                 info.player.save()
             data_end_game = dict(action="session.end_game",

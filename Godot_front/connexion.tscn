@@ -21,6 +21,7 @@ offset_bottom = 97.0
 placeholder_text = "TON PSEUDO FDP"
 
 [node name="Mdp" type="LineEdit" parent="."]
+layout_mode = 0
 offset_left = 153.0
 offset_top = 134.0
 offset_right = 317.0
@@ -37,6 +38,7 @@ text = "Pseudo
 "
 
 [node name="LabelMdp" type="Label" parent="."]
+layout_mode = 0
 offset_left = 52.0
 offset_top = 139.0
 offset_right = 109.0

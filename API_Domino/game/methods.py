@@ -10,7 +10,7 @@ from authentification.models import Player, Domino, Round, HandPlayer
 
 # Create your views here.
 def notify_websocket(cible, id, data, type="send_session_updates"):
-    print(f"notify_websocket : {cible}_{id}, {data}")
+    # print(f"notify_websocket : {cible}_{id}, {data}")
     channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
     async_to_sync(channel_layer.group_send)(
         f"{cible}_{id}",  # Nom du groupe WebSocket
@@ -90,7 +90,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list=None):
     return dict(left=value_left, right=value_right)
 
 
-def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu):
+def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet=False):
     playable_dominoes = []
     for domino_id in hand_player_turn:
         if not domino_list:
@@ -103,7 +103,11 @@ def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu):
                                                                                                     "right",
                                                                                                     domino_list):
             continue
-        playable_dominoes.append(dict(id=domino_id, left=domino_x.left, right=domino_x.right))
+        if not objet:
+            playable_dominoes.append(dict(id=domino_id, left=domino_x.left, right=domino_x.right))
+        else:
+            playable_dominoes.append(domino_x)
+
     return playable_dominoes
 
 
@@ -193,7 +197,7 @@ def update_player_turn(round, session):
     round.player_turn = next_player
     round.save()  # SAUVEGARDE LES INFOS POUR LE ROUND
     # Son temps de reflexion
-    reflexion_time_param = session.reflexion_time
+    reflexion_time_param = session.reflexion_time + 5
     player_time_end = datetime.now(timezone.utc) + timedelta(seconds=reflexion_time_param)
     player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
     return player_time_end, next_player

@@ -6,17 +6,17 @@ from asgiref.sync import async_to_sync
 from celery import shared_task
 from channels.layers import get_channel_layer
 
-from authentification.models import Player, HandPlayer, Infosession, Round
+from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino
 from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket, \
     get_full_domino_player
 
 
-@shared_task
 def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
     table_de_jeu = json.loads(round.table)
 
     # Récupère les dominos jouables du prochain joueur
-    hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, session=session).first()
+    hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, round=round, session=session).first()
+
     hand_player_turn = json.loads(hand_player_turn.dominoes)
     playable_dominoes = get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu)
 
@@ -31,7 +31,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
 
         # Récupérer la file d'attente
         # Ajouter la tâche avec un ETA
-        player_pass.apply_async((round.player_turn.id, round.id), eta=dt_utc)
+        player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
     else:
         data_next_player = dict(action="game.your_turn",
                                 data=dict(
@@ -41,36 +41,43 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                 )
         notify_websocket("player", round.player_turn.id, data_next_player)
         # Ajouter la tâche avec un ETA
-        play_domino.apply_async((round.player_turn, session, round, domino_list), eta=dt_utc)
+        auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
 
 
 @shared_task
-def player_pass(player_id, round_id):
+def player_pass_task(player_id, round_id):
+    player_turn = Round.objects.get(id=round_id).player_turn
+    still_his_turn = player_turn.id == player_id
+    if still_his_turn:
+        group_name = f"player_{player_id}"
+        channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
+        async_to_sync(channel_layer.group_send)(
+            group_name,  # Nom du groupe WebSocket
+            {
+                "type": "player_pass",
+                "round_id": round_id
+            }
+        )
+    else:
+        print(f"c plus le tour de {player_id}, maintenant c'est {player_turn.id}")
 
-    print(f'Player {player_id} is now playing.')
-    print(f'Round {round_id}')
 
-    still_his_turn = Round.objects.get(id=round_id).player_turn.id == player_id
-    if not still_his_turn:
-        return
+@shared_task
+def auto_play_domino_task(player_id, session_id, round_id, domino_id=None):
+    player = Player.objects.get(id=player_id)
+    session = Session.objects.get(id=session_id)
+    round = Round.objects.get(id=round_id)
+    domino = None
+    if domino_id:
+        domino = Domino.objects.get(id=domino_id)
 
-    data = dict(round_id=round_id)
-    group_name = f"player_{player_id}"
-    print(f"player_pass : {group_name}, {data}")
-    channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
-    async_to_sync(channel_layer.group_send)(
-        group_name,  # Nom du groupe WebSocket
-        {
-            "type": "player_pass",
-            "data": data
-        }
-    )
+    domino_list = list(Domino.objects.all())
+
+    play_domino(player, session, round, domino_list, domino=domino)
 
 
 def play_domino(player, session, round, domino_list, side=None, playable_values=None, domino=None):
-    round = Round.objects.get(id=round.id)
-
-    if not round.player_turn.id == player:
+    if not round.player_turn == player:
         return
 
     data_return = dict(code=200, message="Domino joué", data=None)
@@ -81,21 +88,19 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
     # Dominos sur la table
     table_de_jeu: list = json.loads(round.table)
 
-    is_playable = None
+
 
     if not domino:
+        is_playable = False
         if len(table_de_jeu) == 0:
             domino = domino_list[max(player_dominoes) - 1]
         elif len(table_de_jeu) >= 1:
             sides = ["left", "right"]
-            playable_dominoes = get_all_playable_dominoes(domino_list, player_dominoes, table_de_jeu)
-            is_playable = False
+            playable_dominoes = get_all_playable_dominoes(domino_list, player_dominoes, table_de_jeu, True)
             while not is_playable:
                 domino = random.choice(playable_dominoes)
                 side = random.choice(sides)
-                is_playable = domino_playable(domino, side, domino_list)
-
-    if not playable_values:
+                is_playable = domino_playable(domino, table_de_jeu, side, domino_list)
         playable_values = is_playable
 
     is_last_domino = True if len(player_dominoes) == 1 else False

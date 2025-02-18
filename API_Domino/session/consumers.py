@@ -63,6 +63,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"message": "Invalid JSON"}))
             return
 
+        print(f"Message reçu de {self.scope['player'].pseudo} : {data}")
+
         if not data["action"]:
             return
 
@@ -97,7 +99,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
                     "round_id": data["data"]["round_id"]
                 }
             )
-        print(f"Message reçu de {self.scope['player'].pseudo} : {data}")
 
     # ------------ SESSION METHODES ------------ #
     async def chat_message(self, event):
@@ -168,13 +169,18 @@ class SessionConsumer(AsyncWebsocketConsumer):
     # Un joueur boudé passe son tour
     async def player_pass(self, event):
         player = self.scope.get("player")
-        round_id = event["round_id"]
+        round_id = event.get("round_id")
         session = self.scope.get("session")
 
+
         response = await self.update_next_player(round_id, session)
-        if not response:
+        if response == False:
             await self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
             return
+        elif response == True:
+            return
+
+
 
         next_player, round, player_time_end = response
 
@@ -226,7 +232,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_next_player(self, round_id, session):
-
         round = Round.objects.filter(id=round_id).first()
         if not round:
             print("Round not found")
@@ -320,7 +325,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             info_player.save()
             player.save()
 
-            return False
+            return True
         else:
             hand_player.blocked = True
             hand_player.save()

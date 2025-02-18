@@ -2,7 +2,7 @@ from rest_framework.utils import json
 from rest_framework.views import APIView
 from authentification.models import Session, Infosession, Game
 from game.methods import *
-from game.tasks import play_domino
+from game.tasks import play_domino, auto_play_domino_task
 
 
 class CreateGame(APIView):
@@ -67,6 +67,12 @@ class CreateGame(APIView):
         session.save()
 
         data_return["data"] = new_round(session, True)
+
+        player_time_end = data_return["data"]["player_time_end"]
+        round_id = data_return["data"]["round_id"]
+        player_turn_id = Round.objects.get(id=round_id).player_turn.id
+        dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+        auto_play_domino_task.apply_async((player_turn_id, session.id, round_id), eta=dt_utc)
 
         # Transmet à l’hôte ses dominos
         return Response(data_return, status=status.HTTP_201_CREATED)

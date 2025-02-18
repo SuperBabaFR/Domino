@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://doqihpqywa426"]
+
+[ext_resource type="Script" path="res://profil.gd" id="1_glyvl"]
+
+[sub_resource type="Gradient" id="Gradient_laepc"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_c3vix"]
+gradient = SubResource("Gradient_laepc")
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_glyvl")
+
+[node name="ProfileImage" type="TextureRect" parent="."]
+offset_left = 174.0
+offset_top = 18.0
+offset_right = 256.0
+offset_bottom = 98.0
+texture = SubResource("GradientTexture1D_c3vix")
+expand_mode = 1
+
+[node name="Pseudo" type="Label" parent="ProfileImage"]
+layout_mode = 0
+offset_left = -144.0
+offset_top = 16.0
+offset_right = -1.0
+offset_bottom = 58.0
+text = "placeholder"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true

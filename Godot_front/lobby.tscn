@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqgd15taqxuqo"]
+
+[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://profil.tscn" id="1_powg8"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="P1" parent="." instance=ExtResource("1_powg8")]
+
+[node name="P2" parent="." instance=ExtResource("1_powg8")]
+offset_left = 257.0
+offset_top = 1.0
+offset_right = 257.0
+offset_bottom = 1.0
+
+[node name="P3" parent="." instance=ExtResource("1_powg8")]
+offset_left = 514.0
+offset_top = -1.0
+offset_right = 514.0
+offset_bottom = -1.0
+
+[node name="P4" parent="." instance=ExtResource("1_powg8")]
+offset_left = 770.0
+offset_top = 1.0
+offset_right = 770.0
+offset_bottom = 1.0

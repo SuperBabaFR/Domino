@@ -6,7 +6,8 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from rest_framework import status
 from rest_framework.response import Response
-from authentification.models import Player, Domino, Round, HandPlayer
+from authentification.models import Player, Domino, Round, HandPlayer, Infosession
+
 
 # Create your views here.
 def notify_websocket(cible, id, data, type="send_session_updates"):
@@ -129,6 +130,9 @@ def new_round(session, first=False):
     for player_id in player_id_list:
         dominoes = []
         player_x = Player.objects.filter(id=player_id).first()
+        info_player = Infosession.objects.get(player=player_x, session=session)
+        info_player.statut_id = 8
+        info_player.save()
         # Choisis 7 Dominos dans la liste
         for i in range(0, 7):
             new_domino = random.choice(domino_list)

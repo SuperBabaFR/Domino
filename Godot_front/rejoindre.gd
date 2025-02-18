@@ -12,9 +12,13 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _on_rejoindre_session():
 	
+	var InfosUser = Global.get_all_user_data()
+	var id = InfosUser.data.id
+	print("INFOS USER", InfosUser)
+	
 
 	if $CodeSession.text != "":   
-		var body = JSON.stringify({"session_code": $CodeSession.text, "player_id": 5})
+		var body = JSON.stringify({"session_code": $CodeSession.text, "player_id": id})
 		#print(body)
 		var headers = ["Content-Type: application/json"]
 		$JoinRequest.request("http://localhost:8000/join", headers, HTTPClient.METHOD_POST, body)

@@ -17,6 +17,7 @@ anchors_preset = 0
 script = ExtResource("1_gtj4m")
 
 [node name="Titre" type="Label" parent="."]
+layout_mode = 0
 offset_left = 552.0
 offset_top = 176.0
 offset_right = 734.0
@@ -27,6 +28,7 @@ label_settings = SubResource("LabelSettings_rkx64")
 metadata/_edit_use_anchors_ = true
 
 [node name="StartButton" type="Button" parent="."]
+layout_mode = 0
 offset_left = 549.0
 offset_top = 325.0
 offset_right = 757.0

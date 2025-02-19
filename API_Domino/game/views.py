@@ -78,7 +78,7 @@ class CreateGame(APIView):
         round_id = data_return["data"]["round_id"]
         player_turn_id = Round.objects.get(id=round_id).player_turn.id
         dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
-        auto_play_domino_task.apply_async((player_turn_id, session.id, round_id), eta=dt_utc)
+        auto_play_domino_task.apply_async(args=(player_turn_id, session.id, round_id), eta=dt_utc)
 
         # Transmet à l’hôte ses dominos
         return Response(data_return, status=status.HTTP_201_CREATED)

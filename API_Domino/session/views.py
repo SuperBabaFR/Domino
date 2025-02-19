@@ -3,13 +3,14 @@ import random
 import string
 
 from asgiref.sync import async_to_sync
+from celery import shared_task
 from channels.layers import get_channel_layer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
 
-
+@shared_task
 def notify_session(session_id, action, data=None):
     print(f"notify_session : session_{session_id}, {action}, {data}")
     channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
@@ -227,7 +228,7 @@ class JoinSessionView(APIView):
             pigs=info_player.pig_count
         )
 
-        notify_session(session.id, "join", data_notify)
+        notify_session.apply_async(args=(session.id, "join", data_notify))
 
         return Response({
             "code": 200,
@@ -259,7 +260,8 @@ class LeaveSessionView(APIView):
 
         if session.hote == player:
             # Notifie les joueurs connectés à la session qu'elle a été supprimée
-            notify_session(session.id, "exit")
+            notify_session.apply_async(args=(session.id, "exit"))
+            # notify_session(session.id, "exit")
 
             # Supprime la session
             nuke_session(session)
@@ -295,8 +297,8 @@ class LeaveSessionView(APIView):
         data_notify = dict(
             player=player.pseudo
         )
-
-        notify_session(session.id, "leave", data_notify)
+        notify_session.apply_async(args=(session.id, "leave", data_notify))
+        # notify_session(session.id, "leave", data_notify)
 
         return Response({
             "code": 200,

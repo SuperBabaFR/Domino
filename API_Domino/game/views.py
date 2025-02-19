@@ -2,6 +2,7 @@ from rest_framework.utils import json
 from rest_framework.views import APIView
 from authentification.models import Session, Infosession, Game
 from game.methods import *
+from game.serializers import DominoSerializer
 from game.tasks import play_domino, auto_play_domino_task
 
 
@@ -159,3 +160,10 @@ class PlaceDomino(APIView):
         data_return = play_domino(player, session, round, domino_list, side, playable_values, domino)
 
         return Response(data_return, status=status.HTTP_200_OK)
+
+class DominoList(APIView):
+    permission_classes = []
+    def get(self, request):
+        serializer = DominoSerializer(Domino.objects.all(), many=True)
+        data = dict(code=200, message="Liste de tout les dominos", data=dict(domino_list=serializer.data))
+        return Response(data, status=status.HTTP_200_OK)

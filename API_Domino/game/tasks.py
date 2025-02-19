@@ -81,14 +81,13 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         return
 
     data_return = dict(code=200, message="Domino joué", data=None)
+
     # Dominos du joueurs
     hand_player = HandPlayer.objects.filter(player=player, round=round, session=session).first()
     player_dominoes: list = json.loads(hand_player.dominoes)
 
     # Dominos sur la table
     table_de_jeu: list = json.loads(round.table)
-
-
 
     if not domino:
         is_playable = False

@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5sr07wyxn48b"]
+
+[ext_resource type="Script" path="res://inscription.gd" id="1_1mxcp"]
+
+[node name="Inscription" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -4.0
+offset_right = -1.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1mxcp")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = 423.0
+offset_top = 208.0
+offset_right = 522.0
+offset_bottom = 297.0
+expand_mode = 1
+
+[node name="LabelPseudo" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.002
+offset_left = 306.0
+offset_top = 83.0
+offset_right = 360.44
+offset_bottom = 106.0
+text = "pseudo
+"
+
+[node name="LabelMdp" type="Label" parent="."]
+layout_mode = 0
+offset_left = 261.0
+offset_top = 149.0
+offset_right = 364.0
+offset_bottom = 172.0
+text = "mot de passe"
+
+[node name="LineEditPseudo" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 387.0
+offset_top = 77.0
+offset_right = 566.0
+offset_bottom = 111.0
+
+[node name="LineEditMdp" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 385.0
+offset_top = 141.0
+offset_right = 572.0
+offset_bottom = 178.0
+
+[node name="ButtonImport" type="Button" parent="."]
+layout_mode = 0
+offset_left = 399.0
+offset_top = 320.0
+offset_right = 562.0
+offset_bottom = 351.0
+text = "Importer une photo"
+
+[node name="ButtonInscrire" type="Button" parent="."]
+layout_mode = 0
+offset_left = 411.0
+offset_top = 403.0
+offset_right = 549.0
+offset_bottom = 453.0
+text = "S'inscrire"
+
+[node name="FileDialog" type="FileDialog" parent="."]
+position = Vector2i(0, 36)
+size = Vector2i(303, 180)
+
+[node name="SignUpRequest" type="HTTPRequest" parent="."]
+
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]

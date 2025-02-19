@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://df6w7exi83jgu"]
+[gd_scene load_steps=3 format=3 uid="uid://df6w7exi83jgu"]
 
 [ext_resource type="Script" path="res://HomeMenu.gd" id="1_f2poy"]
-[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://profil.tscn" id="2_hub5e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
 font_size = 35
@@ -49,9 +48,17 @@ offset_right = 1045.0
 offset_bottom = 419.0
 text = "Déconnexion"
 
-[node name="Player 1" parent="." instance=ExtResource("2_hub5e")]
-layout_mode = 1
-offset_left = 887.0
-offset_top = 32.0
-offset_right = 887.0
-offset_bottom = 32.0
+[node name="ProfileImage" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1124.0
+offset_top = 46.0
+offset_right = 1206.0
+offset_bottom = 126.0
+expand_mode = 1
+
+[node name="Pseudo" type="Label" parent="ProfileImage"]
+layout_mode = 0
+offset_left = -170.0
+offset_top = -17.0
+offset_right = -27.0
+offset_bottom = 25.0

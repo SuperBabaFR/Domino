@@ -1,3 +1,4 @@
+import binascii
 from datetime import datetime, timezone
 from http import HTTPStatus
 import base64
@@ -187,7 +188,7 @@ class SignupView(APIView):
                 image = Image.open(io.BytesIO(image_data_base64))
                 image.verify()
 
-            except (base64.binascii.Error, IOError):
+            except (binascii.Error, IOError):
                 return Response(dict(code=400, message='Image incorrecte', data=None),
                                 status=status.HTTP_400_BAD_REQUEST)
 

@@ -230,18 +230,23 @@ class SessionConsumer(AsyncWebsocketConsumer):
     async def prepare_new_round(self, event):
         player = self.scope.get("player")
         session = self.scope.get("session")
-        # Envoie a tout le monde que quelqu'un remue
-        group_name = f"session_{session.id}"
-        data_session = dict(action="game.someone_mix_the_dominoes", data=dict(pseudo=player.pseudo))
-        await self.channel_layer.group_send(
-            group_name,
-            {
-                "type": "send_session_updates",
-                "data": data_session
-            }
-        )
-        await asyncio.sleep(3)
-        await self.launch_new_round(session)
+        this_round = self.have_round_open()
+        if not this_round:
+            await self.send(text_data=json.dumps(dict(action="error", message="Round already open")))
+            return
+        else:
+            # Envoie a tout le monde que quelqu'un remue
+            group_name = f"session_{session.id}"
+            data_session = dict(action="game.someone_mix_the_dominoes", data=dict(pseudo=player.pseudo))
+            await self.channel_layer.group_send(
+                group_name,
+                {
+                    "type": "send_session_updates",
+                    "data": data_session
+                }
+            )
+            await asyncio.sleep(3)
+            await self.launch_new_round(session)
 
     # ------------ DATABASES METHODES ------------ #
 
@@ -325,7 +330,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
                                    points_remaining=winner["score"],
                                    type_finish=type_finish,
                                    win_streak=win_streak))
-            notify_websocket("session", session.id, data_finish)
+            notify_websocket.apply_async(args=("session", session.id, data_finish))
 
             # Met a jour le dernier gagnant
             session.game_id.last_winner = self.scope["player"]
@@ -352,7 +357,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
                     info.player.save()
                 data_end_game = dict(action="session.end_game",
                                      data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
-                notify_websocket("session", session.id, data_end_game)
+                notify_websocket.apply_async(args=("session", session.id, data_end_game))
 
             # Met a jour le statut du round
             round.statut_id = 12
@@ -384,6 +389,11 @@ class SessionConsumer(AsyncWebsocketConsumer):
     def get_game(self):
         game = Game.objects.filter(session=self.scope.get("session"), statut_id=1).first()
         return game
+
+    @database_sync_to_async
+    def have_round_open(self):
+        game = Game.objects.filter(session=self.scope.get("session"), statut_id=1).first()
+        return Round.objects.filter(game=game, statut_id=11).first()
 
     @database_sync_to_async
     def get_game_info(self, game):

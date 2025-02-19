@@ -26,7 +26,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
         data_next_player = dict(action="game.your_turn_no_match",
                                 data=dict(player_time_end=player_time_end)
                                 )
-        notify_websocket("player", round.player_turn.id, data_next_player)
+        notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
 
         # Récupérer la file d'attente
         # Ajouter la tâche avec un ETA
@@ -38,7 +38,7 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
                                     player_time_end=player_time_end
                                 )
                                 )
-        notify_websocket("player", round.player_turn.id, data_next_player)
+        notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
         # Ajouter la tâche avec un ETA
         auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
 
@@ -140,7 +140,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                                 player_time_end=player_time_end
                             )
                             )
-        notify_websocket("session", session.id, data_session)
+        notify_websocket.apply_async(args=("session", session.id, data_session))
 
         notify_player_for_his_turn(round, session, domino_list, player_time_end)
 
@@ -198,11 +198,11 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                                 winstreak=have_winstreak
                             )
                             )
-        notify_websocket("session", session.id, data_session)
+        notify_websocket.apply_async(args=("session", session.id, data_session))
 
         # envoie aux joueurs les résultats de la partie
         if data_end_game:
-            notify_websocket("session", session.id, data_end_game)
+            notify_websocket.apply_async(args=("session", session.id, data_end_game))
 
         # Met a jour le statut du round
         round.statut_id = 12

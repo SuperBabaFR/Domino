@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import random
 
 from asgiref.sync import async_to_sync
+from celery import shared_task
 from channels.layers import get_channel_layer
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from authentification.models import Player, Domino, Round, HandPlayer, Infosessi
 
 
 # Create your views here.
+@shared_task
 def notify_websocket(cible, id, data, type="send_session_updates"):
 
     channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
@@ -173,7 +175,8 @@ def new_round(session, first=False):
                 player_time_end=player_time_end
             )
         )
-        notify_websocket("player", hands.player.id, data_notify)  # Lui envoie
+        notify_websocket.apply_async(args=("player", hands.player.id, data_notify))  # Lui envoie
+
 
     data_hote = dict(round_id=round.id,
                      dominoes=player_hote_hand.dominoes,
@@ -182,7 +185,7 @@ def new_round(session, first=False):
 
     if not first:
         msg_hote = dict(action="session.start_round", data=data_hote)
-        notify_websocket("player", session.hote.id, msg_hote)
+        notify_websocket.apply_async(args=("player", session.hote.id, msg_hote))
 
     return data_hote
 

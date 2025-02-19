@@ -11,7 +11,7 @@ from authentification.models import Player, Domino, Round, HandPlayer, Infosessi
 
 # Create your views here.
 def notify_websocket(cible, id, data, type="send_session_updates"):
-    # print(f"notify_websocket : {cible}_{id}, {data}")
+
     channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
     async_to_sync(channel_layer.group_send)(
         f"{cible}_{id}",  # Nom du groupe WebSocket
@@ -36,16 +36,16 @@ def verify_objets(objets):
             return Response(dict(code=400, message=f'{key} inexistant', data=None), status=status.HTTP_400_BAD_REQUEST)
     return None
 
-
-def get_full_domino_player(dominos, domino_list_ref):
-    player_dominoes_value = json.loads(dominos)
-
-    player_dominoes = []
-    for domino_id in player_dominoes_value:
-        domino = domino_list_ref[domino_id - 1]
-        player_dominoes.append(dict(id=domino.id, left=domino.left, right=domino.right))
-
-    return player_dominoes
+#
+# def get_full_domino_player(dominos, domino_list_ref):
+#     player_dominoes_value = json.loads(dominos)
+#
+#     player_dominoes = []
+#     for domino_id in player_dominoes_value:
+#         domino = domino_list_ref[domino_id - 1]
+#         player_dominoes.append(dict(id=domino.id, left=domino.left, right=domino.right))
+#
+#     return player_dominoes
 
 
 def domino_playable(domino, table_de_jeu, side, domino_list=None):
@@ -105,7 +105,7 @@ def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet
                                                                                                     domino_list):
             continue
         if not objet:
-            playable_dominoes.append(dict(id=domino_id, left=domino_x.left, right=domino_x.right))
+            playable_dominoes.append(domino_id)
         else:
             playable_dominoes.append(domino_x)
 
@@ -148,9 +148,6 @@ def new_round(session, first=False):
             hands_list.append(
                 HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=json.dumps(dominoes)))
 
-    # Dominos du joueur hôte
-    player_hote_dominoes = get_full_domino_player(player_hote_hand.dominoes, domino_list_full)
-
     # dernier gagnant
     last_winner = session.game_id.last_winner
 
@@ -167,13 +164,11 @@ def new_round(session, first=False):
 
     # notifie tout les joueurs sauf hote via le websocket de la session
     for hands in hands_list:
-        player_x_dominoes = get_full_domino_player(hands.dominoes, domino_list_full)
-
         data_notify = dict(
             action="session.start_" + ("game" if first else "round"),
             data=dict(
                 round_id=round.id,
-                dominoes=player_x_dominoes,
+                dominoes=hands.dominoes,
                 player_turn=player_turn.pseudo,
                 player_time_end=player_time_end
             )
@@ -181,7 +176,7 @@ def new_round(session, first=False):
         notify_websocket("player", hands.player.id, data_notify)  # Lui envoie
 
     data_hote = dict(round_id=round.id,
-                     dominoes=player_hote_dominoes,
+                     dominoes=player_hote_hand.dominoes,
                      player_turn=player_turn.pseudo,
                      player_time_end=player_time_end)
 

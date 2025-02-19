@@ -7,8 +7,7 @@ from celery import shared_task
 from channels.layers import get_channel_layer
 
 from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino
-from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket, \
-    get_full_domino_player
+from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket
 
 
 def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
@@ -135,7 +134,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         data_session = dict(action="game.someone_played",
                             data=dict(
                                 pseudo=player.pseudo,
-                                domino=dict(id=domino.id, left=domino.left, right=domino.right),
+                                domino=domino.id,
                                 side=side,
                                 player_turn=round.player_turn.pseudo,
                                 player_time_end=player_time_end
@@ -145,10 +144,8 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
 
         notify_player_for_his_turn(round, session, domino_list, player_time_end)
 
-        player_dominoes = get_full_domino_player(hand_player.dominoes, domino_list)
-
         # Transmet au joueur qui a joué les informations à jour
-        data_return["data"] = dict(dominoes=player_dominoes,
+        data_return["data"] = dict(dominoes=hand_player.dominoes,
                                    table=table_de_jeu,
                                    player_turn=round.player_turn.pseudo,
                                    player_time_end=player_time_end)
@@ -195,7 +192,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         data_session = dict(action="game.someone_win",
                             data=dict(
                                 pseudo=player.pseudo,
-                                domino=dict(id=domino.id, left=domino.left, right=domino.right),
+                                domino=domino.id,
                                 side=side,
                                 type_finish=type_finish,
                                 winstreak=have_winstreak
@@ -216,9 +213,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
 
         # données pour la requete http
         data_return["message"] = "Tu as gagne"
-        data_return["data"] = dict(domino=dict(id=domino.id,
-                                               left=domino.left,
-                                               right=domino.right),
+        data_return["data"] = dict(domino=domino.id,
                                    side=side,
                                    type_finish=type_finish)
     return data_return

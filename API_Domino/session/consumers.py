@@ -5,8 +5,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
 from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino, Game
-from game.methods import new_round, notify_websocket, get_full_domino_player, \
-    update_player_turn
+from game.methods import new_round, notify_websocket, update_player_turn
 from game.tasks import notify_player_for_his_turn
 
 
@@ -188,12 +187,14 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     async def need_refresh(self, event):
         game = await self.get_game()
+        data = False
+        if game:
+            data = await self.get_game_info(game)
 
-        if not game:
+        if not data:
             await self.send(text_data=json.dumps({"action": "error", "data": {"message": "No active game in session"}}))
             return
 
-        data = await self.get_game_info(game)
         await self.send(text_data=json.dumps(data))
 
     # Un joueur boudé passe son tour
@@ -309,7 +310,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
                     winner = dict(score=sum_of_dominoes, player=hand_player.player)
 
                 data_players.append(dict(pseudo=hand_player.player.pseudo,
-                                         dominoes=get_full_domino_player(hand_player.dominoes, list_dominoes),
+                                         dominoes=hand_player.dominoes,
                                          points_remaining=sum_of_dominoes))
 
             info_player = Infosession.objects.filter(player=winner["player"], session=session).first()
@@ -389,18 +390,19 @@ class SessionConsumer(AsyncWebsocketConsumer):
         player = self.scope["player"]
         session = self.scope["session"]
         this_round = Round.objects.filter(session=session,game=game, statut_id=11).first()
+        if not this_round:
+            return False
+
         dominoes = None
         table = json.loads(this_round.table)
         players = []
 
-        if not this_round:
-            return False
 
         all_hands = list(HandPlayer.objects.filter(round=this_round, session=session).all())
 
         for hand in all_hands:
             if hand.player == player:
-                dominoes = get_full_domino_player(hand.dominoes, list(Domino.objects.all()))
+                dominoes = hand.dominoes
             else:
                 players.append(dict(pseudo=hand.player.pseudo, domino_count=len(json.loads(hand.dominoes))))
 

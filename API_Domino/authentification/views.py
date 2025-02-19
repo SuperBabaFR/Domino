@@ -152,6 +152,7 @@ class SignupView(APIView):
         pseudo = data_request.get("pseudo")
         password = data_request.get("password")
         image_data = data_request.get("image")
+        img_str = None
 
         # Vérifie si le pseudo est fourni
         if not pseudo:
@@ -171,32 +172,35 @@ class SignupView(APIView):
             return Response(dict(code=400, message='Le Password doit être compris entre 8 et 25', data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Vérifie la taille de l'image
-        if (len(image_data) * 3) / 4 - image_data.count('=', -2) > max_image_file_size:
-            return Response(dict(code=400, message='Image trop lourde', data=None), status=status.HTTP_400_BAD_REQUEST)
+        if image_data is not None:
+            # Vérifie la taille de l'image
+            if (len(image_data) * 3) / 4 - image_data.count('=', -2) > max_image_file_size:
+                return Response(dict(code=400, message='Image trop lourde', data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
 
-        # Vérifie si les données de l'image correspondent à de la base 64
-        try:
-            # Décode le string en Base64
-            image_data_base64 = base64.b64decode(image_data)
+            # Vérifie si les données de l'image correspondent à de la base 64
+            try:
+                # Décode le string en Base64
+                image_data_base64 = base64.b64decode(image_data)
 
-            # Si l'image s'ouvre c'est qu'elle est correcte
+                # Si l'image s'ouvre c'est qu'elle est correcte
+                image = Image.open(io.BytesIO(image_data_base64))
+                image.verify()
+
+            except (base64.binascii.Error, IOError):
+                return Response(dict(code=400, message='Image incorrecte', data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            # Réduit la taille de l'image à 300x300
             image = Image.open(io.BytesIO(image_data_base64))
-            image.verify()
 
-        except (base64.binascii.Error, IOError):
-            return Response(dict(code=400, message='Image incorrecte', data=None), status=status.HTTP_400_BAD_REQUEST)
+            if image.size > maxSize:
+                image = ImageOps.contain(image, maxSize)
 
-        # Réduit la taille de l'image à 300x300
-        image = Image.open(io.BytesIO(image_data_base64))
-
-        if image.size > maxSize:
-            image = ImageOps.contain(image, maxSize)
-
-        # Converti l'image en JPEG pour réduire son poids
-        buff = io.BytesIO()
-        image.convert('RGB').save(buff, format="JPEG")
-        img_str = base64.b64encode(buff.getvalue())
+            # Converti l'image en JPEG pour réduire son poids
+            buff = io.BytesIO()
+            image.convert('RGB').save(buff, format="JPEG")
+            img_str = base64.b64encode(buff.getvalue())
 
         # Crée le joueur
         player = Player.objects.create(pseudo=pseudo, password=make_password(password), image=img_str)

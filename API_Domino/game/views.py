@@ -1,3 +1,8 @@
+import cProfile
+import pstats
+import io
+
+from django.db import connection
 from rest_framework.utils import json
 from rest_framework.views import APIView
 from authentification.models import Session, Infosession, Game
@@ -86,6 +91,9 @@ class PlaceDomino(APIView):
 
     def post(self, request):
         data_request = request.data
+        #
+        # pr = cProfile.Profile()
+        # pr.enable()
 
         # Vérifie l'existance des keys dans le body
         keys = ["session_id", "player_id", "round_id", "domino_id", "side"]
@@ -158,6 +166,13 @@ class PlaceDomino(APIView):
                             status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
 
         data_return = play_domino(player, session, round, domino_list, side, playable_values, domino)
+
+        # pr.disable()
+        # s = io.StringIO()
+        # ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
+        # ps.print_stats()
+        #
+        # print(s.getvalue())  # Affiche le profil dans la console
 
         return Response(data_return, status=status.HTTP_200_OK)
 

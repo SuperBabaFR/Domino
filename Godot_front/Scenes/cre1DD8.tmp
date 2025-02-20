@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://dei1ltav0d68e"]
+
+[ext_resource type="Script" path="res://Scripts/create_game.gd" id="1_x4x2d"]
+
+[node name="CreateGame" type="Control" node_paths=PackedStringArray("slider", "btn_creer", "lab_nb_max_player_value")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x4x2d")
+slider = NodePath("slider_nb_max_players")
+btn_creer = NodePath("btn_creer")
+lab_nb_max_player_value = NodePath("lab_nb_max_players_value")
+metadata/_edit_lock_ = true
+
+[node name="lab_nb_max_players" type="Label" parent="."]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 226.0
+offset_right = 405.0
+offset_bottom = 249.0
+text = "Nombre maximum de joueurs"
+
+[node name="slider_nb_max_players" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 166.0
+offset_top = 265.0
+offset_right = 405.0
+offset_bottom = 281.0
+min_value = 2.0
+max_value = 4.0
+value = 2.0
+allow_greater = true
+allow_lesser = true
+tick_count = 3
+
+[node name="btn_creer" type="Button" parent="."]
+layout_mode = 0
+offset_left = 521.0
+offset_top = 587.0
+offset_right = 710.0
+offset_bottom = 642.0
+scale = Vector2(0.967202, 0.994004)
+text = "Créer la session"
+
+[node name="lab_nb_max_players_value" type="Label" parent="."]
+offset_left = 421.0
+offset_top = 264.0
+offset_right = 504.0
+offset_bottom = 287.0
+text = "2 joueurs"
+
+[connection signal="drag_ended" from="slider_nb_max_players" to="." method="_on_slider_nb_max_players_drag_ended"]

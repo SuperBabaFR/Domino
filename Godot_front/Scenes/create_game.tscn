@@ -1,0 +1,145 @@
+[gd_scene load_steps=2 format=3 uid="uid://dei1ltav0d68e"]
+
+[ext_resource type="Script" path="res://Scripts/create_game.gd" id="1_x4x2d"]
+
+[node name="CreateGame" type="Control" node_paths=PackedStringArray("slider_reflexion_time", "slider_nb_max_player", "btn_creer", "lab_nb_max_player_value", "lab_reflexion_time_value", "ragequit_penality", "is_public_game", "session_name")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_x4x2d")
+slider_reflexion_time = NodePath("slider_reflexion_time")
+slider_nb_max_player = NodePath("slider_nb_max_players")
+btn_creer = NodePath("btn_creer")
+lab_nb_max_player_value = NodePath("lab_nb_max_players_value")
+lab_reflexion_time_value = NodePath("lab_reflexion_time_value")
+ragequit_penality = NodePath("ragequit_penality")
+is_public_game = NodePath("is_public")
+session_name = NodePath("session_name")
+metadata/_edit_lock_ = true
+
+[node name="lab_nb_max_players" type="Label" parent="."]
+layout_mode = 0
+offset_left = 494.0
+offset_top = 206.0
+offset_right = 727.0
+offset_bottom = 229.0
+text = "Nombre maximum de joueurs"
+
+[node name="slider_nb_max_players" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 490.0
+offset_top = 242.0
+offset_right = 729.0
+offset_bottom = 258.0
+min_value = 2.0
+max_value = 4.0
+value = 2.0
+allow_greater = true
+allow_lesser = true
+tick_count = 3
+
+[node name="lab_nb_max_players_value" type="Label" parent="."]
+offset_left = 745.0
+offset_top = 238.0
+offset_right = 828.0
+offset_bottom = 261.0
+text = "2 joueurs"
+
+[node name="lab_reflexion_time" type="Label" parent="."]
+offset_left = 494.0
+offset_top = 300.0
+offset_right = 727.0
+offset_bottom = 323.0
+text = "Temps de réflexion"
+
+[node name="slider_reflexion_time" type="HSlider" parent="."]
+offset_left = 490.0
+offset_top = 336.0
+offset_right = 729.0
+offset_bottom = 352.0
+min_value = 20.0
+max_value = 90.0
+value = 20.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+
+[node name="lab_reflexion_time_value" type="Label" parent="."]
+offset_left = 745.0
+offset_top = 333.0
+offset_right = 840.0
+offset_bottom = 356.0
+text = "20 secondes"
+
+[node name="btn_creer" type="Button" parent="."]
+layout_mode = 0
+offset_left = 521.0
+offset_top = 587.0
+offset_right = 710.0
+offset_bottom = 642.0
+scale = Vector2(0.967202, 0.994004)
+text = "Créer la session"
+
+[node name="btn_back" type="Button" parent="."]
+offset_left = 22.0
+offset_top = 17.0
+offset_right = 117.0
+offset_bottom = 65.0
+scale = Vector2(0.967202, 0.994004)
+text = "Retour"
+
+[node name="ragequit_penality" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 665.0
+offset_top = 405.0
+offset_right = 709.0
+offset_bottom = 429.0
+scale = Vector2(1.5, 1.5)
+
+[node name="lab_ragequit" type="Label" parent="."]
+layout_mode = 0
+offset_left = 492.0
+offset_top = 409.0
+offset_right = 648.0
+offset_bottom = 432.0
+text = "Pénalité de ragequit"
+
+[node name="is_public" type="CheckButton" parent="."]
+offset_left = 665.0
+offset_top = 464.0
+offset_right = 709.0
+offset_bottom = 488.0
+scale = Vector2(1.5, 1.5)
+
+[node name="lab_public" type="Label" parent="."]
+offset_left = 492.0
+offset_top = 468.0
+offset_right = 648.0
+offset_bottom = 491.0
+text = "Partie publique
+"
+
+[node name="lab_session_name" type="Label" parent="."]
+layout_mode = 0
+offset_left = 493.0
+offset_top = 95.0
+offset_right = 634.0
+offset_bottom = 118.0
+text = "Nom de la session"
+
+[node name="session_name" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 492.0
+offset_top = 131.0
+offset_right = 725.0
+offset_bottom = 162.0
+placeholder_text = "La session du maco"
+
+[connection signal="value_changed" from="slider_nb_max_players" to="." method="_on_slider_nb_max_players_value_changed"]
+[connection signal="drag_ended" from="slider_reflexion_time" to="." method="_on_slider_reflexion_time_drag_ended"]
+[connection signal="value_changed" from="slider_reflexion_time" to="." method="_on_slider_reflexion_time_value_changed"]
+[connection signal="pressed" from="btn_creer" to="." method="_on_btn_creer_pressed"]
+[connection signal="pressed" from="btn_back" to="." method="_on_btn_back_pressed"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://c5sr07wyxn48b"]
+[gd_scene load_steps=2 format=3 uid="uid://d3hbv422b36x6"]
 
 [ext_resource type="Script" path="res://inscription.gd" id="1_1mxcp"]
 
@@ -16,6 +16,7 @@ grow_vertical = 2
 script = ExtResource("1_1mxcp")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
 offset_left = 423.0
 offset_top = 208.0
 offset_right = 522.0

@@ -92,11 +92,19 @@ func _on_inscription_pressed():
 	#if mdp.length() < 8 or mdp.length() > 20:
 		#print("❌ ERREUR : Le mot de passe doit contenir entre 8 et 20 caractères.")
 		#return
-	var body = JSON.stringify({"pseudo": $LineEditPseudo.text, "password": $LineEditMdp.text, "image" : image_base64})
-	
-	var headers = ["Content-Type: application/json"]
-	$SignUpRequest.request("http://localhost:8000/signup", headers, HTTPClient.METHOD_POST, body)
-	# Création du JSON pour l'API
+		
+	if $LineEditPseudo.text != "" and $LineEditMdp.text != "":
+		
+		var body = {"pseudo": $LineEditPseudo.text, "password": $LineEditMdp.text}
+		if image_base64 != "":
+			body["image"] = image_base64
+		var json_body = JSON.stringify(body)
+		
+		var headers = ["Content-Type: application/json"]
+		$SignUpRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/signup", headers, HTTPClient.METHOD_POST, json_body)
+	else:
+		print("remplir tous les champs")
+		# Création du JSON pour l'API
 	#var json_data = {
 		#"pseudo": pseudo,
 		#"mdp": mdp,

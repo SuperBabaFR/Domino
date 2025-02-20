@@ -15,7 +15,7 @@ func _on_connexion_reussie():
 		var body = JSON.stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
 		#print(body)
 		var headers = ["Content-Type: application/json"]
-		$LoginRequest.request("http://localhost:8000/login", headers, HTTPClient.METHOD_POST, body)
+		$LoginRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/login", headers, HTTPClient.METHOD_POST, body)
 	else:
 		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
 		

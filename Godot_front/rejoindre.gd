@@ -21,7 +21,7 @@ func _on_rejoindre_session():
 		var body = JSON.stringify({"session_code": $CodeSession.text, "player_id": id})
 		#print(body)
 		var headers = ["Content-Type: application/json"]
-		$JoinRequest.request("http://localhost:8000/join", headers, HTTPClient.METHOD_POST, body)
+		$JoinRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/join", headers, HTTPClient.METHOD_POST, body)
 	else:
 		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
 		

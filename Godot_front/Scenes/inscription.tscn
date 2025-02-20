@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://d3hbv422b36x6"]
 
-[ext_resource type="Script" path="res://inscription.gd" id="1_1mxcp"]
+[ext_resource type="Script" path="res://Scripts/inscription.gd" id="1_1mxcp"]
 
 [node name="Inscription" type="Control"]
 layout_mode = 3

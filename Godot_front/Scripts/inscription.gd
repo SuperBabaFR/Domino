@@ -141,7 +141,8 @@ func _on_request_completed(result, response_code, headers, body):
 	#var response = JSON.parse_string(body.get_string_from_utf8())
 #
 	#if response_code == 201:
-		#print("✅ Inscription réussie :", response)
+		#print("✅ Inscription réussie :")
+		#
 	#elif response_code == 400:
 		#if response and "message" in response:
 			#print("❌ ERREUR : ", response["message"])

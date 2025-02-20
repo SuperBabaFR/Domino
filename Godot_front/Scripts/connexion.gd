@@ -26,7 +26,7 @@ func _on_traiter_resultat(result, response_code, headers, body):
 	var response = json.get_data()
 	if (response_code == 200):
 		Global.set_user_data(response)
-		get_tree().change_scene_to_file("res://home_menu.tscn")
+		get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
 	else:
 		#get_tree().change_scene_to_file("res://connexion.tscn")
 		print(response.message) #Afficher le message à l'utilisateur a la place du print

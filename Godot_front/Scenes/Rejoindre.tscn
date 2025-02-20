@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://w2v4ampeupyp"]
 
-[ext_resource type="Script" path="res://rejoindre.gd" id="1_cx6d4"]
+[ext_resource type="Script" path="res://Scripts/rejoindre.gd" id="1_cx6d4"]
 
 [node name="Rejoindre" type="Control"]
 layout_mode = 3

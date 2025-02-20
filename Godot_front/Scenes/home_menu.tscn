@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://df6w7exi83jgu"]
 
-[ext_resource type="Script" path="res://HomeMenu.gd" id="1_f2poy"]
+[ext_resource type="Script" path="res://Scripts/HomeMenu.gd" id="1_27nal"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
 font_size = 35
@@ -12,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_f2poy")
+script = ExtResource("1_27nal")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0

@@ -46,10 +46,10 @@ func _on_start_pressed():
 	get_tree().change_scene_to_file("res://scenes/GameScene.tscn")
 
 func _on_join_pressed():
-	get_tree().change_scene_to_file("res://Rejoindre.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Rejoindre.tscn")
 	
 func _on_disconnect_pressed():
-	get_tree().change_scene_to_file("res://scenes/GameScene.tscn")
+	get_tree().change_scene_to_file("res://Scenes/principal.tscn")
 	
 func load_image_from_base64(base64_str: String) -> ImageTexture:
 	var image = Image.new()

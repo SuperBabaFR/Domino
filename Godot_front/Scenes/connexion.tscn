@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dkxwxlk4ubv1d"]
 
-[ext_resource type="Script" path="res://connexion.gd" id="1_rew5v"]
+[ext_resource type="Script" path="res://Scripts/connexion.gd" id="1_ilhuv"]
 
 [node name="Connexion" type="Control"]
 layout_mode = 3
@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_rew5v")
+script = ExtResource("1_ilhuv")
 metadata/_edit_lock_ = true
 
 [node name="Pseudo" type="LineEdit" parent="."]

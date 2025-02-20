@@ -153,3 +153,4 @@ cython_debug/
 
 # Godot 4+ specific ignores
 .godot/
+/API_Domino/.idea

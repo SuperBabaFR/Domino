@@ -18,6 +18,8 @@ services:
         sync: false
       - key: SECRET_KEY
         sync: false
+      - key: RENDER_EXTERNAL_HOSTNAME
+        sync: false
       - key: DEBUG
         value: "False"
 

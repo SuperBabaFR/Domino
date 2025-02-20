@@ -4,10 +4,6 @@ from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-from authentification.models import Statut, Infosession, Session, Round, Player, HandPlayer, Domino, Game
-from game.methods import new_round, notify_websocket, update_player_turn
-from game.tasks import notify_player_for_his_turn
-
 
 class SessionConsumer(AsyncWebsocketConsumer):
     # Connexion au WEBSOCKET
@@ -125,6 +121,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     # Statut des joueurs dans le lobby (READY | NOT READY) ou en partie (ACTIF | AFK | OFFLINE)
     async def statut_player(self, event):
+        from authentification.models import Statut
+
         # Valeurs
         statut = event.get("statut")
         statut = Statut(id=statut["id"], name=statut["name"])
@@ -252,6 +250,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def update_statut_player(self, statut_id):
+        from authentification.models import Infosession
+
         player = self.scope.get("player")
         session = self.scope.get("session")
         info_player = Infosession.objects.get(player=player, session=session)
@@ -260,18 +260,27 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def launch_new_round(self, session):
+
+        from game.methods import new_round
         new_round(session)
 
     @database_sync_to_async
     def notify_player_for_his_turn_async(self, player_time_end, round, session):
+        from game.tasks import notify_player_for_his_turn
         notify_player_for_his_turn(round, session, player_time_end=player_time_end)
 
     @database_sync_to_async
     def get_session(self, session_id):
+        from authentification.models import Session
+
         return Session.objects.filter(id=session_id).first()
 
     @database_sync_to_async
     def update_next_player(self, round_id, session):
+
+        from game.methods import notify_websocket, update_player_turn
+        from authentification.models import Infosession, Round, Player, HandPlayer, Domino
+
         round = Round.objects.filter(id=round_id).first()
         if not round:
             print("Round not found")
@@ -377,26 +386,36 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_statut(self, statut_id):
+        from authentification.models import Statut
+
         return Statut.objects.filter(id=statut_id).first()
 
     @database_sync_to_async
     def update_player_statut(self, session, player, statut):
+        from authentification.models import Infosession
+
         info_player = Infosession.objects.filter(session=session, player=player).first()
         info_player.statut = statut
         info_player.save()
 
     @database_sync_to_async
     def get_game(self):
+        from authentification.models import Game
+
         game = Game.objects.filter(session=self.scope.get("session"), statut_id=1).first()
         return game
 
     @database_sync_to_async
     def have_round_open(self):
+        from authentification.models import Round, Game
+
         game = Game.objects.filter(session=self.scope.get("session"), statut_id=1).first()
         return Round.objects.filter(game=game, statut_id=11).first()
 
     @database_sync_to_async
     def get_game_info(self, game):
+        from authentification.models import Round, HandPlayer
+
         player = self.scope['player']
         session = self.scope["session"]
         this_round = Round.objects.filter(session=session,game=game, statut_id=11).first()

@@ -15,7 +15,7 @@ class JWTAuthMiddleware(BaseMiddleware):
     Middleware pour authentifier les connexions WebSocket avec un token JWT.
     """
     async def __call__(self, scope, receive, send):
-        query_string = parse_qs(scope["query_string"].decode())
+        query_string = parse_qs(scope['query_string'].decode())
         token = query_string.get("token", [None])[0]  # Récupérer le token JWT
         session_id = query_string.get("session_id", [None])[0]  # Récupérer le token JWT
         scope["authorized"] = False  # Par défaut, le joueur passe pas
@@ -54,9 +54,9 @@ class JWTAuthMiddleware(BaseMiddleware):
             await self.close_connection(send, "Le joueur n'est pas dans la session", 4404)
             return
 
-        scope["player"] = player  # Associe le joueur à la connexion
-        scope["session"] = session  # Associe la session à la connexion
-        scope["authorized"] = True
+        scope['player'] = player  # Associe le joueur à la connexion
+        scope['session'] = session  # Associe la session à la connexion
+        scope['authorized'] = True
         return await super().__call__(scope, receive, send)
 
     async def close_connection(self, send, message, code=401):

@@ -5,6 +5,7 @@ services:
     env: python
     region: ohio
     plan: free
+    autoDeploy: false  # Désactive le déploiement automatique global
     buildCommand: |
       cd API_Domino
       pip install -r requirements.txt
@@ -13,28 +14,29 @@ services:
     startCommand: cd API_Domino && daphne -b 0.0.0.0 -p $PORT API_Domino.asgi:application
     envVars:
       - key: DATABASE_URL
-        sync: false  # On va la définir sur Render
+        sync: false
       - key: REDIS_URL
-        sync: false  # On va la définir sur Render
+        sync: false
       - key: SECRET_KEY
         sync: false
       - key: DEBUG
         value: "False"
 
   - type: worker
-    name: API_Domino_Celery_Worker
+    name: API_Domino_Celery
     runtime: python
     env: python
     region: ohio
     plan: free
+    autoDeploy: false  # Désactive le déploiement automatique global
     buildCommand: |
       cd API_Domino
       pip install -r requirements.txt
     startCommand: cd API_Domino && celery -A API_Domino worker --loglevel=info
     envVars:
       - key: DATABASE_URL
-        sync: false  # On va la définir sur Render
+        sync: false
       - key: REDIS_URL
-        sync: false  # On va la définir sur Render
+        sync: false
       - key: SECRET_KEY
         sync: false

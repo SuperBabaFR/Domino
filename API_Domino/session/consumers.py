@@ -23,7 +23,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             await self.update_statut_player(8)  # on met a active
 
         # Group name individuel
-        self.individual_group_name = f"player_{self.scope["player"].id}"
+        self.individual_group_name = f"player_{self.scope['player'].id}"
 
         # Ajouter la connexion au groupe unique pour les messages directs
         await self.channel_layer.group_add(
@@ -75,7 +75,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
 
         if "need_refresh" in data["action"]:
-            group_name = f"player_{self.scope["player"].id}"
+            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name,
                 {
@@ -85,7 +85,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
 
         if "mix_the_dominoes" in data["action"]:
-            group_name = f"player_{self.scope["player"].id}"
+            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name,
                 {
@@ -95,7 +95,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
 
         if "player_statut" in data["action"]:
-            group_name = f"player_{self.scope["player"].id}"
+            group_name = f"player_{self.scope['player'].id}"
             statut = await self.get_statut(data["data"]["statut"])
             if not statut:
                 return
@@ -110,7 +110,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
         # Un joueur boudé passe son tour
         if "game.pass" in data["action"]:
-            group_name = f"player_{self.scope["player"].id}"
+            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name, {
                     "type": "player_pass",
@@ -287,14 +287,14 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
         # Vérifier si quelqu'un n'est pas boudé
         for hand in hand_players:
-            if not hand.blocked and hand.player != self.scope["player"]:
+            if not hand.blocked and hand.player != self.scope['player']:
                 partie_blocked = False
-            if hand.player == self.scope["player"]:
+            if hand.player == self.scope['player']:
                 hand_player = hand
 
         # si tout le monde est boudé
         if partie_blocked:
-            player = self.scope["player"]
+            player = self.scope['player']
             # Finir le round
             winner = dict(score=999, player=Player())
             player_id_list = json.loads(session.order)
@@ -333,7 +333,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             notify_websocket.apply_async(args=("session", session.id, data_finish))
 
             # Met a jour le dernier gagnant
-            session.game_id.last_winner = self.scope["player"]
+            session.game_id.last_winner = self.scope['player']
 
             if type_finish == "game":
                 session.game_id.statut_id = 2  # Met a jour le statut de la partie
@@ -397,7 +397,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_game_info(self, game):
-        player = self.scope["player"]
+        player = self.scope['player']
         session = self.scope["session"]
         this_round = Round.objects.filter(session=session,game=game, statut_id=11).first()
         if not this_round:

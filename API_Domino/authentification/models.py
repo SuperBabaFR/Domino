@@ -29,6 +29,7 @@ class Statut(models.Model):
 
 
 class Session(models.Model):
+    name = models.TextField(max_length=30)
     code = models.CharField(max_length=8, unique=True)
     hote = models.ForeignKey(Player, models.DO_NOTHING)
     game_id = models.ForeignKey('Game', models.SET_NULL, null=True, blank=True, db_column="game_id")
@@ -37,6 +38,7 @@ class Session(models.Model):
     max_players_count = models.IntegerField(default=4)
     reflexion_time = models.IntegerField(default=20)
     definitive_leave = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'Session'

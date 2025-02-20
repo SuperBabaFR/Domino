@@ -8,9 +8,9 @@ from channels.layers import get_channel_layer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
+from authentification.models import Session, Player, Game, Round, HandPlayer, Infosession
 from authentification.views import IsAuthenticatedWithJWT
-
+from game.methods import notify_websocket
 
 @shared_task
 def notify_session(session_id, action, data=None):
@@ -40,31 +40,29 @@ def nuke_session(session):
     HandPlayer.objects.filter(session=session).delete()
     session.delete()
 
+
 class CreateSessionView(APIView):
     permission_classes = [IsAuthenticatedWithJWT]
+
     def post(self, request):
         # Récupère les infos
         player_hote = request.player
         data_request = request.data
 
         # Récupère les infos
-        max_players_count = data_request.get('max_players_count', False)
-        reflexion_time = data_request.get('reflexion_time', False)
+        max_players_count = data_request.get('max_players_count', 4)
+        reflexion_time = data_request.get('reflexion_time', 30)
         definitive_leave = data_request.get('definitive_leave', False)
+        is_public = data_request.get('is_public', False)
+        session_name = data_request.get('session_name', f"Session de {player_hote.pseudo}")
 
         # Vérifie reflexion_time
-        if not reflexion_time:
-            return Response(dict(code=400, message="reflexion_time manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-        elif reflexion_time < 20 or reflexion_time > 60:
+        if reflexion_time < 20 or reflexion_time > 60:
             return Response(dict(code=400, message="Le temps de réflexion doit être compris entre 20 et 60 secondes."),
-                status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Vérifie max_players_count
-        if not max_players_count:
-            return Response(dict(code=400, message="max_players_count manquant", data=None),
-                            status=status.HTTP_400_BAD_REQUEST)
-        elif max_players_count < 2 or max_players_count > 4:
+        if max_players_count < 2 or max_players_count > 4:
             return Response(dict(code=400, message="Le nombre de joueurs doit être compris entre 2 et 4."),
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -86,7 +84,9 @@ class CreateSessionView(APIView):
             order=order_str,
             max_players_count=max_players_count,
             reflexion_time=reflexion_time,
-            definitive_leave=definitive_leave
+            definitive_leave=definitive_leave,
+            name=session_name,
+            is_public=is_public
         )
         # Renseigne les infos de session du joueurhôte
         infosess = Infosession.objects.create(
@@ -100,18 +100,20 @@ class CreateSessionView(APIView):
             "message": "Session créée",
             "data": {
                 "session_id": session.id,
+                "name": session_name,
                 "code": session.code,
                 "hote": player_hote.pseudo,
                 "max_players_count": session.max_players_count,
                 "reflexion_time": session.reflexion_time,
-                "definitive_leave": session.definitive_leave
+                "definitive_leave": session.definitive_leave,
+                "is_public": is_public
             }
         }, status=status.HTTP_201_CREATED)
 
 
 class JoinSessionView(APIView):
-
     permission_classes = [IsAuthenticatedWithJWT]
+
     def get(self, request):
         # Récupère les infos
         session_code = request.query_params.get('session_code', None)
@@ -179,19 +181,21 @@ class JoinSessionView(APIView):
             "message": "Session disponible",
             "data": {
                 "session_id": session.id,
+                "name": session.name,
                 "session_code": session.code,
                 "hote": session.hote.pseudo,
                 "max_players_count": session.max_players_count,
                 "reflexion_time": session.reflexion_time,
                 "definitive_leave": session.definitive_leave,
-                "players": players_info
+                "players": players_info,
+                "is_public": session.is_public
             }
         }, status=status.HTTP_200_OK)
 
 
 class LeaveSessionView(APIView):
-
     permission_classes = [IsAuthenticatedWithJWT]
+
     def get(self, request):
         session_id = request.query_params.get('session_id', None)
         player = request.player
@@ -238,7 +242,6 @@ class LeaveSessionView(APIView):
         else:
             Infosession.objects.filter(session=session, player=player).update(statut_id=10)
 
-
         # Notifie les joueurs connectés à la session du joueur qui a quitté
         data_notify = dict(
             player=player.pseudo
@@ -253,4 +256,154 @@ class LeaveSessionView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-# class
+class SessionListView(APIView):
+    permission_classes = [IsAuthenticatedWithJWT]
+
+    def get(self, request):
+        data = dict(code=200, message="Sessions disponible", data=[])
+
+        sessions_info = []
+        sessions = list(Session.objects.all())
+
+        if len(sessions) == 0:
+            return Response(dict(code=404, message="Aucune Session disponible", data=[]),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        for session in sessions:
+            code = session.code if session.is_public else "(HIDE)"
+            player_count = len(json.loads(session.order))
+            info = dict(session_name=session.name, code=code, player_count=player_count,
+                        max_players_count=session.max_players_count, statut=session.statut.name,
+                        is_public=session.is_public)
+            sessions_info.append(info)
+
+        data['data'] = dict(sessions=sessions_info)
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class SessionUpdateInfoView(APIView):
+    permission_classes = [IsAuthenticatedWithJWT]
+
+    def post(self, request):
+        data = dict(code=200, message="Session mise à jour", data=[])
+        player_hote = request.player
+        data_request = request.data
+
+        # Récupère les infos
+        session_id = data_request.get('session_id', None)
+        session_name = data_request.get('session_name', None)
+        hote_pseudo = data_request.get('hote_pseudo', None)
+        order_pseudo = data_request.get('order', None)
+        max_players_count = data_request.get('max_players_count', None)
+        reflexion_time = data_request.get('reflexion_time', None)
+        definitive_leave = data_request.get('definitive_leave', None)
+        is_public = data_request.get('is_public', None)
+
+        if not session_id:
+            return Response(dict(code=400, message=f'session_id manquant', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # Objets
+        session = Session.objects.filter(id=session_id).first()
+
+        # Vérifie l'existence de la session
+        if not session:
+            return Response(dict(code=400, message=f'Session inexistante', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        session_order = json.loads(session.order)
+
+
+
+        # Joueur pas hote de session
+        if session.hote != player_hote:
+            return Response(dict(code=404, message="joueur non hote de la session", data=None),
+                            status=status.HTTP_404_NOT_FOUND)
+
+        # Vérifie reflexion_time
+        if reflexion_time is not None and type(reflexion_time) is int:
+            if reflexion_time < 20 or reflexion_time > 60:
+                return Response(
+                    dict(code=400, message="Le temps de réflexion doit être compris entre 20 et 60 secondes.", data=None),
+                    status=status.HTTP_400_BAD_REQUEST)
+            session.reflexion_time = reflexion_time
+
+        # Changer le nombre max de joueurs
+        if max_players_count is not None and type(max_players_count) is int:
+            # Vérifie max_players_count
+            if max_players_count < 2 or max_players_count > 4:
+                return Response(dict(code=400, message="Le nombre de joueurs doit être compris entre 2 et 4.", data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            if len(session_order) > max_players_count:
+                return Response(dict(code=400, message="Il y'a trop de joueurs dans la session", data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
+            session.max_players_count = max_players_count
+
+        # Changer cette propriété (flemme d'écrire)
+        if definitive_leave is not None and type(definitive_leave) is bool:
+            session.definitive_leave = definitive_leave
+
+        # Changer la visibilité de la session
+        if is_public is not None and type(is_public) is bool:
+            session.is_public = is_public
+
+        # CHanger le nom de la session
+        if session_name is not None and type(session_name) is str:
+            session.name = session_name
+
+        # Changer l'ordre de passage
+        if order_pseudo is not None:
+            order = []
+            for pseudo in order_pseudo:
+                player_id = Player.objects.filter(pseudo=pseudo).values_list("id", flat=True).first()
+                if player_id is None:
+                    Response(dict(code=400, message="Joueur mentionné non existant", data=None),
+                             status=status.HTTP_400_BAD_REQUEST)
+                order.append(player_id)
+
+            if set(order) != set(session_order):
+                Response(dict(code=400, message="Des joueurs ont étés retirés ou ajoutés dans l'ordre transmit",
+                              data=None),
+                         status=status.HTTP_400_BAD_REQUEST)
+
+            session.order = json.dumps(order)
+
+        if hote_pseudo is not None and type(hote_pseudo) is str:
+            new_hote = Player.objects.filter(pseudo=hote_pseudo).first()
+
+            if new_hote is None:
+                return Response(dict(code=400, message="joueur non existant", data=None), status=status.HTTP_400_BAD_REQUEST)
+
+            new_hote_info = Infosession.objects.filter(session=session, player=new_hote).first()
+
+            infos_valid = False
+
+            if new_hote_info is not None:
+                if new_hote.id in session_order or new_hote_info.statut_id in [6,7]:
+                    session.hote = new_hote
+                    infos_valid = True
+
+            if not infos_valid and new_hote_info is not None:
+                return Response(dict(code=400, message="joueur non disponible ou pas dans la session", data=None),
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        order_player = []
+
+        for player_id in json.loads(session.order):
+            player = Player.objects.get(id=player_id)
+            order_player.append(player.pseudo)
+
+        session.save()
+
+        new_session_infos = dict(session_id=session.id, name=session.name,
+                            hote=session.hote.pseudo, max_players_count=session.max_players_count,
+                            reflexion_time=session.reflexion_time, definitive_leave=session.definitive_leave,
+                            order=order_player, is_public=session.is_public)
+
+        notify_websocket.apply_async(args=("session", session.id, new_session_infos))
+
+
+        data["data"] = new_session_infos
+        return Response(data, status=status.HTTP_200_OK)

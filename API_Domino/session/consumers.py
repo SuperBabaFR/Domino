@@ -45,7 +45,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         if not self.scope["authorized"]:  # Vérifie si le joueur est authentifié
             return  # Ferme DIRECTEMENT la connexion si non authentifié
 
-        await self.update_statut_player(10)  # on met a active
+        await self.update_statut_player(10)  # on met a hors ligne
         if self.group_name and self.individual_group_name:
             # Retirer la connexion du groupe de la session
             await self.channel_layer.group_discard(

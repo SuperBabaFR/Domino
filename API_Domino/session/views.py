@@ -131,6 +131,9 @@ class JoinSessionView(APIView):
         # Charge la liste des joueurs présents
         order = json.loads(session.order)
 
+        if session.statut_id == 5 and (session.definitive_leave or player.id not in order):
+            return Response({"code": 401, "message": "La session est en partie ou n'accepte pas les ragequitters "}, status=status.HTTP_400_BAD_REQUEST)
+
         # Vérifie si le joueur à déjà été dans la session
         if player.id not in order:
             # Si y'a de la place pour lui

@@ -9,7 +9,6 @@ services:
     buildCommand: |
       cd API_Domino
       pip install -r requirements.txt
-      python manage.py collectstatic --noinput
       python manage.py migrate
     startCommand: cd API_Domino && daphne -b 0.0.0.0 -p $PORT API_Domino.asgi:application
     envVars:

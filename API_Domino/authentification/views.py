@@ -7,6 +7,7 @@ import jwt
 import io
 
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import APIException
 from rest_framework.permissions import BasePermission
 from rest_framework import status
@@ -19,6 +20,13 @@ from authentification.models import Player
 
 # AUTHENTIFICATION
 
+class PlayerNotFoundException(APIException):
+    """Exception levée lorsque le joueur n'est pas trouvé dans la base de données."""
+    status_code = HTTPStatus.UNAUTHORIZED
+    default_detail = {"code": 401, "message": "Le joueur avec cet ID n'existe pas."}
+    default_code = "token_invalid"
+
+
 class IsAuthenticatedWithJWT(BasePermission):
     """Permission personnalisée pour valider les tokens JWT."""
 
@@ -29,11 +37,20 @@ class IsAuthenticatedWithJWT(BasePermission):
         token = auth_header.split(" ")[1]
         try:
             payload = verify_token(token, token_type="access")
-            request.player_id = payload["player_id"]
-            return True
+            player_id = payload.get("player_id")
+
+            if not player_id:
+                raise InvalidAccessTokenException()
+
+            try:
+                player = Player.objects.get(id=player_id)
+                request.player = player  # Attache l'objet Player à la requête pour un accès ultérieur
+                return True
+            except ObjectDoesNotExist:
+                raise PlayerNotFoundException()
+
         except ValueError as e:
             raise InvalidAccessTokenException()
-
 
 # Create your views here.
 def generate_tokens(player_id):

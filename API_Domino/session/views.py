@@ -9,6 +9,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from authentification.models import Session, Player, Game, Domino, Round, HandPlayer, Infosession, Statut
+from authentification.views import IsAuthenticatedWithJWT
+
 
 @shared_task
 def notify_session(session_id, action, data=None):
@@ -24,34 +26,6 @@ def notify_session(session_id, action, data=None):
     )
 
 
-def verify_player(data):
-    # - Validation des entrées :
-    player_id = data.get("player_id")
-    if not player_id:
-        return Response(dict(code=400, message="player_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
-    player = Player.objects.filter(id=player_id).first()
-
-    if not player:
-        return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
-
-
-def verify_player_session(player_id, session_id):
-    # - Validation des entrées :
-    if not player_id:
-        return Response(dict(code=400, message="player_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
-    player = Player.objects.filter(id=player_id).first()
-
-    if not player:
-        return Response(dict(code=404, message="joueur inexistant", data=None), status=status.HTTP_404_NOT_FOUND)
-
-    if not session_id:
-        return Response(dict(code=400, message="session_id manquant", data=None), status=status.HTTP_400_BAD_REQUEST)
-    session = Session.objects.filter(id=session_id).first()
-
-    if not session:
-        return Response(dict(code=404, message="session inexistante", data=None), status=status.HTTP_404_NOT_FOUND)
-
-
 def generate_session_code(length=8):
     while True:
         session_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
@@ -60,60 +34,38 @@ def generate_session_code(length=8):
 
 
 def nuke_session(session):
-    infosession = Infosession.objects.filter(session=session)
-    game = Game.objects.filter(session=session)
-    round = Round.objects.filter(session=session)
-    handplayer = HandPlayer.objects.filter(session=session)
-    if handplayer:
-        handplayer.delete()
-    if infosession:
-        infosession.delete()
-    if game:
-        game.delete()
-    if round:
-        round.delete()
+    Infosession.objects.filter(session=session).delete()
+    Game.objects.filter(session=session).delete()
+    Round.objects.filter(session=session).delete()
+    HandPlayer.objects.filter(session=session).delete()
     session.delete()
 
 class CreateSessionView(APIView):
-    permission_classes = []
-
-    # permission_classes = [IsAuthenticatedWithJWT]
+    permission_classes = [IsAuthenticatedWithJWT]
     def post(self, request):
+        # Récupère les infos
+        player_hote = request.player
         data_request = request.data
 
-        # Vérifie les entrées communes
-        response = verify_player(data_request)
-        if response:
-            return response
-
         # Récupère les infos
-        player_hote = Player.objects.filter(id=data_request.get('player_id')).first()
-        max_players_count = data_request.get('max_players_count')
-        reflexion_time = data_request.get('reflexion_time')
+        max_players_count = data_request.get('max_players_count', False)
+        reflexion_time = data_request.get('reflexion_time', False)
         definitive_leave = data_request.get('definitive_leave', False)
 
         # Vérifie reflexion_time
         if not reflexion_time:
             return Response(dict(code=400, message="reflexion_time manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
-
-        if reflexion_time < 20 or reflexion_time > 60:
-            return Response(
-                {"code": 400, "message": "Le temps de réflexion doit être compris entre 20 et 60 secondes."},
+        elif reflexion_time < 20 or reflexion_time > 60:
+            return Response(dict(code=400, message="Le temps de réflexion doit être compris entre 20 et 60 secondes."),
                 status=status.HTTP_400_BAD_REQUEST)
 
         # Vérifie max_players_count
         if not max_players_count:
             return Response(dict(code=400, message="max_players_count manquant", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
-
-        if max_players_count < 2 or max_players_count > 4:
-            return Response({"code": 400, "message": "Le nombre de joueurs doit être compris entre 2 et 4."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        # Vérifie definitive_leave
-        if definitive_leave is None:
-            return Response(dict(code=400, message="definitive_leave manquant", data=None),
+        elif max_players_count < 2 or max_players_count > 4:
+            return Response(dict(code=400, message="Le nombre de joueurs doit être compris entre 2 et 4."),
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Supprime la session existante s'il essaye de creer une nouvelle
@@ -158,20 +110,12 @@ class CreateSessionView(APIView):
 
 
 class JoinSessionView(APIView):
-    permission_classes = []
 
-    # permission_classes = [IsAuthenticatedWithJWT]
-    def post(self, request):
-        data_request = request.data
-
-        # Vérifie les entrées communes
-        response = verify_player(data_request)
-        if response:
-            return response
-
+    permission_classes = [IsAuthenticatedWithJWT]
+    def get(self, request):
         # Récupère les infos
-        player = Player.objects.filter(id=data_request.get('player_id')).first()
-        session_code = data_request.get('session_code')
+        session_code = request.query_params.get('session_code', None)
+        player = request.player
 
         # Vérifie que le code est fourni
         if not session_code:
@@ -247,16 +191,18 @@ class JoinSessionView(APIView):
 
 class LeaveSessionView(APIView):
 
+    permission_classes = [IsAuthenticatedWithJWT]
     def get(self, request):
-        player_id = request.query_params.get('player_id', None)
         session_id = request.query_params.get('session_id', None)
+        player = request.player
 
-        response = verify_player_session(player_id, session_id)
-        if response:
-            return response
-
-        player = Player.objects.filter(id=player_id).first()
+        if not session_id:
+            return Response(dict(code=400, message="session_id manquant", data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
         session = Session.objects.filter(id=session_id).first()
+
+        if not session:
+            return Response(dict(code=404, message="session inexistante", data=None), status=status.HTTP_404_NOT_FOUND)
 
         if session.hote == player:
             # Notifie les joueurs connectés à la session qu'elle a été supprimée
@@ -305,3 +251,6 @@ class LeaveSessionView(APIView):
             "message": "Session quittée",
             "data": None
         }, status=status.HTTP_200_OK)
+
+
+# class

@@ -6,36 +6,29 @@ from django.db import connection
 from rest_framework.utils import json
 from rest_framework.views import APIView
 from authentification.models import Session, Infosession, Game
+from authentification.views import IsAuthenticatedWithJWT
 from game.methods import *
 from game.serializers import DominoSerializer
 from game.tasks import play_domino, auto_play_domino_task
 
 
 class CreateGame(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticatedWithJWT]
 
-    # permission_classes = [IsAuthenticatedWithJWT]
-
-    def post(self, request):
-        data_request = request.data
+    def get(self, request):
+        session_id = request.query_params.get('session_id', None)
         data_return = dict(code=201, message="Nouvelle partie lancée", data=None)
 
-        # Vérifie l'existance des keys dans le body
-        keys = ["session_id", "player_id"]
-
-        response = verify_values(data_request, keys)
-        if response:
-            return response
+        if not session_id:
+            return Response(dict(code=400, message=f'session_id manquant', data=None), status=status.HTTP_400_BAD_REQUEST)
 
         # Objets
-        session = Session.objects.filter(id=data_request.get("session_id")).first()
-        player_hote = Player.objects.filter(id=data_request.get("player_id")).first()
+        session = Session.objects.filter(id=session_id).first()
+        player_hote = request.player
 
-        # Vérifie l'existence des objets
-        objets_list = dict(session=session, player=player_hote)
-        response = verify_objets(objets_list)
-        if response:
-            return response
+        # Vérifie l'existence de la session
+        if not session:
+            return Response(dict(code=400, message=f'Session inexistante', data=None), status=status.HTTP_400_BAD_REQUEST)
 
         # Joueur pas hote de session
         if session.hote != player_hote:
@@ -85,18 +78,14 @@ class CreateGame(APIView):
 
 
 class PlaceDomino(APIView):
-    permission_classes = []
-
-    # permission_classes = [IsAuthenticatedWithJWT]
+    permission_classes = [IsAuthenticatedWithJWT]
 
     def post(self, request):
         data_request = request.data
-        #
-        # pr = cProfile.Profile()
-        # pr.enable()
+        player = request.player
 
         # Vérifie l'existance des keys dans le body
-        keys = ["session_id", "player_id", "round_id", "domino_id", "side"]
+        keys = ["session_id", "round_id", "domino_id", "side"]
 
         response = verify_values(data_request, keys)
         if response:
@@ -104,7 +93,6 @@ class PlaceDomino(APIView):
 
         # Objets
         session = Session.objects.filter(id=data_request.get("session_id")).first()
-        player = Player.objects.filter(id=data_request.get("player_id")).first()
         domino = Domino.objects.filter(id=data_request.get("domino_id")).first()
         round = Round.objects.filter(id=data_request.get("round_id")).first()
         # Liste
@@ -113,7 +101,7 @@ class PlaceDomino(APIView):
         side = data_request.get("side")
 
         # Vérifie l'existence des objets
-        objets_list = dict(session=session, player=player, domino=domino, round=round)
+        objets_list = dict(session=session, domino=domino, round=round)
         response = verify_objets(objets_list)
         if response:
             return response
@@ -167,17 +155,10 @@ class PlaceDomino(APIView):
 
         data_return = play_domino(player, session, round, domino_list, side, playable_values, domino)
 
-        # pr.disable()
-        # s = io.StringIO()
-        # ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
-        # ps.print_stats()
-        #
-        # print(s.getvalue())  # Affiche le profil dans la console
-
         return Response(data_return, status=status.HTTP_200_OK)
 
 class DominoList(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticatedWithJWT]
     def get(self, request):
         serializer = DominoSerializer(Domino.objects.all(), many=True)
         data = dict(code=200, message="Liste de tout les dominos", data=dict(domino_list=serializer.data))

@@ -25,8 +25,8 @@ DEBUG = os.getenv('DEBUG')
 PROD = False
 
 ALLOWED_HOSTS = [
-    os.getenv("RENDER_EXTERNAL_HOSTNAME", "api-domino.onrender.com"),
-                 "localhost",
+    os.getenv("EXTERNAL_HOSTNAME", "localhost"),
+    "localhost",
 ]
 
 # Application definition

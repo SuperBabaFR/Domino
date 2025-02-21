@@ -25,7 +25,7 @@ func _on_traiter_resultat(result, response_code, headers, body):
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
 	if (response_code == 200):
-		Global.set_user_data(response["data"])
+		Global.set_player_data(response.data)
 		get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
 	else:
 		#get_tree().change_scene_to_file("res://connexion.tscn")

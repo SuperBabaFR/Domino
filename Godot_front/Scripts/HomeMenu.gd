@@ -1,11 +1,13 @@
 extends Control
 
 func _ready():
-	var data = Global.get_all_user_data()
+	var data = Global.get_all_player_data()
+	if not Global.is_logged_in:
+		return
 	#if data:
 		#print(data)
-	if data.has("data") and data["data"].has("image"):
-		var base64_string = data["data"]["image"]
+	if data.has("image"):
+		var base64_string = data.image
 		base64_string = clean_base64(base64_string)  # Nettoie la chaîne base64
 
 		#print("🔍 Base64 reçu (50 premiers caractères) :", base64_string.substr(0, 50))
@@ -17,7 +19,7 @@ func _ready():
 		$ProfileImage.visible = true
 		$ProfileImage.queue_redraw()
 		  # Applique l'image à TextureRect
-	var pseudo = data.data.pseudo
+	var pseudo = data.pseudo
 	$ProfileImage/Pseudo.text = pseudo
 	#var base64_string = data.data.get("image)
 	#if base64_string != "":

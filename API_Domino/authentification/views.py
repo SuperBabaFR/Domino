@@ -125,10 +125,10 @@ class tokenRefreshView(APIView):
 
             tokens = generate_tokens(id_player)
             return Response({
-                'code': 200,
-                'message': 'Le token à bien été actualisé',
-                'data': tokens["access_token"]
-            }, status=status.HTTP_200_OK)
+                'code': 201,
+                'message': 'Authentification réussie',
+                'data': {'access_token': tokens['access_token']}
+            }, status=status.HTTP_201_CREATED)
 
         except ValueError as e:
             return Response({

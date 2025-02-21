@@ -23,7 +23,7 @@ from session.views import CreateSessionView, JoinSessionView, LeaveSessionView, 
 
 urlpatterns = [
     # Authentification
-    path('token/refresh', tokenRefreshView.as_view(), name='tokenRefresh'),
+    path('access', tokenRefreshView.as_view(), name='tokenRefresh'),
     path('signup', SignupView.as_view(), name='signup'),
     path('login', LoginView.as_view(), name='login'),
     path('stats', StatsView.as_view(), name='stats'),

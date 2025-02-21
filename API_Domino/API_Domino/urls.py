@@ -26,6 +26,7 @@ urlpatterns = [
     path('token/refresh', tokenRefreshView.as_view(), name='tokenRefresh'),
     path('signup', SignupView.as_view(), name='signup'),
     path('login', LoginView.as_view(), name='login'),
+    path('stats', StatsView.as_view(), name='stats'),
     # Session
     path('create', CreateSessionView.as_view(), name='create'),
     path('join', JoinSessionView.as_view(), name='join'),

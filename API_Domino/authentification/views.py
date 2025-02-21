@@ -9,7 +9,7 @@ import io
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import APIException
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -125,10 +125,10 @@ class tokenRefreshView(APIView):
 
             tokens = generate_tokens(id_player)
             return Response({
-                'code': 200,
-                'message': 'Le token à bien été actualisé',
-                'data': tokens["access_token"]
-            }, status=status.HTTP_200_OK)
+                'code': 201,
+                'message': 'Authentification réussie',
+                'data': {'access_token': tokens['access_token']}
+            }, status=status.HTTP_201_CREATED)
 
         except ValueError as e:
             return Response({
@@ -278,6 +278,14 @@ class LoginView(APIView):
 
         return Response(data=data_return, status=status.HTTP_200_OK)
 
+
+class StatsView(APIView):
+    permission_classes = [IsAuthenticatedWithJWT]
+    def get(self, request):
+        player = request.player
+        data_return = dict(code=200, message="Stats du joueur", data=dict(wins=player.wins, pigs=player.pigs, games=player.games))
+
+        return Response(data=data_return, status=status.HTTP_200_OK)
 
 # ERRORS
 class InvalidAccessTokenException(APIException):

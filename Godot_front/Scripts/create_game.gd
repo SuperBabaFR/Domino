@@ -43,7 +43,7 @@ func _on_btn_creer_pressed():
 	
 	print(json_body)
 	
-	Global.makeRequest("", json_body, self._on_session_created, )
+	Global.makeRequest("", self._on_session_created, json_body)
 	
 
 func _on_session_created(result, response_code, headers, body):

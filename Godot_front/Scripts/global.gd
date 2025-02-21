@@ -20,7 +20,7 @@ func get_player_info(key: String, default_value = null):
 func get_all_player_data():
 	return player_data
 
-func reset_user():
+func reset_player():
 	player_data.clear()
 	is_logged_in = false
 	token_access_fresh = false
@@ -35,7 +35,7 @@ func pull_list_dominos():
 
 func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	var json = JSON.new()
-	json = json.parse(body.get_string_from_utf8())
+	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
 
 	if response_code == HTTPClient.RESPONSE_CREATED:

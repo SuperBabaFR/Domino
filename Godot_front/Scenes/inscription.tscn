@@ -78,4 +78,20 @@ size = Vector2i(303, 180)
 
 [node name="SignUpRequest" type="HTTPRequest" parent="."]
 
+[node name="ButtonConnect" type="Button" parent="."]
+layout_mode = 0
+offset_left = 828.0
+offset_top = 45.0
+offset_right = 976.0
+offset_bottom = 93.0
+text = "Se connecter ?"
+
+[node name="ButtonPrincipal" type="Button" parent="."]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 41.0
+offset_right = 173.0
+offset_bottom = 92.0
+text = "Retour"
+
 [connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]

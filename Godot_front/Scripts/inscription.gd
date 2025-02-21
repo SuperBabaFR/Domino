@@ -6,6 +6,8 @@ extends Control
 @onready var button_inscrire = $ButtonInscrire
 @onready var line_edit_pseudo = $LineEditPseudo
 @onready var line_edit_mdp = $LineEditMdp
+@onready var button_principal = $ButtonPrincipal  
+@onready var button_connect = $ButtonConnect  
 
 var selected_image_path = ""  # Stocke le chemin de l’image sélectionnée
 var image_base64 = ""  # Stocke l’image convertie en Base64
@@ -41,6 +43,10 @@ func _ready():
 	button_inscrire.pressed.connect(_on_inscription_pressed)
 	file_dialog.file_selected.connect(_on_file_dialog_file_selected)
 	$SignUpRequest.request_completed.connect(self._on_request_completed)
+	
+	# Connexion des boutons de navigation
+	button_connect.pressed.connect(_on_ButtonConnect_pressed)
+	button_principal.pressed.connect(_on_ButtonPrincipal_pressed)
 
 # Ouvre la boîte de dialogue pour sélectionner une image
 func _on_import_image_pressed():
@@ -134,6 +140,16 @@ func _on_request_completed(result, response_code, headers, body):
 		#get_tree().change_scene_to_file("res://connexion.tscn")
 	print(response.message)
 	print(response_code) #Afficher le message à l'utilisateur a la place du print
+	
+	# Bouton qui renvoie vers le formulaire de connexion
+func _on_ButtonConnect_pressed():
+	print("Bouton Connect pressé")
+	get_tree().change_scene_to_file("res://Scenes/connexion.tscn")
+
+# Bouton qui renvoie vers la page principale
+func _on_ButtonPrincipal_pressed():
+	print("Bouton Principal pressé")
+	get_tree().change_scene_to_file("res://Scenes/principal.tscn")
 		
 	#print("🔄 Code réponse :", response_code)
 	#print("🔄 Réponse brute :", body.get_string_from_utf8())

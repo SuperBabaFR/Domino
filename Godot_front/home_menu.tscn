@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=3 uid="uid://bw41ecw7l4jya"]
+
+[ext_resource type="Script" path="res://HomeMenu.gd" id="1_f2poy"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
+font_size = 35
+
+[node name="HomeMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_f2poy")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 62.0
+offset_top = 15.0
+offset_right = 321.0
+offset_bottom = 137.0
+text = "Vinn pren on place!
+Si ki tab ou kay sizè?"
+label_settings = SubResource("LabelSettings_8kqgb")
+
+[node name="CreateBtn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 324.0
+offset_right = 272.0
+offset_bottom = 416.0
+text = "Créer"
+
+[node name="JoinBtn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 574.0
+offset_top = 327.0
+offset_right = 678.0
+offset_bottom = 419.0
+text = "Rejoindre"
+
+[node name="DisconnectBtn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 941.0
+offset_top = 327.0
+offset_right = 1045.0
+offset_bottom = 419.0
+text = "Déconnexion"
+
+[node name="ProfileImage" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 1124.0
+offset_top = 46.0
+offset_right = 1206.0
+offset_bottom = 126.0
+expand_mode = 1
+
+[node name="Pseudo" type="Label" parent="ProfileImage"]
+layout_mode = 0
+offset_left = -170.0
+offset_top = -17.0
+offset_right = -27.0
+offset_bottom = 25.0

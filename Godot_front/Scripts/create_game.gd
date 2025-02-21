@@ -43,4 +43,13 @@ func _on_btn_creer_pressed():
 	
 	print(json_body)
 	
+	Global.makeRequest("", json_body, self._on_session_created, )
+	
+
+func _on_session_created(result, response_code, headers, body):
+	var json = JSON.new()
+	json.parse(body.get_string_from_utf8())
+	var response = json.get_data()
+
+	print(response)
 	#get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")

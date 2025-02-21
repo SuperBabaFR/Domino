@@ -43,7 +43,7 @@ func _ready():
 	$JoinBtn.connect("pressed", _on_join_pressed)
 	$DisconnectBtn.connect("pressed", _on_disconnect_pressed)
 func _on_start_pressed():
-	get_tree().change_scene_to_file("res://scenes/GameScene.tscn")
+	get_tree().change_scene_to_file("res://Scenes/create_game.tscn")
 
 func _on_join_pressed():
 	get_tree().change_scene_to_file("res://Scenes/Rejoindre.tscn")

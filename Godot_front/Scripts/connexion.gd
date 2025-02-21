@@ -3,6 +3,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Inscription.connect("pressed", _on_Inscription_pressed)
 	$ConnexionButton.connect("pressed", _on_connexion_reussie) 
 	$LoginRequest.request_completed.connect(self._on_traiter_resultat)
 
@@ -30,6 +31,9 @@ func _on_traiter_resultat(result, response_code, headers, body):
 	else:
 		#get_tree().change_scene_to_file("res://connexion.tscn")
 		print(response.message) #Afficher le message à l'utilisateur a la place du print
+func _on_Inscription_pressed():
+	print("Bouton Connect pressé")
+	get_tree().change_scene_to_file("res://Scenes/inscription.tscn")
 		
 		
 		

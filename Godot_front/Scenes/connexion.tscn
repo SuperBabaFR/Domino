@@ -55,3 +55,19 @@ offset_bottom = 238.0
 text = "Se connecter "
 
 [node name="LoginRequest" type="HTTPRequest" parent="."]
+
+[node name="Inscription" type="Button" parent="."]
+layout_mode = 0
+offset_left = 921.0
+offset_top = 40.0
+offset_right = 1038.0
+offset_bottom = 70.0
+text = "M'inscrire"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 684.0
+offset_top = 45.0
+offset_right = 724.0
+offset_bottom = 68.0
+text = "Vous n'avez pas de compte ?"

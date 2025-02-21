@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://nlsw4mjmgo3i"]
+[gd_scene load_steps=5 format=3 uid="uid://bpa4lyv6g6gov"]
 
-[ext_resource type="Script" path="res://Scripts/mainmenupage.gd" id="1_lulgg"]
+[ext_resource type="Script" path="res://Scripts/principal.gd" id="1_8skug"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_rkx64"]
 font_size = 48
@@ -14,7 +14,7 @@ Button/styles/normal = SubResource("StyleBoxTexture_wslo3")
 [node name="Principal" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_lulgg")
+script = ExtResource("1_8skug")
 
 [node name="Titre" type="Label" parent="."]
 layout_mode = 0
@@ -35,3 +35,19 @@ offset_right = 757.0
 offset_bottom = 425.0
 theme = SubResource("Theme_u8b6w")
 text = "Start"
+
+[node name="ButtonConnexion" type="Button" parent="."]
+layout_mode = 0
+offset_left = 932.0
+offset_top = 356.0
+offset_right = 1115.0
+offset_bottom = 424.0
+text = "Connexion"
+
+[node name="ButtonInscription" type="Button" parent="."]
+layout_mode = 0
+offset_left = 273.0
+offset_top = 349.0
+offset_right = 453.0
+offset_bottom = 413.0
+text = "Inscription"

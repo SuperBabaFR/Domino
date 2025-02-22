@@ -27,4 +27,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY API_Domino/ /app/API_Domino/
 
 # Commande pour exécuter le Worker Celery
-CMD ["celery", "-A", "API_Domino", "worker", "--loglevel=info", "--without-gossip", "--without-mingle", "--without-heartbeat"]
+CMD ["celery", "-A", "API_Domino", "worker", "--loglevel=info"]

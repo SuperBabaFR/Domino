@@ -46,16 +46,23 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
-L'API est accessible sur **`http://127.0.0.1:8000/`**  
+L'API est accessible sur **`http://127.0.0.1:8000/`**
+
+📌 **Lancer le serveur Django :**  
+```bash
+celery -A API_Domino worker --log-level=info 
+```
 
 ### **2️⃣ Lancer le Front (Godot)**  
 
 📌 **Prérequis :** Godot Engine 4.3  
 
-Installer Godot 4.3 et importer le dossier Godot_front
+Installer **Godot 4.3** et importer le dossier **Godot_front**
 
-Le projet s’ouvre directement, prêt à être lancé en mode debug (une version exécutable est disponible).  
+Le projet s’ouvre directement, prêt à être lancé en **mode debug**.
+Pour utiliser en mode débug il faudra mettre en place tout l'environnement (Serveur Django, BDD PostgreSQL, BD Redis et le worker Celery)
 
+La version exécutable utilise l'api déployée sur Northflank.
 
 ## 📡 Endpoints API (Django DRF)  
 
@@ -129,7 +136,8 @@ ws://<EXTERNAL_HOSTNAME>/ws/session/?session_id=<SESSION_ID>&token=<ACCESS_TOKEN
 - **`<SESSION_ID>`** : Identifiant unique de la session en cours.
 - **`<ACCESS_TOKEN>`** : Token JWT valide pour l’authentification.
 
-Si le token est **absent ou invalide**, la connexion est refusée.
+Si le token ou l'id de session est **absent ou invalide**, la connexion est refusée.
+La connexion également sera refusée si le **token** correspond à un **joueur** qui ne fait pas partie de la **session** [mentionnée avec session_id]
 
 
 ### 📩 **Format des Messages WebSocket**
@@ -168,7 +176,7 @@ Le serveur envoie les messages suivants à **tous les joueurs** connectés à la
 | `game.someone_pass` | Un joueur a passé son tour |
 | `game.someone_win` | Un joueur a gagné la partie |
 | `game.blocked` | La partie est bloquée, tous les joueurs sont boudés |
-
+| `chat_message` | Un message publique envoyé par un autre joueur de la session |
 ---
 
 ### 🎯 **Messages WebSocket Reçus Uniquement par un Joueur**
@@ -179,8 +187,9 @@ Le serveur envoie certains messages **uniquement au joueur concerné** :
 
 | **Action** | **Description** |
 | --- | --- |
-| `game.your_turn` | C'est le tour du joueur |
+| `game.your_turn` | C'est le tour du joueur, contient également les dominos jouables |
 | `game.your_turn_no_match` | C'est le tour du joueur, mais aucun domino jouable |
+| `chat_message` | Un message privé envoyé par un autre joueur de la session |
 
 ---
 
@@ -194,6 +203,7 @@ Le client peut envoyer les messages suivants au serveur :
 | `game.pass` | Passer son tour |
 | `session.player_statut` | Modifier son statut (prêt ou non) |
 | `game.mix_the_dominoes` | Mélanger les dominos |
+| `session.chat_message` | Le joueur envoie un message à 1 ou tout les joueurs de la session |
 
 ## 🎮 Fonctionnalités du Jeu  
 

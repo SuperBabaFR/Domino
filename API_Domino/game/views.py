@@ -1,15 +1,10 @@
-import cProfile
-import pstats
-import io
-
-from django.db import connection
 from rest_framework.utils import json
 from rest_framework.views import APIView
-from authentification.models import Session, Infosession, Game
+from authentification.models import Game, Session
 from authentification.views import IsAuthenticatedWithJWT
 from game.methods import *
 from game.serializers import DominoSerializer
-from game.tasks import play_domino, auto_play_domino_task
+from game.tasks import play_domino, new_round, revoke_auto_play_task
 
 
 class CreateGame(APIView):
@@ -20,7 +15,8 @@ class CreateGame(APIView):
         data_return = dict(code=201, message="Nouvelle partie lancée", data=None)
 
         if not session_id:
-            return Response(dict(code=400, message=f'session_id manquant', data=None), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(code=400, message=f'session_id manquant', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Objets
         session = Session.objects.filter(id=session_id).first()
@@ -28,7 +24,8 @@ class CreateGame(APIView):
 
         # Vérifie l'existence de la session
         if not session:
-            return Response(dict(code=400, message=f'Session inexistante', data=None), status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(code=400, message=f'Session inexistante', data=None),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # Joueur pas hote de session
         if session.hote != player_hote:
@@ -66,12 +63,13 @@ class CreateGame(APIView):
         session.save()
 
         data_return["data"] = new_round(session, True)
+        #
+        # player_time_end = data_return["data"]["player_time_end"]
+        # round_id = data_return["data"]["round_id"]
+        # player_turn_id = Round.objects.get(id=round_id).player_turn.id
+        # dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
 
-        player_time_end = data_return["data"]["player_time_end"]
-        round_id = data_return["data"]["round_id"]
-        player_turn_id = Round.objects.get(id=round_id).player_turn.id
-        dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
-        auto_play_domino_task.apply_async(args=(player_turn_id, session.id, round_id), eta=dt_utc)
+
 
         # Transmet à l’hôte ses dominos
         return Response(data_return, status=status.HTTP_201_CREATED)
@@ -95,6 +93,7 @@ class PlaceDomino(APIView):
         session = Session.objects.filter(id=data_request.get("session_id")).first()
         domino = Domino.objects.filter(id=data_request.get("domino_id")).first()
         round = Round.objects.filter(id=data_request.get("round_id")).first()
+
         # Liste
         domino_list = list(Domino.objects.all())  # Liste des dominos
         # Valeurs
@@ -153,12 +152,17 @@ class PlaceDomino(APIView):
             return Response(dict(code=400, message="Domino non jouable", data=None),
                             status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
 
+        # Révoque la tâche programmée au plus vite
+        revoke_auto_play_task(round)
+
         data_return = play_domino(player, session, round, domino_list, side, playable_values, domino)
 
         return Response(data_return, status=status.HTTP_200_OK)
 
+
 class DominoList(APIView):
     permission_classes = [IsAuthenticatedWithJWT]
+
     def get(self, request):
         serializer = DominoSerializer(Domino.objects.all(), many=True)
         data = dict(code=200, message="Liste de tout les dominos", data=dict(domino_list=serializer.data))

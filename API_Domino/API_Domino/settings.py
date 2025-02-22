@@ -20,9 +20,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 ACCESS_TOKEN_LIFETIME = timedelta(minutes=15)
 REFRESH_TOKEN_LIFETIME = timedelta(days=1)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
-PROD = False
+DEBUG = os.getenv('DEBUG').lower() in ['True', 'true', '1', 't', 'y', 'yes']
+SSL = False
 
 ALLOWED_HOSTS = [
     os.getenv("EXTERNAL_HOSTNAME", "localhost"),
@@ -67,7 +66,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
-if not PROD:
+if not SSL:
     CELERY_REDIS_BACKEND_USE_SSL = {"ssl_cert_reqs": None}
     CELERY_BROKER_USE_SSL = None  # Désactiver SSL si ton serveur Redis n'est pas configuré correctement
     # CELERY_BROKER_USE_SSL = {

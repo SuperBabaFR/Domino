@@ -60,6 +60,7 @@ class Round(models.Model):
     statut = models.ForeignKey(Statut, models.SET_NULL, null=True)
     table = models.TextField(blank=True, null=True)
     player_turn = models.ForeignKey(Player, models.SET_NULL, null=True, blank=True)
+    auto_play_task_id = models.TextField(max_length=255, blank=True, null=True)
 
     class Meta:
         db_table = 'Round'

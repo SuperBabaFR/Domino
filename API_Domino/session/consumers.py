@@ -70,8 +70,33 @@ class SessionConsumer(AsyncWebsocketConsumer):
         if not data["action"]:
             return
 
+        group_name = f"player_{self.scope['player'].id}"
+
+        if "chat_message" in data["action"]:
+            # par défaut le message est pour toute la session
+            group_name = f"session_{self.scope['session'].id}"
+            player_id = None
+            # Si le message est privé on récupère l'id du joueur pour qui il est transmis
+            if "global" not in data["data"]["channel"]:
+                player_id = await self.get_id_player(data["data"]["channel"])
+            # Seulement si on trouve le joueur mentionné on lui envoie sinon c'est pour tlm le message
+            if player_id is not None:
+                group_name = f"player_{player_id}"
+
+            await self.channel_layer.group_send(
+                group_name,
+                {
+                    "type": "chat_message",
+                    # On précise au client que c'était un message privé même si il recevra pas de message qui ne lui était pas conecerné
+                    "data": json.dumps(dict(action="chat_message", data=dict(message=data["data"]["message"],
+                                                                             sender=self.scope['player'].pseudo,
+                                                                             is_private=(
+                                                                                 True if player_id is not None else False))))
+                }
+            )
+            return
+
         if "need_refresh" in data["action"]:
-            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name,
                 {
@@ -81,7 +106,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
 
         if "mix_the_dominoes" in data["action"]:
-            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name,
                 {
@@ -91,7 +115,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
 
         if "player_statut" in data["action"]:
-            group_name = f"player_{self.scope['player'].id}"
             statut = await self.get_statut(data["data"]["statut"])
             if not statut:
                 return
@@ -106,7 +129,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
             return
         # Un joueur boudé passe son tour
         if "game.pass" in data["action"]:
-            group_name = f"player_{self.scope['player'].id}"
             await self.channel_layer.group_send(
                 group_name, {
                     "type": "player_pass",
@@ -117,7 +139,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     # ------------ SESSION METHODES ------------ #
     async def chat_message(self, event):
-        await self.send(text_data=event["message"])
+        await self.send(text_data=event["data"])
 
     # Statut des joueurs dans le lobby (READY | NOT READY) ou en partie (ACTIF | AFK | OFFLINE)
     async def statut_player(self, event):
@@ -229,8 +251,9 @@ class SessionConsumer(AsyncWebsocketConsumer):
         player = self.scope.get("player")
         session = self.scope.get("session")
         this_round = self.have_round_open()
-        if not this_round:
-            await self.send(text_data=json.dumps(dict(action="error", message="Round already open")))
+        if type(this_round) is int:
+            msg = "Round already open" if this_round == 0 else "Game already terminated"
+            await self.send(text_data=json.dumps(dict(action="error", message=msg)))
             return
         else:
             # Envoie a tout le monde que quelqu'un remue
@@ -261,7 +284,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def launch_new_round(self, session):
 
-        from game.methods import new_round
+        from game.tasks import new_round
         new_round(session)
 
     @database_sync_to_async
@@ -280,6 +303,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
         from game.methods import notify_websocket, update_player_turn
         from authentification.models import Infosession, Round, Player, HandPlayer, Domino
+        from game.tasks import revoke_auto_play_task
 
         round = Round.objects.filter(id=round_id).first()
         if not round:
@@ -289,6 +313,9 @@ class SessionConsumer(AsyncWebsocketConsumer):
         if round.game != session.game_id or round.statut.id != 11:
             print("Round terminé ou round plus de la game")
             return False
+
+        # Révoque la tâche programmée au plus vite
+        revoke_auto_play_task(round)
 
         hand_players = list(HandPlayer.objects.filter(session=session, round=round).all())
         partie_blocked = True
@@ -309,8 +336,6 @@ class SessionConsumer(AsyncWebsocketConsumer):
             player_id_list = json.loads(session.order)
 
             data_players = []
-
-            list_dominoes = list(Domino.objects.all())
 
             for player_id in player_id_list:
                 hand_player = HandPlayer.objects.filter(player_id=player_id, session=session, round=round).first()
@@ -365,13 +390,18 @@ class SessionConsumer(AsyncWebsocketConsumer):
                     info.save()
                     info.player.save()
                 data_end_game = dict(action="session.end_game",
-                                     data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
+                                     data=dict(resultssdict(winner=winner["player"].pseudo, pigs=pigs)))
                 notify_websocket.apply_async(args=("session", session.id, data_end_game))
 
             # Met a jour le statut du round
             round.statut_id = 12
             round.save()
             session.game_id.save()
+
+            if type_finish == "game":
+                session.game_id = None
+                session.save()
+
             info_player.save()
             player.save()
 
@@ -407,10 +437,16 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def have_round_open(self):
-        from authentification.models import Round, Game
+        from authentification.models import Round
 
-        game = Game.objects.filter(session=self.scope.get("session"), statut_id=1).first()
-        return Round.objects.filter(game=game, statut_id=11).first()
+        session = self.scope.get("session")
+
+        if session.game_id is None:
+            return 1
+
+        round = Round.objects.filter(game_id=session.game_id, statut_id=11).first()
+
+        return round if round is not None else 0
 
     @database_sync_to_async
     def get_game_info(self, game):
@@ -418,14 +454,13 @@ class SessionConsumer(AsyncWebsocketConsumer):
 
         player = self.scope['player']
         session = self.scope["session"]
-        this_round = Round.objects.filter(session=session,game=game, statut_id=11).first()
+        this_round = Round.objects.filter(session=session, game=game, statut_id=11).first()
         if not this_round:
             return False
 
         dominoes = None
         table = json.loads(this_round.table)
         players = []
-
 
         all_hands = list(HandPlayer.objects.filter(round=this_round, session=session).all())
 
@@ -444,3 +479,11 @@ class SessionConsumer(AsyncWebsocketConsumer):
             player_turn=this_round.player_turn.pseudo
         )
         return data
+
+    @database_sync_to_async
+    def get_id_player(self, pseudo):
+        from authentification.models import Player
+
+        player = Player.objects.filter(pseudo=pseudo).first()
+
+        return player.id if player else None

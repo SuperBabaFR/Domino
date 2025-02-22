@@ -4,13 +4,14 @@ from datetime import datetime, timedelta, timezone
 
 from asgiref.sync import async_to_sync
 from celery import shared_task
+from celery.worker.control import revoke
 from channels.layers import get_channel_layer
 
 from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino
 from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket
 
 
-def notify_player_for_his_turn(round, session, domino_list=None, player_time_end=None):
+def notify_player_for_his_turn(round, session, player_time_end, domino_list=None):
     table_de_jeu = json.loads(round.table)
 
     # Récupère les dominos jouables du prochain joueur
@@ -30,18 +31,29 @@ def notify_player_for_his_turn(round, session, domino_list=None, player_time_end
 
         # Récupérer la file d'attente
         # Ajouter la tâche avec un ETA
-        player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
+        result = player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
+        round.auto_play_task_id = result.id
+        round.save()
     else:
         data_next_player = dict(action="game.your_turn",
                                 data=dict(
-                                    playable_dominoes=playable_dominoes,
-                                    player_time_end=player_time_end
-                                )
+                                        playable_dominoes=(playable_dominoes if len(table_de_jeu) > 0 else [max(playable_dominoes)]),
+                                        player_time_end=player_time_end
+                                    )
                                 )
         notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
         # Ajouter la tâche avec un ETA
-        auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+        result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+        round.auto_play_task_id = result.id
+        round.save()
 
+def revoke_auto_play_task(round):
+    if round.auto_play_task_id:
+        print("Revoking auto-play task {id} for player {p}".format(id=round.auto_play_task_id, p=round.player_turn_id))
+        revoke(task_id=round.auto_play_task_id, state='REVOKED', terminate=True)
+        # Supprimer l'ID pour éviter une révocation multiple
+        round.auto_play_task_id = None
+        round.save()
 
 @shared_task
 def player_pass_task(player_id, round_id):
@@ -142,7 +154,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                             )
         notify_websocket.apply_async(args=("session", session.id, data_session))
 
-        notify_player_for_his_turn(round, session, domino_list, player_time_end)
+        notify_player_for_his_turn(round, session, player_time_end, domino_list)
 
         # Transmet au joueur qui a joué les informations à jour
         data_return["data"] = dict(dominoes=hand_player.dominoes,
@@ -208,6 +220,9 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         round.statut_id = 12
         round.save()
         session.game_id.save()
+        if type_finish == "game":
+            session.game_id = None
+            session.save()
         info_player.save()
         player.save()
 
@@ -217,3 +232,85 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                                    side=side,
                                    type_finish=type_finish)
     return data_return
+
+
+def new_round(session, first=False):
+    game = session.game_id
+    game.round_count += 1
+    game.save()
+
+    # Crée un round
+    round = Round.objects.create(game=game, session=session, table="[]", statut_id=11)
+
+    # Distribue 7 dominos pour chaque joueurs de la session
+    domino_list = list(Domino.objects.all())  # Liste des dominos
+    domino_list_full = domino_list.copy()  # Liste des dominos complète
+    player_id_list = json.loads(session.order)  # Liste des joueurs
+
+    # Le joueur qui a le domino le plus fort
+    heaviest_domino_owner = dict(player=None, domino_id=0)
+    player_hote_hand = None
+    hands_list = []
+
+    # Pour chacun des joueurs dans la partie
+    for player_id in player_id_list:
+        dominoes = []
+        player_x = Player.objects.filter(id=player_id).first()
+        info_player = Infosession.objects.get(player=player_x, session=session)
+        info_player.statut_id = 8
+        info_player.save()
+        # Choisis 7 Dominos dans la liste
+        for i in range(0, 7):
+            new_domino = random.choice(domino_list)
+            domino_list.remove(new_domino)
+            dominoes.append(new_domino.id)
+            if heaviest_domino_owner["domino_id"] <= new_domino.id:
+                heaviest_domino_owner = dict(player=player_x, domino_id=new_domino.id)
+        # Lie les dominos au joueur
+        if player_id == session.hote.id:
+            player_hote_hand = HandPlayer.objects.create(round=round, session=session, player=player_x,
+                                                         dominoes=json.dumps(dominoes))
+        else:
+            hands_list.append(
+                HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=json.dumps(dominoes)))
+
+    # dernier gagnant
+    last_winner = game.last_winner
+
+    # Première personne à jouer
+    player_turn = heaviest_domino_owner.get("player") if not last_winner else last_winner
+
+    round.player_turn = player_turn
+    round.save()  # Ecrit dans la base a qui le tour
+
+    # Son temps de reflexion
+    reflexion_time_param = session.reflexion_time
+    player_time_end = datetime.now(timezone.utc) + timedelta(seconds=reflexion_time_param)
+    player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    # notifie tout les joueurs sauf hote via le websocket de la session
+    for hands in hands_list:
+        data_notify = dict(
+            action="session.start_" + ("game" if first else "round"),
+            data=dict(
+                round_id=round.id,
+                dominoes=hands.dominoes,
+                player_turn=player_turn.pseudo,
+                player_time_end=player_time_end
+            )
+        )
+        notify_websocket.apply_async(args=("player", hands.player.id, data_notify))  # Lui envoie
+
+
+    data_hote = dict(round_id=round.id,
+                     dominoes=player_hote_hand.dominoes,
+                     player_turn=player_turn.pseudo,
+                     player_time_end=player_time_end)
+
+    if not first:
+        msg_hote = dict(action="session.start_round", data=data_hote)
+        notify_websocket.apply_async(args=("player", session.hote.id, msg_hote))
+
+    notify_player_for_his_turn(round, session, player_time_end, domino_list_full)
+
+    return data_hote

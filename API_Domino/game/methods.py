@@ -101,10 +101,8 @@ def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet
         else:
             domino_x = domino_list[domino_id - 1]
 
-        if not domino_playable(domino_x, table_de_jeu, "left", domino_list) and not domino_playable(domino_x,
-                                                                                                    table_de_jeu,
-                                                                                                    "right",
-                                                                                                    domino_list):
+        if (not domino_playable(domino_x, table_de_jeu, "left", domino_list)
+                and not domino_playable(domino_x, table_de_jeu,"right", domino_list)):
             continue
         if not objet:
             playable_dominoes.append(domino_id)
@@ -114,80 +112,7 @@ def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet
     return playable_dominoes
 
 
-def new_round(session, first=False):
-    # Crée un round
-    round = Round.objects.create(game=session.game_id, session=session, table="[]", statut_id=11)
 
-    # Distribue 7 dominos pour chaque joueurs de la session
-    domino_list = list(Domino.objects.all())  # Liste des dominos
-    player_id_list = json.loads(session.order)  # Liste des joueurs
-    domino_list_full = domino_list.copy()
-
-    # Le joueur qui a le domino le plus fort
-    heaviest_domino_owner = dict(player=None, domino_id=0)
-    player_hote_hand = None
-    hands_list = []
-
-    # Pour chacun des joueurs dans la partie
-    for player_id in player_id_list:
-        dominoes = []
-        player_x = Player.objects.filter(id=player_id).first()
-        info_player = Infosession.objects.get(player=player_x, session=session)
-        info_player.statut_id = 8
-        info_player.save()
-        # Choisis 7 Dominos dans la liste
-        for i in range(0, 7):
-            new_domino = random.choice(domino_list)
-            domino_list.remove(new_domino)
-            dominoes.append(new_domino.id)
-            if heaviest_domino_owner["domino_id"] <= new_domino.id:
-                heaviest_domino_owner = dict(player=player_x, domino_id=new_domino.id)
-        # Lie les dominos au joueur
-        if player_id == session.hote.id:
-            player_hote_hand = HandPlayer.objects.create(round=round, session=session, player=player_x,
-                                                         dominoes=json.dumps(dominoes))
-        else:
-            hands_list.append(
-                HandPlayer.objects.create(round=round, session=session, player=player_x, dominoes=json.dumps(dominoes)))
-
-    # dernier gagnant
-    last_winner = session.game_id.last_winner
-
-    # Première personne à jouer
-    player_turn = heaviest_domino_owner.get("player") if not last_winner else last_winner
-
-    round.player_turn = player_turn
-    round.save()  # Ecrit dans la base a qui le tour
-
-    # Son temps de reflexion
-    reflexion_time_param = session.reflexion_time
-    player_time_end = datetime.now(timezone.utc) + timedelta(seconds=reflexion_time_param)
-    player_time_end = player_time_end.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-    # notifie tout les joueurs sauf hote via le websocket de la session
-    for hands in hands_list:
-        data_notify = dict(
-            action="session.start_" + ("game" if first else "round"),
-            data=dict(
-                round_id=round.id,
-                dominoes=hands.dominoes,
-                player_turn=player_turn.pseudo,
-                player_time_end=player_time_end
-            )
-        )
-        notify_websocket.apply_async(args=("player", hands.player.id, data_notify))  # Lui envoie
-
-
-    data_hote = dict(round_id=round.id,
-                     dominoes=player_hote_hand.dominoes,
-                     player_turn=player_turn.pseudo,
-                     player_time_end=player_time_end)
-
-    if not first:
-        msg_hote = dict(action="session.start_round", data=data_hote)
-        notify_websocket.apply_async(args=("player", session.hote.id, msg_hote))
-
-    return data_hote
 
 
 def update_player_turn(round, session):

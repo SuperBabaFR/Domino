@@ -405,7 +405,9 @@ class SessionUpdateInfoView(APIView):
                             reflexion_time=session.reflexion_time, definitive_leave=session.definitive_leave,
                             order=order_player, is_public=session.is_public)
 
-        notify_websocket.apply_async(args=("session", session.id, new_session_infos))
+        websocket_msg = dict(action="session.update_infos", data=new_session_infos)
+
+        notify_websocket.apply_async(args=("session", session.id, websocket_msg))
 
 
         data["data"] = new_session_infos

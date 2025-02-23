@@ -5,10 +5,15 @@ const headers = ["Content-Type: application/json"]
 var player_data = {}  # Stocke les infos utilisateur après connexion
 var is_logged_in = false  # Statut de connexion
 var token_access_fresh = false
+var tokens = null
 
 var dominos_ref_list = []
 
 func set_player_data(data: Dictionary):
+	tokens = {"access_token": data.access_token, "refresh_token": data.refresh_token}
+	
+	data.erase("access_token")
+	data.erase("refresh_token")
 	player_data = data
 	#print(data)
 	is_logged_in = true
@@ -39,8 +44,8 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
 
-	if response_code == HTTPClient.RESPONSE_CREATED:
-		dominos_ref_list = response["data"]["domino_list"]
+	if response_code == HTTPClient.RESPONSE_OK:
+		dominos_ref_list = response.data.domino_list
 	elif response_code == HTTPClient.RESPONSE_UNAUTHORIZED:
 		token_access_fresh = false
 		refreshToken()
@@ -54,13 +59,18 @@ func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
 	http_request.request_completed.connect(method_signal)
 	http_request.request_completed.connect(http_request.queue_free.unbind(4))
 	add_child(http_request)
-	var error
+	var error; var headers_auth = null
+	if tokens != null:
+		headers_auth = [
+			"Content-Type: application/json",
+			"Authorization: Bearer " + tokens.access_token
+		]
 	
 	if action == "login" or action == "signup" or action.contains("token"):
 		error = http_request.request(API_URL + action, headers, HTTPClient.Method.METHOD_POST, jsonBody)
 	
 	if action == "dominos":
-		error = http_request.request(API_URL + action, headers, HTTPClient.Method.METHOD_GET)
+		error = http_request.request(API_URL + action, headers_auth, HTTPClient.Method.METHOD_GET)
 	
 	if error != OK:
 		push_error("An error occurred in the HTTP request.")

@@ -22,7 +22,7 @@ func _ready():
 	$JoinBtn.connect("pressed", _on_join_pressed)
 	$DisconnectBtn.connect("pressed", _on_disconnect_pressed)
 	
-	#Global.pull_list_dominos()
+	Global.pull_list_dominos()
 	
 
 func _on_start_pressed():

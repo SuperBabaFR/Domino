@@ -34,7 +34,7 @@ func _on_traiter_resultat(result, response_code, headers, body):
 	print(response)
 	print(response_code)
 	if (response_code == 200):
-		get_tree().change_scene_to_file("res://home_menu.tscn")
+		get_tree().change_scene_to_file("res://Scenes/lobby.tscn")
 	#else:
 		##get_tree().change_scene_to_file("res://connexion.tscn")
 		#print(response.message) #Afficher le message à l'utilisateur a la place du print

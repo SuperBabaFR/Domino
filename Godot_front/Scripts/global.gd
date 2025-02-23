@@ -13,7 +13,7 @@ func set_player_data(data: Dictionary):
 	print(data)
 	is_logged_in = true
 	token_access_fresh = true
-	print("Joueur connecté :", player_data.pseudo)
+	print("Joueur connecté :", player_data)
 
 func get_player_info(key: String, default_value = null):
 	return player_data.get(key, default_value)

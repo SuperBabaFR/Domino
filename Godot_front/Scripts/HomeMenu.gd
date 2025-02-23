@@ -6,7 +6,7 @@ func _ready():
 		return
 	#if data:
 		#print(data)
-	if data.has("image"):
+	if data.image != null:
 		var base64_string = data.image
 		base64_string = clean_base64(base64_string)  # Nettoie la chaîne base64
 		var image_texture = load_image_from_base64(base64_string)

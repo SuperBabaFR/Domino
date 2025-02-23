@@ -10,6 +10,7 @@ var dominos_ref_list = []
 
 func set_player_data(data: Dictionary):
 	player_data = data
+	print(data)
 	is_logged_in = true
 	token_access_fresh = true
 	print("Joueur connecté :", player_data.pseudo)
@@ -41,6 +42,7 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	if response_code == HTTPClient.RESPONSE_CREATED:
 		dominos_ref_list = response["data"]["domino_list"]
 	elif response_code == HTTPClient.RESPONSE_UNAUTHORIZED:
+		token_access_fresh = false
 		refreshToken()
 	else:
 		push_error(response["message"])

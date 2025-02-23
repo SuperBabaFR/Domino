@@ -10,10 +10,10 @@ var dominos_ref_list = []
 
 func set_player_data(data: Dictionary):
 	player_data = data
-	print(data)
+	#print(data)
 	is_logged_in = true
-	token_access_fresh = true
-	print("Joueur connecté :", player_data)
+	#token_access_fresh = true
+	#print("Joueur connecté :", player_data)
 
 func get_player_info(key: String, default_value = null):
 	return player_data.get(key, default_value)

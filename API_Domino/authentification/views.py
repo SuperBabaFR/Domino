@@ -38,7 +38,7 @@ class IsAuthenticatedWithJWT(BasePermission):
         try:
             payload = verify_token(token, token_type="access")
             player_id = payload.get("player_id")
-
+            print(payload)
             if not player_id:
                 raise InvalidAccessTokenException()
 
@@ -86,6 +86,7 @@ def verify_token(token, token_type="access"):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        print(payload)
         if payload.get("type") != token_type:
             raise jwt.InvalidTokenError("Type de token invalide")
         return payload
@@ -101,14 +102,6 @@ class tokenRefreshView(APIView):
 
     def post(self, request):
 
-        # GARDER LE FORMAT
-
-        # {
-        #     "code": int,
-        #     "message": string,
-        #     "data": object | null
-        # }
-
         refresh_token = request.data["refresh_token"]
 
         if not refresh_token:
@@ -121,9 +114,9 @@ class tokenRefreshView(APIView):
 
         try:
             payload = verify_token(refresh_token, token_type="refresh")
-            id_player = payload.get("id_player")
+            player_id = payload.get("player_id")
 
-            tokens = generate_tokens(id_player)
+            tokens = generate_tokens(player_id)
             return Response({
                 'code': 201,
                 'message': 'Authentification réussie',

@@ -5,7 +5,7 @@ extends Control
 func _ready():
 	$Inscription.connect("pressed", _on_Inscription_pressed)
 	$ConnexionButton.connect("pressed", _on_connexion_reussie) 
-	$LoginRequest.request_completed.connect(self._on_traiter_resultat)
+	#$LoginRequest.request_completed.connect(self._on_traiter_resultat)
 
 	#pass # Replace with function body.
 
@@ -16,7 +16,7 @@ func _on_connexion_reussie():
 		var body = JSON.stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
 		#print(body)
 		var headers = ["Content-Type: application/json"]
-		$LoginRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/login", headers, HTTPClient.METHOD_POST, body)
+		Global.makeRequest("login", self._on_traiter_resultat , body)
 	else:
 		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
 		

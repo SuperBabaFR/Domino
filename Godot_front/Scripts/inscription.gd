@@ -109,14 +109,12 @@ func _on_request_completed(result, response_code, headers, body):
 
 # Bouton qui renvoie vers le formulaire de connexion
 func _on_ButtonConnect_pressed():
-	print("Bouton Connect pressé")
-	get_tree().change_scene_to_file("res://Scenes/connexion.tscn")
+	Global.changeScene("connexion")
 
 # Bouton qui renvoie vers la page principale
 func _on_ButtonPrincipal_pressed():
-	print("Bouton Principal pressé")
-	get_tree().change_scene_to_file("res://Scenes/principal.tscn")
-		
+	Global.changeScene("principal")
+	
 	#print("🔄 Code réponse :", response_code)
 	#print("🔄 Réponse brute :", body.get_string_from_utf8())
 #

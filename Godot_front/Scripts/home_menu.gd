@@ -26,13 +26,15 @@ func _ready():
 	
 
 func _on_start_pressed():
-	get_tree().change_scene_to_file("res://Scenes/create_game.tscn")
+	Global.changeScene("create_game")
 
 func _on_join_pressed():
-	get_tree().change_scene_to_file("res://Scenes/listeSessions.tscn")
+	Global.changeScene("listeSessions")
+	
 	
 func _on_disconnect_pressed():
 	Global.reset_player()
+	Global.changeScene("listeSessions")
 	get_tree().change_scene_to_file("res://Scenes/principal.tscn")
 	
 func load_image_from_base64(base64_str: String) -> ImageTexture:

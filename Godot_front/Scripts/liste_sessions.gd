@@ -9,6 +9,12 @@ func _on_traiter_resultat(result, response_code, headers, body):
 		var parse_result = json.parse(body.get_string_from_utf8())
 		var response = json.get_data()
 		afficher_sessions(response)
+	elif response_code == 401:
+		Global.refreshToken()
+		while not Global.is_token_fresh:
+			pass
+		# On relance la méthode quand le token est frais
+		Global.makeRequest("sessions", self._on_traiter_resultat)
 
 func afficher_sessions(response):
 	var sessions = response["data"]["sessions"]

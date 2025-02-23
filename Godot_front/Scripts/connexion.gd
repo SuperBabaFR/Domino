@@ -32,8 +32,8 @@ func _on_traiter_resultat(result, response_code, headers, body):
 		print(response.message) #Afficher le message à l'utilisateur a la place du print
 
 func _on_Inscription_pressed():
-	print("Bouton Connect pressé")
-	get_tree().change_scene_to_file("res://Scenes/inscription.tscn")
+	Global.changeScene("inscription")
+
 		
 		
 		

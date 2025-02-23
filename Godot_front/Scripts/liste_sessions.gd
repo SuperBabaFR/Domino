@@ -2,6 +2,7 @@ extends Control
 
 func _ready():
 	var token = Global.get_player_info("access_token")
+	print(token)
 	var headers = [
 		"Content-Type: application/json",
 		"Authorization: Bearer " + token
@@ -22,13 +23,14 @@ func afficher_sessions(response):
 		var session_name = session["session_name"]
 		var session_status = session["statut"]
 		var is_public = session["is_public"]
+		print(is_public)
 		var session_code = session["code"]
 
 		var session_container = HBoxContainer.new()
 		var session_label = Label.new()
 		session_label.text = session_name
 
-		if session_status == "session.is_open" and session_status == "true":
+		if session_status == "session.is_open" and is_public:
 			session_label.add_theme_color_override("font_color", Color(0, 1, 0))
 			var join_button = Button.new()
 			join_button.text = "Rejoindre"

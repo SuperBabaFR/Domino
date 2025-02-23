@@ -86,7 +86,6 @@ def verify_token(token, token_type="access"):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        print(payload)
         if payload.get("type") != token_type:
             raise jwt.InvalidTokenError("Type de token invalide")
         return payload

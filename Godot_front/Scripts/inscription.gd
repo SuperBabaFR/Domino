@@ -42,7 +42,6 @@ func _ready():
 	button_import.pressed.connect(_on_import_image_pressed)
 	button_inscrire.pressed.connect(_on_inscription_pressed)
 	file_dialog.file_selected.connect(_on_file_dialog_file_selected)
-	$SignUpRequest.request_completed.connect(self._on_request_completed)
 	
 	# Connexion des boutons de navigation
 	button_connect.pressed.connect(_on_ButtonConnect_pressed)
@@ -56,7 +55,6 @@ func _on_import_image_pressed():
 
 # Charge et affiche l’image sélectionnée + Convertit en Base64
 func _on_file_dialog_file_selected(path):
-	print("✅ Image sélectionnée :", path)
 	var image = Image.new()
 	var err = image.load(path)
 
@@ -69,9 +67,6 @@ func _on_file_dialog_file_selected(path):
 	
 	# Convertir en Base64
 	image_base64 = image_to_base64(image)
-	if image_base64 != "":
-		print("✅ Image convertie en Base64")
-		print("📸 Image Base64 :", image_base64)
 	
 	# Appliquer l’image sur TextureRect
 	var texture = ImageTexture.new()
@@ -106,8 +101,7 @@ func _on_inscription_pressed():
 			body["image"] = image_base64
 		var json_body = JSON.stringify(body)
 		
-		var headers = ["Content-Type: application/json"]
-		$SignUpRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/signup", headers, HTTPClient.METHOD_POST, json_body)
+		Global.makeRequest("signup", self._on_request_completed, json_body)
 	else:
 		print("remplir tous les champs")
 		# Création du JSON pour l'API

@@ -76,8 +76,6 @@ text = "S'inscrire"
 position = Vector2i(0, 36)
 size = Vector2i(303, 180)
 
-[node name="SignUpRequest" type="HTTPRequest" parent="."]
-
 [node name="ButtonConnect" type="Button" parent="."]
 layout_mode = 0
 offset_left = 828.0

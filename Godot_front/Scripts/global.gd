@@ -44,8 +44,6 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
 	
-	print(response)
-
 	if response_code == HTTPClient.RESPONSE_OK:
 		dominos_ref_list = response.data.domino_list
 	elif response_code == HTTPClient.RESPONSE_UNAUTHORIZED:
@@ -56,7 +54,8 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 
 
 func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
-	# Create an HTTP request node and connect its completion signal.
+	print("--- Make request Début ---")
+	print("Paramètres : action = " + str(action) + ", method_signal = " + str(method_signal) + ", jsonBody = " + str(jsonBody) + ", urlParams = " + str(urlParams))
 	var http_request = HTTPRequest.new()
 	http_request.request_completed.connect(method_signal)
 	http_request.request_completed.connect(http_request.queue_free.unbind(4))
@@ -68,14 +67,18 @@ func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
 			"Authorization: Bearer " + tokens.access_token
 		]
 	
-	if action == "login" or action == "signup" or action.contains("token"):
+	if action in ["login", "signup"]:
 		error = http_request.request(API_URL + action, headers, HTTPClient.Method.METHOD_POST, jsonBody)
 	
-	if action == "dominos" or action == "sessions":
+	if action in ["dominos", "sessions"]:
 		error = http_request.request(API_URL + action, headers_auth, HTTPClient.Method.METHOD_GET)
+	
+	if action in ["create"]:
+		error = http_request.request(API_URL + action, headers_auth, HTTPClient.Method.METHOD_POST, jsonBody)
 	
 	if error != OK:
 		push_error("An error occurred in the HTTP request.")
+	print("--- Make request Fin ---")
 
 
 func refreshToken():

@@ -1,14 +1,7 @@
 extends Control
 
 func _ready():
-	var token = Global.get_player_info("access_token")
-	print(token)
-	var headers = [
-		"Content-Type: application/json",
-		"Authorization: Bearer " + token
-	]
-	$SessionsRequest.request("https://api--domino--y6qkmxzm7hxr.code.run/sessions", headers, HTTPClient.METHOD_GET)
-	$SessionsRequest.request_completed.connect(self._on_traiter_resultat)
+	Global.makeRequest("sessions", self._on_traiter_resultat)
 
 func _on_traiter_resultat(result, response_code, headers, body):
 	if response_code == 200:

@@ -43,6 +43,8 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
+	
+	print(response)
 
 	if response_code == HTTPClient.RESPONSE_OK:
 		dominos_ref_list = response.data.domino_list
@@ -69,7 +71,7 @@ func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
 	if action == "login" or action == "signup" or action.contains("token"):
 		error = http_request.request(API_URL + action, headers, HTTPClient.Method.METHOD_POST, jsonBody)
 	
-	if action == "dominos":
+	if action == "dominos" or action == "sessions":
 		error = http_request.request(API_URL + action, headers_auth, HTTPClient.Method.METHOD_GET)
 	
 	if error != OK:
@@ -78,6 +80,7 @@ func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
 
 func refreshToken():
 	# Create an HTTP request node and connect its completion signal.
+	print('je me suis refresh')
 	var action = "access"
 	var refresh_token = get_player_info("refresh_token", null)
 	var json_body = JSON.stringify({"refresh_token": refresh_token})

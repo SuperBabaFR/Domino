@@ -30,7 +30,7 @@ func create_session():
 	
 	json_body = JSON.stringify(body, "  ")
 	print(json_body)
-	Global.makeRequest("create", self._on_session_created, json_body)
+	Global.makeRequest("create", json_body)
 
 
 func _on_session_created(result, response_code, headers, body):

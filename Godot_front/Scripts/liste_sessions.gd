@@ -16,6 +16,13 @@ func _on_traiter_resultat(result, response_code, headers, body):
 		# On relance la méthode quand le token est frais
 		Global.makeRequest("sessions", self._on_traiter_resultat)
 
+func _on_token_refreshed():
+	# Le token est rafraîchi ici, on peut donc relancer la requête
+	Global.makeRequest("sessions", self._on_traiter_resultat)
+
+	# On se déconnecte du signal pour éviter de relancer la requête en boucle
+	Global.disconnect("token_refreshed", self, "_on_token_refreshed")
+
 func afficher_sessions(response):
 	var sessions = response["data"]["sessions"]
 	for session in sessions:

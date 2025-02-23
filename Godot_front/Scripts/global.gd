@@ -1,27 +1,33 @@
 extends Node
-
+# API
 var API_URL = "https://api--domino--y6qkmxzm7hxr.code.run/"
 const headers = ["Content-Type: application/json"]
-var player_data = {}  # Stocke les infos utilisateur après connexion
+# Player
+var player_data  # Stocke les infos utilisateur après connexion
 var is_logged_in = false  # Statut de connexion
+# Tokens
 var token_access_fresh = false
-var tokens = null
+var tokens
+# Session
+var session_data
 
 var dominos_ref_list = []
 
+func get_info(objet: String, key: String, default_value = null):
+	if objet == "session":
+		return session_data.get(key, default_value)
+	elif objet == "player":
+		return player_data.get(key, default_value)
+
 func set_player_data(data: Dictionary):
 	tokens = {"access_token": data.access_token, "refresh_token": data.refresh_token}
+	token_access_fresh = true
 	
 	data.erase("access_token")
 	data.erase("refresh_token")
 	player_data = data
-	#print(data)
 	is_logged_in = true
-	#token_access_fresh = true
-	#print("Joueur connecté :", player_data)
-
-func get_player_info(key: String, default_value = null):
-	return player_data.get(key, default_value)
+	print("Joueur connecté :", player_data.pseudo)
 
 func get_all_player_data():
 	return player_data
@@ -52,10 +58,18 @@ func _on_list_dominos_pulled(_result, response_code, _headers, body):
 	else:
 		push_error(response["message"])
 
+# Session
+
+func set_session_data(data: Dictionary):
+	session_data = data
+	
+func add_player_info(data: Dictionary):
+	pass
+
 
 func makeRequest(action, method_signal, jsonBody=null, urlParams=null):
 	print("--- Make request Début ---")
-	print("Paramètres : action = " + str(action) + ", method_signal = " + str(method_signal) + ", jsonBody = " + str(jsonBody) + ", urlParams = " + str(urlParams))
+	print("Paramètres : action = " + str(action) + ", method_signal = " + str(method_signal) + ", urlParams = " + str(urlParams))
 	var http_request = HTTPRequest.new()
 	http_request.request_completed.connect(method_signal)
 	http_request.request_completed.connect(http_request.queue_free.unbind(4))
@@ -85,8 +99,7 @@ func refreshToken():
 	# Create an HTTP request node and connect its completion signal.
 	print('je me suis refresh')
 	var action = "access"
-	var refresh_token = get_player_info("refresh_token", null)
-	var json_body = JSON.stringify({"refresh_token": refresh_token})
+	var json_body = JSON.stringify({"refresh_token": tokens.refresh_token})
 	var http_request = HTTPRequest.new()
 	http_request.request_completed.connect(self._when_token_refreshed)
 	http_request.request_completed.connect(http_request.queue_free.unbind(4))
@@ -101,7 +114,7 @@ func _when_token_refreshed(_result, response_code, _headers, body):
 	var response = json.get_data()
 	
 	if response_code == HTTPClient.RESPONSE_CREATED:
-		player_data["access_token"] = response["data"]["access_token"]
+		tokens.access_token = response.data.access_token
 		token_access_fresh = true
 	else:
 		push_error(response["message"])

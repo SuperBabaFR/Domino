@@ -40,9 +40,7 @@ func _on_btn_creer_pressed():
 		body["session_name"] = session_name
 	
 	var json_body = JSON.stringify(body, "  ")
-	
 	print(json_body)
-	
 	Global.makeRequest("create", self._on_session_created, json_body)
 	
 

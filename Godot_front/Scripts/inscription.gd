@@ -4,8 +4,8 @@ extends Control
 @onready var texture_rect = $TextureRect
 @onready var button_import = $ButtonImport
 @onready var button_inscrire = $ButtonInscrire
-@onready var line_edit_pseudo = $LineEditPseudo
-@onready var line_edit_mdp = $LineEditMdp
+@onready var pseudo = $LineEditPseudo
+@onready var mdp = $LineEditMdp
 @onready var button_principal = $ButtonPrincipal  
 @onready var button_connect = $ButtonConnect  
 
@@ -25,7 +25,7 @@ func _ready():
 	if not button_import or not button_inscrire:
 		print("❌ ERREUR : Un des boutons est introuvable !")
 		return
-	if not line_edit_pseudo or not line_edit_mdp:
+	if not pseudo or not mdp:
 		print("❌ ERREUR : Un champ de saisie est introuvable !")
 		return
 
@@ -61,9 +61,6 @@ func _on_file_dialog_file_selected(path):
 	if err != OK:
 		print("❌ ERREUR : Impossible de charger l’image !")
 		return
-
-	# Redimensionne à 300x300 px pour optimiser la taille
-	image.resize(300, 300)
 	
 	# Convertir en Base64
 	image_base64 = image_to_base64(image)
@@ -81,61 +78,36 @@ func image_to_base64(img: Image) -> String:
 
 # Fonction d'inscription
 func _on_inscription_pressed():
-	#if $LineEditPseudo.text != ""  and $LineEditMdp.text != "":
-		#print(" mdp ou pseudo requis")
-	#var pseudo = line_edit_pseudo.text.strip_edges()
-	#var mdp = line_edit_mdp.text.strip_edges()
-#
-	## Vérifications des champs
-	#if pseudo == "" or mdp == "":
-		#print("❌ ERREUR : Pseudo et mot de passe sont requis !")
-		#return
-	#if mdp.length() < 8 or mdp.length() > 20:
-		#print("❌ ERREUR : Le mot de passe doit contenir entre 8 et 20 caractères.")
-		#return
+	if pseudo.text != "" and mdp.text != "":
+		var body = {"pseudo": pseudo.text, "password": mdp.text}
 		
-	if $LineEditPseudo.text != "" and $LineEditMdp.text != "":
-		
-		var body = {"pseudo": $LineEditPseudo.text, "password": $LineEditMdp.text}
 		if image_base64 != "":
 			body["image"] = image_base64
+		
 		var json_body = JSON.stringify(body)
 		
 		Global.makeRequest("signup", self._on_request_completed, json_body)
 	else:
 		print("remplir tous les champs")
-		# Création du JSON pour l'API
-	#var json_data = {
-		#"pseudo": pseudo,
-		#"mdp": mdp,
-		#"image": image_base64
-	#}
-	#
-	#var body = JSON.stringify(json_data)
-	#print("🔍 Données envoyées :", body)
 
-	# Envoi de la requête HTTP
-	#var http_request = HTTPRequest.new()
-	#add_child(http_request)
-	#http_request.request_completed.connect(_on_request_completed)
-#
-	#var headers = ["Content-Type: application/json; charset=utf-8"]
-	#var err = http_request.request(API_URL, headers, HTTPClient.METHOD_POST, body)
-
-	#if err != OK:
-		#print("❌ ERREUR : Impossible d'envoyer la requête !")
 
 # Gestion de la réponse de l'API
 func _on_request_completed(result, response_code, headers, body):
 	var json = JSON.new()
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
-
-		#get_tree().change_scene_to_file("res://connexion.tscn")
 	print(response.message)
-	print(response_code) #Afficher le message à l'utilisateur a la place du print
 	
-	# Bouton qui renvoie vers le formulaire de connexion
+	if response_code == 201:
+		get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
+		Global.set_player_data(response.data)
+	else:
+		print("erreur d'inscription")
+	
+	
+	
+
+# Bouton qui renvoie vers le formulaire de connexion
 func _on_ButtonConnect_pressed():
 	print("Bouton Connect pressé")
 	get_tree().change_scene_to_file("res://Scenes/connexion.tscn")

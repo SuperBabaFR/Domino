@@ -1,53 +1,44 @@
 [gd_scene load_steps=5 format=3 uid="uid://bpa4lyv6g6gov"]
 
 [ext_resource type="Script" path="res://Scripts/principal.gd" id="1_rkwun"]
+[ext_resource type="Texture2D" uid="uid://8bhtmkqprhyq" path="res://Assets/DOminOO Play.svg" id="2_hvkji"]
+[ext_resource type="Texture2D" uid="uid://clwp1lw5id0g1" path="res://Assets/boutton play.svg" id="3_ftvox"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_rkx64"]
-font_size = 48
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wslo3"]
-
-[sub_resource type="Theme" id="Theme_u8b6w"]
-default_font_size = 30
-Button/styles/normal = SubResource("StyleBoxTexture_wslo3")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vegja"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="Principal" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_rkwun")
 
-[node name="Titre" type="Label" parent="."]
-layout_mode = 0
-offset_left = 552.0
-offset_top = 176.0
-offset_right = 734.0
-offset_bottom = 243.0
-text = "Domino
-"
-label_settings = SubResource("LabelSettings_rkx64")
-metadata/_edit_use_anchors_ = true
-
 [node name="StartButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 549.0
-offset_top = 325.0
-offset_right = 757.0
-offset_bottom = 425.0
-theme = SubResource("Theme_u8b6w")
-text = "Start"
+offset_left = 566.0
+offset_top = 368.0
+offset_right = 735.0
+offset_bottom = 455.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_vegja")
+icon = ExtResource("3_ftvox")
 
 [node name="ButtonConnexion" type="Button" parent="."]
 layout_mode = 0
-offset_left = 932.0
-offset_top = 356.0
-offset_right = 1115.0
-offset_bottom = 424.0
+offset_left = 551.0
+offset_top = 478.0
+offset_right = 734.0
+offset_bottom = 546.0
 text = "Connexion"
 
 [node name="ButtonInscription" type="Button" parent="."]
 layout_mode = 0
-offset_left = 273.0
-offset_top = 349.0
-offset_right = 453.0
-offset_bottom = 413.0
+offset_left = 551.0
+offset_top = 358.0
+offset_right = 731.0
+offset_bottom = 422.0
 text = "Inscription"
+
+[node name="DOminOoPlay" type="Sprite2D" parent="."]
+position = Vector2(649, 151)
+texture = ExtResource("2_hvkji")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]

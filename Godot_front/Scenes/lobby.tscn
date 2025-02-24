@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqgd15taqxuqo"]
+[gd_scene load_steps=3 format=3 uid="uid://cqgd15taqxuqo"]
 
+[ext_resource type="Script" path="res://Scenes/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/profil.tscn" id="1_powg8"]
 
 [node name="Control" type="Control"]
@@ -9,23 +10,28 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_oddvw")
 
 [node name="P1" parent="." instance=ExtResource("1_powg8")]
+offset_left = 63.0
+offset_top = 164.0
+offset_right = 63.0
+offset_bottom = 164.0
 
 [node name="P2" parent="." instance=ExtResource("1_powg8")]
-offset_left = 257.0
-offset_top = 1.0
-offset_right = 257.0
-offset_bottom = 1.0
+offset_left = 61.0
+offset_top = 347.0
+offset_right = 61.0
+offset_bottom = 347.0
 
 [node name="P3" parent="." instance=ExtResource("1_powg8")]
-offset_left = 514.0
-offset_top = -1.0
-offset_right = 514.0
-offset_bottom = -1.0
+offset_left = 464.0
+offset_top = 162.0
+offset_right = 464.0
+offset_bottom = 162.0
 
 [node name="P4" parent="." instance=ExtResource("1_powg8")]
-offset_left = 770.0
-offset_top = 1.0
-offset_right = 770.0
-offset_bottom = 1.0
+offset_left = 462.0
+offset_top = 344.0
+offset_right = 462.0
+offset_bottom = 344.0

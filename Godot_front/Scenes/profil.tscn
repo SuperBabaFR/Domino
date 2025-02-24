@@ -12,20 +12,22 @@ layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_glyvl")
 
-[node name="ProfileImage" type="TextureRect" parent="."]
-offset_left = 174.0
+[node name="image" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 20.0
 offset_top = 18.0
-offset_right = 256.0
-offset_bottom = 98.0
+offset_right = 124.0
+offset_bottom = 120.0
 texture = SubResource("GradientTexture1D_c3vix")
 expand_mode = 1
+stretch_mode = 6
 
-[node name="Pseudo" type="Label" parent="ProfileImage"]
+[node name="pseudo" type="Label" parent="."]
 layout_mode = 0
-offset_left = -144.0
-offset_top = 16.0
-offset_right = -1.0
-offset_bottom = 58.0
+offset_left = 125.0
+offset_top = 51.0
+offset_right = 268.0
+offset_bottom = 93.0
 text = "placeholder"
 horizontal_alignment = 1
 vertical_alignment = 1

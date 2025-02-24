@@ -12,10 +12,10 @@ func _ready() -> void:
 	var error = image.load_jpg_from_buffer(data)
 	if error == OK:
 		var texture = ImageTexture.create_from_image(image)
-		$ProfileImage.texture = texture
+		$image.texture = texture
 	else:
 		print("Erreur lors du chargement de l'image")
-	$ProfileImage/Pseudo.text = pseudo
+	$pseudo.text = pseudo
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass

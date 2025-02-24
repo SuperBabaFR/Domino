@@ -1,9 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://bw41ecw7l4jya"]
+[gd_scene load_steps=7 format=3 uid="uid://bw41ecw7l4jya"]
 
 [ext_resource type="Script" path="res://Scripts/home_menu.gd" id="1_27nal"]
+[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/profil.tscn" id="2_x8wce"]
+[ext_resource type="Texture2D" uid="uid://8bhtmkqprhyq" path="res://Assets/DOminOO Play.svg" id="3_l7wla"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
 font_size = 35
+
+[sub_resource type="SystemFont" id="SystemFont_k7oq6"]
+font_names = PackedStringArray("Arial")
+
+[sub_resource type="LabelSettings" id="LabelSettings_50o8r"]
+font = SubResource("SystemFont_k7oq6")
 
 [node name="HomeMenu" type="Control"]
 layout_mode = 3
@@ -13,59 +21,88 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_27nal")
+metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 62.0
-offset_top = 15.0
-offset_right = 321.0
-offset_bottom = 137.0
+offset_left = 27.0
+offset_top = 584.0
+offset_right = 370.0
+offset_bottom = 706.0
 text = "Vinn pren on place!
-Si ki tab ou kay sizè?"
+Si ki tab ou kay sizé?"
 label_settings = SubResource("LabelSettings_8kqgb")
 
 [node name="CreateBtn" type="Button" parent="."]
 layout_mode = 0
-offset_left = 168.0
-offset_top = 324.0
-offset_right = 272.0
-offset_bottom = 416.0
+offset_left = 558.0
+offset_top = 330.0
+offset_right = 674.0
+offset_bottom = 379.0
 text = "Créer"
 
 [node name="JoinBtn" type="Button" parent="."]
 layout_mode = 0
-offset_left = 574.0
-offset_top = 327.0
-offset_right = 678.0
-offset_bottom = 419.0
+offset_left = 545.0
+offset_top = 425.0
+offset_right = 680.0
+offset_bottom = 475.0
 text = "Rejoindre"
 
 [node name="DisconnectBtn" type="Button" parent="."]
 layout_mode = 0
-offset_left = 941.0
-offset_top = 327.0
-offset_right = 1045.0
-offset_bottom = 419.0
+offset_left = 19.0
+offset_top = 141.0
+offset_right = 135.0
+offset_bottom = 178.0
 text = "Déconnexion"
 
-[node name="ProfileImage" type="TextureRect" parent="."]
+[node name="wins" type="Label" parent="."]
 layout_mode = 0
-offset_left = 1124.0
-offset_top = 46.0
-offset_right = 1206.0
-offset_bottom = 126.0
-expand_mode = 1
+offset_left = 1030.0
+offset_top = 40.0
+offset_right = 1273.0
+offset_bottom = 76.0
+text = "Valeur : 
+"
+label_settings = SubResource("LabelSettings_50o8r")
+vertical_alignment = 1
 
-[node name="Pseudo" type="Label" parent="ProfileImage"]
+[node name="games" type="Label" parent="."]
 layout_mode = 0
-offset_left = -170.0
-offset_top = -17.0
-offset_right = -27.0
-offset_bottom = 25.0
+offset_left = 1033.0
+offset_top = 9.0
+offset_right = 1276.0
+offset_bottom = 45.0
+text = "Valeur : 
+"
+label_settings = SubResource("LabelSettings_50o8r")
+vertical_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="pig_count" type="Label" parent="."]
 layout_mode = 0
-offset_left = 604.0
-offset_top = 111.0
-offset_right = 826.0
-offset_bottom = 237.0
+offset_left = 1029.0
+offset_top = 76.0
+offset_right = 1272.0
+offset_bottom = 112.0
+text = "Valeur : 
+"
+label_settings = SubResource("LabelSettings_50o8r")
+vertical_alignment = 1
+
+[node name="ratio" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1027.0
+offset_top = 110.0
+offset_right = 1270.0
+offset_bottom = 146.0
+text = "Valeur : 
+"
+label_settings = SubResource("LabelSettings_50o8r")
+vertical_alignment = 1
+
+[node name="Profil" parent="." instance=ExtResource("2_x8wce")]
+
+[node name="DOminOoPlay" type="Sprite2D" parent="."]
+position = Vector2(627, 138)
+texture = ExtResource("3_l7wla")

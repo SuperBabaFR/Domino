@@ -30,7 +30,17 @@ func create_session():
 	
 	json_body = JSON.stringify(body, "  ")
 	print(json_body)
-	Global.makeRequest("create", json_body)
+	
+	var response = await Global.makeRequest("create", json_body)
+	
+	var response_code = response.response_code
+	body = response.body
+	
+	if response.response_code == 201:
+		Global.set_session_data(response.data, true)
+		Global.changeScene("lobby")
+	elif response_code == 401:
+		return
 
 
 func _on_session_created(result, response_code, headers, body):
@@ -38,15 +48,7 @@ func _on_session_created(result, response_code, headers, body):
 	json.parse(body.get_string_from_utf8())
 	var response = json.get_data()
 	
-	if response_code == 201:
-		Global.set_session_data(response.data, true)
-		Global.changeScene("lobby")
-	elif response_code == 401:
-		Global.refreshToken()
-		while not Global.is_token_fresh:
-			pass
-		# On relance la méthode quand le token est frais
-		create_session()
+	
 	
 	#get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
 

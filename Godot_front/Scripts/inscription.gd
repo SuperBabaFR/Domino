@@ -15,33 +15,9 @@ var image_base64 = ""  # Stocke l’image convertie en Base64
 const API_URL = "http://localhost:8000/signup"  
 
 func _ready():
-	print("🔍 Vérification des nœuds...")
-	file_dialog.hide()
-
-	# Vérification des nœuds
-	if not file_dialog or not texture_rect:
-		print("❌ ERREUR : 'Window' ou ses enfants sont introuvables !")
-		return
-	if not button_import or not button_inscrire:
-		print("❌ ERREUR : Un des boutons est introuvable !")
-		return
-	if not pseudo or not mdp:
-		print("❌ ERREUR : Un champ de saisie est introuvable !")
-		return
-
-	# Configuration du FileDialog
-	file_dialog.visible = false
-	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	file_dialog.filters = PackedStringArray(["*.png", "*.jpg", "*.jpeg"])
-	file_dialog.title = "Sélectionner une image"
-	file_dialog.size = Vector2(600, 400)
-	file_dialog.always_on_top = true
-
 	# Connexion des boutons
 	button_import.pressed.connect(_on_import_image_pressed)
 	button_inscrire.pressed.connect(_on_inscription_pressed)
-	file_dialog.file_selected.connect(_on_file_dialog_file_selected)
 	
 	# Connexion des boutons de navigation
 	button_connect.pressed.connect(_on_ButtonConnect_pressed)
@@ -64,6 +40,7 @@ func _on_file_dialog_file_selected(path):
 	
 	# Convertir en Base64
 	image_base64 = image_to_base64(image)
+	print(image_base64)
 	
 	# Appliquer l’image sur TextureRect
 	var texture = ImageTexture.new()
@@ -78,34 +55,26 @@ func image_to_base64(img: Image) -> String:
 
 # Fonction d'inscription
 func _on_inscription_pressed():
-	if pseudo.text != "" and mdp.text != "":
-		var body = {"pseudo": pseudo.text, "password": mdp.text}
-		
-		if image_base64 != "":
-			body["image"] = image_base64
-		
-		var json_body = JSON.stringify(body)
-		
-		Global.makeRequest("signup", self._on_request_completed, json_body)
-	else:
+	if pseudo.text == "" and mdp.text == "":
 		print("remplir tous les champs")
-
-
-# Gestion de la réponse de l'API
-func _on_request_completed(result, response_code, headers, body):
-	var json = JSON.new()
-	json.parse(body.get_string_from_utf8())
-	var response = json.get_data()
-	print(response.message)
+		
+	var body = {"pseudo": pseudo.text, "password": mdp.text}
 	
-	if response_code == 201:
-		get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
-		Global.set_player_data(response.data)
+	if image_base64 != "":
+		body["image"] = image_base64
+	
+	var json_body = JSON.stringify(body)
+	
+	var response = await Global.makeRequest("signup", json_body)
+	# Gestion de la réponse de l'API
+	var response_code = response.response_code
+	body = response.body
+	
+	if response.response_code == 201:
+		Global.set_player_data(body.data)
+		Global.changeScene("home_menu")
 	else:
-		print("erreur d'inscription")
-	
-	
-	
+		print(body.message)
 
 # Bouton qui renvoie vers le formulaire de connexion
 func _on_ButtonConnect_pressed():
@@ -114,19 +83,3 @@ func _on_ButtonConnect_pressed():
 # Bouton qui renvoie vers la page principale
 func _on_ButtonPrincipal_pressed():
 	Global.changeScene("principal")
-	
-	#print("🔄 Code réponse :", response_code)
-	#print("🔄 Réponse brute :", body.get_string_from_utf8())
-#
-	#var response = JSON.parse_string(body.get_string_from_utf8())
-#
-	#if response_code == 201:
-		#print("✅ Inscription réussie :")
-		#
-	#elif response_code == 400:
-		#if response and "message" in response:
-			#print("❌ ERREUR : ", response["message"])
-		#else:
-			#print("❌ ERREUR 400 : Mauvaise requête -", body.get_string_from_utf8())
-	#else:
-		#print("❌ ERREUR Serveur :", response_code, body.get_string_from_utf8())

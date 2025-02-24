@@ -210,7 +210,7 @@ class SignupView(APIView):
             # Converti l'image en JPEG pour réduire son poids
             buff = io.BytesIO()
             image.convert('RGB').save(buff, format="JPEG")
-            img_str = base64.b64encode(buff.getvalue())
+            img_str = base64.b64encode(buff.getvalue()).decode('utf-8')
 
         # Crée le joueur
         player = Player.objects.create(pseudo=pseudo, password=make_password(password), image=img_str)

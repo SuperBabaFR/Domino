@@ -1,99 +1,45 @@
 extends Node
 # API
-var API_URL = "https://api--domino--y6qkmxzm7hxr.code.run/"
-# Valeur des dominos
-var dominos_ref_list = []
-# Player
-var player_data: Dictionary  # Stocke les infos utilisateur après connexion
-var is_logged_in = false  # Statut de connexion
+const API_URL = "https://api--domino--y6qkmxzm7hxr.code.run/"
 # Tokens
 var tokens
-# Session
-var session_infos: Dictionary
-# Liste des infos des joueurs dans la session
-var player_list_data = []
 
 
-func get_info(objet: String, key: String, default_value = null):
-	if objet == "session":
-		return session_infos.get(key, default_value)
-	elif objet == "player":
-		return player_data.get(key, default_value)
-
-func set_player_data(data: Dictionary):
+# Set tokens
+func set_tokens(data: Dictionary):
 	tokens = {"access_token": data.access_token, "refresh_token": data.refresh_token}
-	
-	data.erase("access_token")
-	data.erase("refresh_token")
-	player_data = data
-	is_logged_in = true
-	print("Joueur connecté :", player_data.pseudo)
 
-func get_all_player_data():
-	return player_data
-
-func reset_player():
-	player_data.clear()
-	is_logged_in = false
-	tokens = null
-	print("Joueur déconnecté")
-
-# Session
-func set_session_data(data: Dictionary, created: bool):
-	session_infos = data
-	if created:
-		add_player_info(data, true)
-	
-func add_player_info(data: Dictionary, is_hote: bool):
-	var info_player = {
-		"pseudo": data.pseudo,
-		"image": data.image,
-		"rounds_win": 0,
-		"games_win": data.games_win,
-		"ping_count": data.ping_count,
-		"statut": data.statut,
-		"hote": is_hote
-	}
-	player_list_data.append(info_player)
-
-func remove_player_info(pseudo: String):
-	for player_info in player_list_data:
-		if player_info.pseudo == pseudo:
-			player_list_data.erase(player_info)
-			return true
-	return false
-
-func clear_session_data():
-	session_infos.clear()
-	player_list_data.clear()
 
 # REJOINDRE UNE SESSION VIA SON CODE
 func rejoindre_session(session_code):
+	print("--- rejoindre_session début ---")
+	print("\tsession_code : ", session_code)
 	var body = {
-		"code": session_code
+		"session_code": session_code
 	}
-	var response = await makeRequest("join")
-	
+	var response = await self.makeRequest("join", "", body)
 	var response_code = response.response_code
-	var data: Dictionary = response.body.data
-	var players_data = data.players
-	data.erase("players")
-	var session_data = {}
 	
 	if response_code == 200:
 		print("Session rejointe avec succès")
-		set_session_data(session_data, false)
+		
+		var data: Dictionary = response.body.data
+		var players_data = data.players
+		data.erase("players")
+		Global.set_session_data(data, false)
 		
 		for player_info in players_data:
-			add_player_info(player_info, false)
+			Global.add_player_info(player_info, false)
 		
-		changeScene("lobby")
+		Utile.changeScene("lobby")
 	elif response_code == 401:
+		print("--- rejoindre_session fin (retour menu principal) ---")
 		return
 	else:
 		push_error("error? : ", response.body.message)
+	print("--- rejoindre_session fin ---")
 
-
+# METHODE GLOBALE FAIRE DES REQUETES PROPRES AVEC GESTION DU TOKEN
 func makeRequest(action: String, jsonBody: String = "", urlParams = null):
 	print("--- Make request début ---")
 	print('\t action : ',action)
@@ -107,7 +53,7 @@ func makeRequest(action: String, jsonBody: String = "", urlParams = null):
 	match action:
 		"login", "signup", "create":
 			method = HTTPClient.Method.METHOD_POST
-		"dominos", "sessions", "stats", "join":
+		"dominos", "sessions", "stats", "join", "kill":
 			method = HTTPClient.Method.METHOD_GET
 	# etc. Ajuste au besoin
 	
@@ -115,14 +61,17 @@ func makeRequest(action: String, jsonBody: String = "", urlParams = null):
 	if urlParams and method == HTTPClient.Method.METHOD_GET:
 		var parts := []
 		for key in urlParams.keys():
-			var encoded_key = String(key).uri_encode()
-			var encoded_value = String(urlParams[key]).uri_encode()
+			var encoded_key = str(key).uri_encode()
+			var encoded_value = str(urlParams[key]).uri_encode()
 			parts.append("%s=%s" % [encoded_key, encoded_value])
 
 		if parts.size() > 0:
-			var packed_parts = PackedStringArray(parts)
-			#var query_string = "?" + parts.join("&")
-			#full_url += query_string
+			var query_string = "?"
+			# j'ajoute chaque arg 
+			for part in parts:
+				query_string += part + "&"
+			# Je construit l'url
+			full_url += query_string.substr(0, query_string.length() - 1)
 	
 	var result = {"response_code" : 401}
 	while result.response_code == 401:
@@ -197,20 +146,17 @@ func refreshToken(http_request: HTTPRequest):
 	elif response_code == HTTPClient.RESPONSE_UNAUTHORIZED:
 		push_error(result.body.message)
 		print("token refresh expiré -- Retour au menu principal")
-		changeScene("principal")
+		Utile.changeScene("principal")
 	
-	return response_code
 	print("--- RefreshToken Fin ---")
+	return response_code
 
-# Changer de scène
-func changeScene(scene_name: String):
-	print("change de scene vers : ",scene_name)
-	get_tree().change_scene_to_file("res://Scenes/" + scene_name + ".tscn")
+
 
 # DOMINOS
 func pull_list_dominos():
 	print("--- pull_list_dominos Début ---")
-	if not dominos_ref_list.is_empty():
+	if not Global.dominos_ref_list.is_empty():
 		print("--- pull_list_dominos Fin (y'a déjà la liste de dominos) ---")
 		return
 	var response = await self.makeRequest("dominos")
@@ -222,7 +168,7 @@ func pull_list_dominos():
 	print("message", body.message)
 	
 	if response.response_code == HTTPClient.RESPONSE_OK:
-		dominos_ref_list = body.data.domino_list
+		Global.dominos_ref_list = body.data.domino_list
 	else:
 		print(body.message)
 	print("--- pull_list_dominos Fin ---")
@@ -242,10 +188,9 @@ func load_player_stats():
 	
 	
 	if response.response_code == HTTPClient.RESPONSE_OK:
-		player_data.merge(body.data, true)
+		Global.player_data.merge(body.data, true)
 		print(body.data)
 	else:
 		print(body.message)
 	print("--- load_player_stats Fin ---")
 	return body.data
-	

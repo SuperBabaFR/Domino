@@ -13,17 +13,18 @@ func _on_connexion_pressed():
 		return
 	
 	var json = JSON.stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
-	var response = await Global.makeRequest("login", json)
+	var response = await API.makeRequest("login", json)
 	
 	var response_code = response.response_code
 	var body = response.body
 	
 	if response_code == 200:
+		API.set_tokens(body.data)
 		Global.set_player_data(body.data)
-		get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
+		Utile.changeScene("home_menu")
 	else:
 		print(body.message) #Afficher le message à l'utilisateur a la place du print
 
 
 func _on_Inscription_pressed():
-	Global.changeScene("inscription")
+	Utile.changeScene("inscription")

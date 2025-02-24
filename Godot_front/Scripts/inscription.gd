@@ -65,21 +65,22 @@ func _on_inscription_pressed():
 	
 	var json_body = JSON.stringify(body)
 	
-	var response = await Global.makeRequest("signup", json_body)
+	var response = await API.makeRequest("signup", json_body)
 	# Gestion de la réponse de l'API
 	var response_code = response.response_code
 	body = response.body
 	
 	if response.response_code == 201:
+		API.set_tokens(body.data)
 		Global.set_player_data(body.data)
-		Global.changeScene("home_menu")
+		Utile.changeScene("home_menu")
 	else:
 		print(body.message)
 
 # Bouton qui renvoie vers le formulaire de connexion
 func _on_ButtonConnect_pressed():
-	Global.changeScene("connexion")
+	Utile.changeScene("connexion")
 
 # Bouton qui renvoie vers la page principale
 func _on_ButtonPrincipal_pressed():
-	Global.changeScene("principal")
+	Utile.changeScene("principal")

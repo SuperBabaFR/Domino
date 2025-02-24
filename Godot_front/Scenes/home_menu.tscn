@@ -43,10 +43,10 @@ text = "Créer"
 
 [node name="JoinBtn" type="Button" parent="."]
 layout_mode = 0
-offset_left = 545.0
-offset_top = 425.0
-offset_right = 680.0
-offset_bottom = 475.0
+offset_left = 536.0
+offset_top = 429.0
+offset_right = 695.0
+offset_bottom = 479.0
 text = "Rejoindre"
 
 [node name="DisconnectBtn" type="Button" parent="."]

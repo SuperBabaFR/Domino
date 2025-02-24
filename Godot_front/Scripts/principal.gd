@@ -11,11 +11,11 @@ func _ready():
 	$ButtonInscription.pressed.connect(_on_ButtonInscription_pressed)
 
 func _on_ButtonConnexion_pressed():
-	Global.changeScene("connexion")
+	Utile.changeScene("connexion")
 
 
 func _on_ButtonInscription_pressed():
-	Global.changeScene("inscription")
+	Utile.changeScene("inscription")
 	
 
 func _on_StartButton_pressed():

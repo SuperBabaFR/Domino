@@ -4,7 +4,7 @@ func _ready():
 	load_sessions()
 
 func load_sessions():
-	var response = await Global.makeRequest("sessions")
+	var response = await API.makeRequest("sessions")
 	
 	var response_code = response.response_code
 	
@@ -28,7 +28,7 @@ func afficher_sessions(sessions):
 			#session_label.add_theme_color_ooverride("font_color", Color(0, 1, 0))
 			var join_button = Button.new()
 			join_button.text = "Rejoindre"
-			join_button.pressed.connect(func(): Global.rejoindre_session(session.code))
+			join_button.pressed.connect(func(): API.rejoindre_session(session.code))
 
 			session_label.add_theme_font_size_override("font_size", 30)
 			session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -41,4 +41,4 @@ func afficher_sessions(sessions):
 
 
 func _on_btn_retour_pressed():
-	Global.changeScene("home_menu")
+	Utile.changeScene("home_menu")

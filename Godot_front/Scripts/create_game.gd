@@ -31,14 +31,14 @@ func create_session():
 	json_body = JSON.stringify(body, "  ")
 	print(json_body)
 	
-	var response = await Global.makeRequest("create", json_body)
+	var response = await API.makeRequest("create", json_body)
 	
 	var response_code = response.response_code
 	body = response.body
 	
 	if response.response_code == 201:
 		Global.set_session_data(response.data, true)
-		Global.changeScene("lobby")
+		Utile.changeScene("lobby")
 	elif response_code == 401:
 		return
 
@@ -60,7 +60,7 @@ func _on_slider_reflexion_time_value_changed(value):
 	lab_reflexion_time_value.text = str(slider_reflexion_time.value) + " Secondes"
 
 func _on_btn_back_pressed():
-	Global.changeScene("home_menu")
+	Utile.changeScene("home_menu")
 
 func _on_btn_creer_pressed():
 	self.create_session()

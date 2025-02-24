@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cqgd15taqxuqo"]
 
-[ext_resource type="Script" path="res://Scenes/lobby.gd" id="1_oddvw"]
+[ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/profil.tscn" id="1_powg8"]
 
 [node name="Control" type="Control"]
@@ -11,6 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oddvw")
+metadata/_edit_lock_ = true
 
 [node name="P1" parent="." instance=ExtResource("1_powg8")]
 offset_left = 63.0
@@ -35,3 +36,11 @@ offset_left = 462.0
 offset_top = 344.0
 offset_right = 462.0
 offset_bottom = 344.0
+
+[node name="btn_leave" type="Button" parent="."]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 19.0
+offset_right = 129.0
+offset_bottom = 62.0
+text = "Quitter"

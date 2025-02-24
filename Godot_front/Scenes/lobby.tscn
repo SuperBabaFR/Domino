@@ -44,3 +44,11 @@ offset_top = 19.0
 offset_right = 129.0
 offset_bottom = 62.0
 text = "Quitter"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 903.0
+offset_top = 62.0
+offset_right = 999.0
+offset_bottom = 83.0
+text = "Voyey allé"

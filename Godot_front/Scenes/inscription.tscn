@@ -75,7 +75,7 @@ offset_bottom = 479.0
 text = "S'inscrire"
 
 [node name="FileDialog" type="FileDialog" parent="."]
-title = "Sélectionnez une image"
+title = "Open a File"
 position = Vector2i(0, 36)
 size = Vector2i(600, 400)
 always_on_top = true

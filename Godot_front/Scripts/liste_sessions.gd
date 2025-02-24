@@ -1,7 +1,14 @@
 extends Control
 
+var label_settings
+@export var btn_join : Button
+@export var input_code_session: LineEdit
+
 func _ready():
 	load_sessions()
+	label_settings = preload("res://Thèmes/label_settings.tres")
+	btn_join.connect("pressed", _on_rejoindre_pressed)
+	
 
 func load_sessions():
 	var response = await API.makeRequest("sessions")
@@ -18,27 +25,37 @@ func load_sessions():
 
 func afficher_sessions(sessions):
 	for session in sessions:
+		session["can_join"] = true
+		if session.statut in ["session.is_active", "session.is_full"] or not session.is_public:
+			session["can_join"] = false
 		print(session)
+		
 		# Pour chaque session que l'on peut vraiment rejoindre
-		if session.statut == "session.is_open" and session.is_public:
-			var session_container = HBoxContainer.new()
-			var session_label = Label.new()
-			session_label.text = session.session_name
-
-			#session_label.add_theme_color_ooverride("font_color", Color(0, 1, 0))
+		var session_container = HBoxContainer.new()
+		# Nom de la session
+		var session_label = Label.new()
+		session_label.text = session.session_name
+		session_label.set_label_settings(label_settings)
+		session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		session_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		session_label.custom_minimum_size = Vector2(0, 30)
+		
+		session_container.add_child(session_label)
+		# Bouton rejoindre
+		if session.can_join:
 			var join_button = Button.new()
 			join_button.text = "Rejoindre"
 			join_button.pressed.connect(func(): API.rejoindre_session(session.code))
-
-			session_label.add_theme_font_size_override("font_size", 30)
-			session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			session_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-			session_label.custom_minimum_size = Vector2(0, 30)
-
-			session_container.add_child(session_label)
+			
 			session_container.add_child(join_button)
-			$VBoxContainer.add_child(session_container)
+		# Ajoute l'élément entier
+		$VBoxContainer.add_child(session_container)
 
 
 func _on_btn_retour_pressed():
 	Utile.changeScene("home_menu")
+
+func _on_rejoindre_pressed():
+	if input_code_session.text == "":
+		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
+	Global.rejoindre_session(input_code_session.text)

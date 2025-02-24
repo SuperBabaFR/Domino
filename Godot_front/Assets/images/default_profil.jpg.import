@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8bhtmkqprhyq"
-path="res://.godot/imported/DOminOO Play.svg-369d5cd2322755d25f9e9daf7b0e19cb.ctex"
+uid="uid://u6k016hoa1hw"
+path="res://.godot/imported/default_profil.jpg-607ecc86cde258ff25e591eb8f5ba1e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/DOminOO Play.svg"
-dest_files=["res://.godot/imported/DOminOO Play.svg-369d5cd2322755d25f9e9daf7b0e19cb.ctex"]
+source_file="res://Assets/images/default_profil.jpg"
+dest_files=["res://.godot/imported/default_profil.jpg-607ecc86cde258ff25e591eb8f5ba1e8.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

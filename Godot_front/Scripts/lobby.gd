@@ -3,6 +3,7 @@ extends Control
 
 func _ready():
 	$btn_leave.connect("pressed", _on_btn_leave_press)
+	$btn_start.connect("pressed", _on_start_game)
 	
 	for i in range(1,5):
 		get_node("P"+str(i)).visible = false
@@ -33,3 +34,6 @@ func _on_btn_leave_press():
 	else:
 		print(body.message)
 	
+func _on_start_game():
+	var body = {"session_id": Global.session_infos.session_id}
+	var response = await API.makeRequest("start", "", body)

@@ -1,18 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpa4lyv6g6gov"]
+[gd_scene load_steps=6 format=3 uid="uid://bpa4lyv6g6gov"]
 
 [ext_resource type="Script" path="res://Scripts/principal.gd" id="1_rkwun"]
-[ext_resource type="Texture2D" uid="uid://8bhtmkqprhyq" path="res://Assets/DOminOO Play.svg" id="2_hvkji"]
-[ext_resource type="Texture2D" uid="uid://clwp1lw5id0g1" path="res://Assets/boutton play.svg" id="3_ftvox"]
+[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_atcly"]
+[ext_resource type="Texture2D" uid="uid://clwp1lw5id0g1" path="res://Assets/images/boutton play.svg" id="3_ftvox"]
+[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_fxoe0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vegja"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="Principal" type="Control"]
+[node name="Principal" type="Control" node_paths=PackedStringArray("btn_connexion", "btn_inscription", "btn_start")]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_rkwun")
+btn_connexion = NodePath("btn_connexion")
+btn_inscription = NodePath("btn_inscription")
+btn_start = NodePath("btn_start")
 
-[node name="StartButton" type="Button" parent="."]
+[node name="Background" parent="." instance=ExtResource("2_atcly")]
+layout_mode = 1
+
+[node name="GameTitle" parent="Background" instance=ExtResource("3_fxoe0")]
+offset_left = 381.0
+offset_top = 156.0
+offset_right = 381.0
+offset_bottom = 156.0
+
+[node name="btn_start" type="Button" parent="."]
 layout_mode = 0
 offset_left = 566.0
 offset_top = 368.0
@@ -21,7 +38,7 @@ offset_bottom = 455.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_vegja")
 icon = ExtResource("3_ftvox")
 
-[node name="ButtonConnexion" type="Button" parent="."]
+[node name="btn_connexion" type="Button" parent="."]
 layout_mode = 0
 offset_left = 551.0
 offset_top = 478.0
@@ -29,16 +46,10 @@ offset_right = 734.0
 offset_bottom = 546.0
 text = "Connexion"
 
-[node name="ButtonInscription" type="Button" parent="."]
+[node name="btn_inscription" type="Button" parent="."]
 layout_mode = 0
 offset_left = 551.0
 offset_top = 358.0
 offset_right = 731.0
 offset_bottom = 422.0
 text = "Inscription"
-
-[node name="DOminOoPlay" type="Sprite2D" parent="."]
-position = Vector2(649, 151)
-texture = ExtResource("2_hvkji")
-
-[node name="CanvasModulate" type="CanvasModulate" parent="."]

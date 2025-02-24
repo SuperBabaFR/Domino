@@ -14,7 +14,7 @@ config/name="Domino_2D"
 run/main_scene="res://Scenes/principal.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/bg_color=Color(0.301961, 0.431373, 0.576471, 1)
-config/icon="res://Assets/icon.svg"
+config/icon="res://Assets/images/icon.svg"
 
 [autoload]
 

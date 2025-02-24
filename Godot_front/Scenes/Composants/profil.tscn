@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://doqihpqywa426"]
+[gd_scene load_steps=5 format=3 uid="uid://doqihpqywa426"]
 
 [ext_resource type="Script" path="res://Scripts/profil.gd" id="1_glyvl"]
 
@@ -6,6 +6,9 @@
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_c3vix"]
 gradient = SubResource("Gradient_laepc")
+
+[sub_resource type="LabelSettings" id="LabelSettings_77pr0"]
+font_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -29,6 +32,7 @@ offset_top = 51.0
 offset_right = 268.0
 offset_bottom = 93.0
 text = "placeholder"
+label_settings = SubResource("LabelSettings_77pr0")
 horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true

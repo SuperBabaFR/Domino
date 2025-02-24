@@ -1,13 +1,16 @@
 extends Control
 
-@onready var file_dialog = $FileDialog
-@onready var texture_rect = $TextureRect
-@onready var button_import = $ButtonImport
-@onready var button_inscrire = $ButtonInscrire
-@onready var pseudo = $LineEditPseudo
-@onready var mdp = $LineEditMdp
-@onready var button_principal = $ButtonPrincipal  
-@onready var button_connect = $ButtonConnect  
+# Sélectionne le fichier
+@export var file_dialog : FileDialog
+# Affiche l'image
+@export var texture_rect : TextureRect
+# Boutons
+@export var button_import : Button
+@export var button_inscrire : Button
+@export var button_connect : Button
+# Line edit
+@export var pseudo : LineEdit
+@export var mdp : LineEdit
 
 var selected_image_path = ""  # Stocke le chemin de l’image sélectionnée
 var image_base64 = ""  # Stocke l’image convertie en Base64
@@ -21,7 +24,6 @@ func _ready():
 	
 	# Connexion des boutons de navigation
 	button_connect.pressed.connect(_on_ButtonConnect_pressed)
-	button_principal.pressed.connect(_on_ButtonPrincipal_pressed)
 
 # Ouvre la boîte de dialogue pour sélectionner une image
 func _on_import_image_pressed():
@@ -40,7 +42,6 @@ func _on_file_dialog_file_selected(path):
 	
 	# Convertir en Base64
 	image_base64 = image_to_base64(image)
-	print(image_base64)
 	
 	# Appliquer l’image sur TextureRect
 	var texture = ImageTexture.new()

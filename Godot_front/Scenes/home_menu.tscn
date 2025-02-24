@@ -1,19 +1,22 @@
-[gd_scene load_steps=7 format=3 uid="uid://bw41ecw7l4jya"]
+[gd_scene load_steps=8 format=3 uid="uid://bw41ecw7l4jya"]
 
 [ext_resource type="Script" path="res://Scripts/home_menu.gd" id="1_27nal"]
-[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/profil.tscn" id="2_x8wce"]
-[ext_resource type="Texture2D" uid="uid://8bhtmkqprhyq" path="res://Assets/DOminOO Play.svg" id="3_l7wla"]
+[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_jeyas"]
+[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="2_x8wce"]
+[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_3pjq8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
 font_size = 35
+font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_k7oq6"]
 font_names = PackedStringArray("Arial")
 
 [sub_resource type="LabelSettings" id="LabelSettings_50o8r"]
 font = SubResource("SystemFont_k7oq6")
+font_color = Color(0, 0, 0, 1)
 
-[node name="HomeMenu" type="Control"]
+[node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +24,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_27nal")
+btn_disconnect = NodePath("btn_disconnect")
+btn_create = NodePath("btn_create")
+btn_join = NodePath("btn_join")
+label_wins = NodePath("label_wins")
+label_games = NodePath("label_games")
+label_pigs = NodePath("label_pigs")
+label_ratio = NodePath("label_ratio")
 metadata/_edit_lock_ = true
+
+[node name="Background" parent="." instance=ExtResource("2_jeyas")]
+layout_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="GameTitle" parent="Background" instance=ExtResource("3_3pjq8")]
+offset_left = 364.0
+offset_top = 111.0
+offset_right = 364.0
+offset_bottom = 111.0
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
@@ -33,23 +53,15 @@ text = "Vinn pren on place!
 Si ki tab ou kay sizé?"
 label_settings = SubResource("LabelSettings_8kqgb")
 
-[node name="CreateBtn" type="Button" parent="."]
+[node name="btn_create" type="Button" parent="."]
 layout_mode = 0
-offset_left = 558.0
-offset_top = 330.0
-offset_right = 674.0
-offset_bottom = 379.0
+offset_left = 549.0
+offset_top = 333.0
+offset_right = 665.0
+offset_bottom = 382.0
 text = "Créer"
 
-[node name="JoinBtn" type="Button" parent="."]
-layout_mode = 0
-offset_left = 536.0
-offset_top = 429.0
-offset_right = 695.0
-offset_bottom = 479.0
-text = "Rejoindre"
-
-[node name="DisconnectBtn" type="Button" parent="."]
+[node name="btn_disconnect" type="Button" parent="."]
 layout_mode = 0
 offset_left = 19.0
 offset_top = 141.0
@@ -57,7 +69,7 @@ offset_right = 135.0
 offset_bottom = 178.0
 text = "Déconnexion"
 
-[node name="wins" type="Label" parent="."]
+[node name="label_wins" type="Label" parent="."]
 layout_mode = 0
 offset_left = 1030.0
 offset_top = 40.0
@@ -68,7 +80,7 @@ text = "Valeur :
 label_settings = SubResource("LabelSettings_50o8r")
 vertical_alignment = 1
 
-[node name="games" type="Label" parent="."]
+[node name="label_games" type="Label" parent="."]
 layout_mode = 0
 offset_left = 1033.0
 offset_top = 9.0
@@ -79,7 +91,7 @@ text = "Valeur :
 label_settings = SubResource("LabelSettings_50o8r")
 vertical_alignment = 1
 
-[node name="pig_count" type="Label" parent="."]
+[node name="label_pigs" type="Label" parent="."]
 layout_mode = 0
 offset_left = 1029.0
 offset_top = 76.0
@@ -90,7 +102,7 @@ text = "Valeur :
 label_settings = SubResource("LabelSettings_50o8r")
 vertical_alignment = 1
 
-[node name="ratio" type="Label" parent="."]
+[node name="label_ratio" type="Label" parent="."]
 layout_mode = 0
 offset_left = 1027.0
 offset_top = 110.0
@@ -103,6 +115,9 @@ vertical_alignment = 1
 
 [node name="Profil" parent="." instance=ExtResource("2_x8wce")]
 
-[node name="DOminOoPlay" type="Sprite2D" parent="."]
-position = Vector2(627, 138)
-texture = ExtResource("3_l7wla")
+[node name="btn_join" type="Button" parent="."]
+offset_left = 532.0
+offset_top = 468.0
+offset_right = 691.0
+offset_bottom = 518.0
+text = "Rejoindre"

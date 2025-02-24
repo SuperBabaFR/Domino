@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://3mtnbk5eamcd"]
+
+[ext_resource type="FontFile" uid="uid://ca8tmv67ys7mb" path="res://Assets/fonts/MajorMonoDisplay-Regular.ttf" id="1_veisc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lt8v1"]
+font = ExtResource("1_veisc")
+font_size = 100
+font_color = Color(0, 0, 0, 1)
+
+[node name="GameTitle" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "DOminOO"
+label_settings = SubResource("LabelSettings_lt8v1")

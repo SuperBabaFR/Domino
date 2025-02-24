@@ -1,18 +1,24 @@
 extends Control
 
+# Lines edit
+@export var pseudo : LineEdit
+@export var mdp : LineEdit
 
-# Called when the node enters the scene tree for the first time.
+# Boutons
+@export var btn_connect : Button 
+@export var btn_inscription : Button 
+
 func _ready():
-	$Inscription.connect("pressed", _on_Inscription_pressed)
-	$ConnexionButton.connect("pressed", _on_connexion_pressed) 
+	btn_inscription.connect("pressed", _on_Inscription_pressed)
+	btn_connect.connect("pressed", _on_connexion_pressed) 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _on_connexion_pressed():
-	if $Pseudo.text == "" and $Mdp.text == "":  
+	if pseudo.text == "" and mdp.text == "":  
 		print("Veuillez remplir tous les champs ") # Afficher le message à l'utilisateur a la place du print
 		return
 	
-	var json = JSON.stringify({"pseudo": $Pseudo.text, "password": $Mdp.text})
+	var json = JSON.stringify({"pseudo": pseudo.text, "password": mdp.text})
 	var response = await API.makeRequest("login", json)
 	
 	var response_code = response.response_code

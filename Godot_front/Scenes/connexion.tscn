@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkxwxlk4ubv1d"]
+[gd_scene load_steps=5 format=3 uid="uid://dkxwxlk4ubv1d"]
 
 [ext_resource type="Script" path="res://Scripts/connexion.gd" id="1_ilhuv"]
+[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_3r5rs"]
+[ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://Thèmes/label_settings.tres" id="3_8jb78"]
+[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_mfnmt"]
 
-[node name="Connexion" type="Control"]
+[node name="Connexion" type="Control" node_paths=PackedStringArray("pseudo", "mdp", "btn_connect", "btn_inscription")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,64 +13,78 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ilhuv")
+pseudo = NodePath("input_pseudo")
+mdp = NodePath("input_mdp")
+btn_connect = NodePath("btn_connexion")
+btn_inscription = NodePath("btn_inscription")
 metadata/_edit_lock_ = true
 
-[node name="Pseudo" type="LineEdit" parent="."]
+[node name="Background" parent="." instance=ExtResource("2_3r5rs")]
+layout_mode = 1
+metadata/_edit_lock_ = true
+
+[node name="GameTitle" parent="." instance=ExtResource("3_mfnmt")]
+offset_left = 372.0
+offset_top = 62.0
+offset_right = 372.0
+offset_bottom = 62.0
+
+[node name="input_pseudo" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 153.0
-offset_top = 66.0
-offset_right = 317.0
-offset_bottom = 97.0
+offset_left = 618.0
+offset_top = 246.0
+offset_right = 782.0
+offset_bottom = 277.0
 placeholder_text = "TON PSEUDO FDP"
 
-[node name="Mdp" type="LineEdit" parent="."]
+[node name="input_mdp" type="LineEdit" parent="."]
 layout_mode = 0
-offset_left = 153.0
-offset_top = 134.0
-offset_right = 317.0
-offset_bottom = 165.0
+offset_left = 618.0
+offset_top = 314.0
+offset_right = 782.0
+offset_bottom = 345.0
 placeholder_text = "TON MDP FDP"
 
-[node name="LabelPseudo" type="Label" parent="."]
+[node name="label_pseudo" type="Label" parent="."]
 layout_mode = 0
-offset_left = 45.0
-offset_top = 66.0
-offset_right = 85.0
-offset_bottom = 89.0
+offset_left = 510.0
+offset_top = 246.0
+offset_right = 567.0
+offset_bottom = 269.0
 text = "Pseudo
 "
+label_settings = ExtResource("3_8jb78")
 
-[node name="LabelMdp" type="Label" parent="."]
+[node name="label_mdp" type="Label" parent="."]
 layout_mode = 0
-offset_left = 52.0
-offset_top = 139.0
-offset_right = 109.0
-offset_bottom = 162.0
-text = "Mdp
-"
+offset_left = 517.0
+offset_top = 319.0
+offset_right = 574.0
+offset_bottom = 342.0
+text = "Mdp"
+label_settings = ExtResource("3_8jb78")
 
-[node name="ConnexionButton" type="Button" parent="."]
+[node name="btn_connexion" type="Button" parent="."]
 layout_mode = 0
-offset_left = 183.0
-offset_top = 207.0
-offset_right = 325.0
-offset_bottom = 238.0
+offset_left = 561.0
+offset_top = 389.0
+offset_right = 703.0
+offset_bottom = 420.0
 text = "Se connecter "
 
-[node name="LoginRequest" type="HTTPRequest" parent="."]
-
-[node name="Inscription" type="Button" parent="."]
+[node name="btn_inscription" type="Button" parent="."]
 layout_mode = 0
-offset_left = 921.0
-offset_top = 40.0
-offset_right = 1038.0
-offset_bottom = 70.0
+offset_left = 584.0
+offset_top = 535.0
+offset_right = 701.0
+offset_bottom = 566.0
 text = "M'inscrire"
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 684.0
-offset_top = 45.0
-offset_right = 724.0
-offset_bottom = 68.0
+offset_left = 540.0
+offset_top = 495.0
+offset_right = 760.0
+offset_bottom = 518.0
 text = "Vous n'avez pas de compte ?"
+label_settings = ExtResource("3_8jb78")

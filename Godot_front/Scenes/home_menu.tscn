@@ -116,6 +116,7 @@ vertical_alignment = 1
 [node name="Profil" parent="." instance=ExtResource("2_x8wce")]
 
 [node name="btn_join" type="Button" parent="."]
+layout_mode = 0
 offset_left = 532.0
 offset_top = 468.0
 offset_right = 691.0

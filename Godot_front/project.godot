@@ -21,6 +21,7 @@ config/icon="res://Assets/images/icon.svg"
 Global="*res://Scripts/globaux/global.gd"
 Utile="*res://Scripts/globaux/utile.gd"
 API="*res://Scripts/globaux/api.gd"
+Websocket="*res://Scripts/globaux/websocket.gd"
 
 [display]
 

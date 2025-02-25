@@ -13,3 +13,4 @@ metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("1_kxd6a")]
 layout_mode = 1
+metadata/_edit_lock_ = true

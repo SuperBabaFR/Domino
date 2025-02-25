@@ -53,3 +53,11 @@ offset_top = 358.0
 offset_right = 731.0
 offset_bottom = 422.0
 text = "Inscription"
+
+[node name="maco" type="Button" parent="."]
+layout_mode = 0
+offset_left = 129.0
+offset_top = 319.0
+offset_right = 261.0
+offset_bottom = 373.0
+text = "Teste moi"

@@ -13,7 +13,10 @@ func _ready():
 	btn_start.pressed.connect(_on_StartButton_pressed)
 	btn_connexion.pressed.connect(_on_ButtonConnexion_pressed)
 	btn_inscription.pressed.connect(_on_ButtonInscription_pressed)
+	
+	get_node("maco").connect("pressed", func(): Websocket.socket.send_text("maco"))
 
+	
 func _on_ButtonConnexion_pressed():
 	Utile.changeScene("connexion")
 

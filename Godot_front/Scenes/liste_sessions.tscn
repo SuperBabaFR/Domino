@@ -45,6 +45,7 @@ offset_bottom = 80.0
 text = "Retour"
 
 [node name="LabelCodeSession" type="Label" parent="."]
+layout_mode = 0
 offset_left = 1006.0
 offset_top = 362.0
 offset_right = 1177.0
@@ -53,12 +54,14 @@ text = "Entrez le code Session"
 label_settings = ExtResource("4_uobjw")
 
 [node name="input_code_session" type="LineEdit" parent="."]
+layout_mode = 0
 offset_left = 1017.0
 offset_top = 411.0
 offset_right = 1147.0
 offset_bottom = 442.0
 
 [node name="btn_join" type="Button" parent="."]
+layout_mode = 0
 offset_left = 1053.0
 offset_top = 464.0
 offset_right = 1116.0

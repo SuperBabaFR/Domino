@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b8qutyen6k6l3"]
+[gd_scene load_steps=3 format=3 uid="uid://b8qutyen6k6l3"]
 
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="1_kxd6a"]
+[ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="2_sds0s"]
 
 [node name="Jeu" type="Control"]
 layout_mode = 3
@@ -14,3 +15,9 @@ metadata/_edit_lock_ = true
 [node name="Background" parent="." instance=ExtResource("1_kxd6a")]
 layout_mode = 1
 metadata/_edit_lock_ = true
+
+[node name="ChatTextuel" parent="." instance=ExtResource("2_sds0s")]
+offset_left = 2.0
+offset_top = 500.0
+offset_right = 2.0
+offset_bottom = 500.0

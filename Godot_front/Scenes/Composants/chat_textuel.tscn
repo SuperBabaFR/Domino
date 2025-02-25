@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmbgvp7440237"]
+
+[ext_resource type="Script" path="res://Scripts/chat_textuel.gd" id="1_1mq7w"]
+
+[node name="ChatTextuel" type="Control" node_paths=PackedStringArray("input_msg", "list_msgs")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_1mq7w")
+input_msg = NodePath("input_msg")
+list_msgs = NodePath("liste_msgs")
+metadata/_edit_lock_ = true
+
+[node name="liste_msgs" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_right = 330.0
+offset_bottom = 170.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+bbcode_enabled = true
+scroll_following = true
+
+[node name="input_msg" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 184.0
+offset_right = 349.0
+offset_bottom = 215.0
+
+[connection signal="text_submitted" from="input_msg" to="." method="_on_input_msg_text_submitted"]

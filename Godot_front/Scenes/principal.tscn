@@ -8,7 +8,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vegja"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="Principal" type="Control" node_paths=PackedStringArray("btn_connexion", "btn_inscription", "btn_start")]
+[node name="Principal" type="Control" node_paths=PackedStringArray("btn_start")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,8 +16,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rkwun")
-btn_connexion = NodePath("btn_connexion")
-btn_inscription = NodePath("btn_inscription")
 btn_start = NodePath("btn_start")
 
 [node name="Background" parent="." instance=ExtResource("2_atcly")]
@@ -37,27 +35,3 @@ offset_right = 735.0
 offset_bottom = 455.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_vegja")
 icon = ExtResource("3_ftvox")
-
-[node name="btn_connexion" type="Button" parent="."]
-layout_mode = 0
-offset_left = 551.0
-offset_top = 478.0
-offset_right = 734.0
-offset_bottom = 546.0
-text = "Connexion"
-
-[node name="btn_inscription" type="Button" parent="."]
-layout_mode = 0
-offset_left = 551.0
-offset_top = 358.0
-offset_right = 731.0
-offset_bottom = 422.0
-text = "Inscription"
-
-[node name="maco" type="Button" parent="."]
-layout_mode = 0
-offset_left = 129.0
-offset_top = 319.0
-offset_right = 261.0
-offset_bottom = 373.0
-text = "Teste moi"

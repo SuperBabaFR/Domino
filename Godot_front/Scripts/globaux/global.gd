@@ -58,6 +58,12 @@ func remove_player_info(pseudo: String):
 			return true
 	return false
 
+func get_player_info(pseudo: String):
+	for player_info in player_list_data:
+		if player_info.pseudo == pseudo:
+			return player_info
+	return false
+
 func get_all_players_infos():
 	return player_list_data
 

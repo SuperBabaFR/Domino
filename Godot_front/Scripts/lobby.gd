@@ -1,9 +1,14 @@
 extends Control
 
+@export var btn_leave : Button
+@export var btn_start : Button
+
 
 func _ready():
-	$btn_leave.connect("pressed", _on_btn_leave_press)
-	$btn_start.connect("pressed", _on_start_game)
+	btn_leave.connect("pressed", _on_btn_leave_press)
+	btn_start.connect("pressed", _on_start_game)
+	
+	Websocket.connect_to_websocket()
 	
 	for i in range(1,5):
 		get_node("P"+str(i)).visible = false
@@ -30,6 +35,7 @@ func _on_btn_leave_press():
 	
 	if response.response_code == HTTPClient.RESPONSE_OK:
 		Global.clear_session_data()
+		Websocket.socket.close()
 		Utile.changeScene("home_menu")
 	else:
 		print(body.message)

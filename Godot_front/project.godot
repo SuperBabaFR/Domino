@@ -19,8 +19,8 @@ config/icon="res://Assets/images/icon.svg"
 [autoload]
 
 Global="*res://Scripts/globaux/global.gd"
-Utile="*res://Scripts/globaux/global_utile.gd"
-API="*res://Scripts/globaux/global_api.gd"
+Utile="*res://Scripts/globaux/utile.gd"
+API="*res://Scripts/globaux/api.gd"
 
 [display]
 

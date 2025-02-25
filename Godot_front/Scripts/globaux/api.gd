@@ -1,6 +1,8 @@
 extends Node
 # API
-const API_URL = "https://api--domino--y6qkmxzm7hxr.code.run/"
+const URL = "api--domino--y6qkmxzm7hxr.code.run"
+const API_URL = "https://" + URL + "/"
+
 # Tokens
 var tokens
 

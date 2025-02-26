@@ -87,6 +87,7 @@ func _process(delta):
 		var code = socket.get_close_code()
 		var reason = socket.get_close_reason()
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+		Utile.changeScene("home_menu")
 		set_process(false) # Stop processing.
 
 func send_json(dict_data: Dictionary):

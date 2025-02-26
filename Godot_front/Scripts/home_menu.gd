@@ -11,6 +11,9 @@ extends Control
 @export var label_pigs : Label
 @export var label_ratio : Label
 
+# Profil
+@export var profil : Node
+
 
 func _ready():
 	if not Global.is_logged_in:
@@ -18,11 +21,13 @@ func _ready():
 	
 	# Infos du joueur
 	var player = Global.get_all_player_data()
-	$Profil/pseudo.text = player.pseudo
-	
-	Utile.load_profil_picture(player.image, $Profil/image)
-	
+	var pseudo = player.pseudo
+	var image = Utile.load_profil_picture(player.image)
+	# Affiche le tout
+	profil.load_player_profile(pseudo, image)
+	# Charge les dominos si necessaire
 	API.pull_list_dominos()
+	# Charge les stats
 	load_stats()
 
 	btn_create.connect("pressed", _on_start_pressed)

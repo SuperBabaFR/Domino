@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_stbpb"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="4_0wkmg"]
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +15,7 @@ grow_vertical = 2
 script = ExtResource("1_oddvw")
 btn_leave = NodePath("btn_leave")
 btn_start = NodePath("btn_start")
+btn_ready = NodePath("btn_ready")
 metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("2_stbpb")]
@@ -55,10 +56,10 @@ text = "Quitter"
 
 [node name="btn_start" type="Button" parent="."]
 layout_mode = 0
-offset_left = 879.0
-offset_top = 302.0
-offset_right = 999.0
-offset_bottom = 347.0
+offset_left = 864.0
+offset_top = 239.0
+offset_right = 984.0
+offset_bottom = 284.0
 text = "Voyey allé"
 
 [node name="ChatTextuel" parent="." instance=ExtResource("4_0wkmg")]
@@ -66,3 +67,10 @@ offset_left = 11.0
 offset_top = 498.0
 offset_right = 11.0
 offset_bottom = 498.0
+
+[node name="btn_ready" type="Button" parent="."]
+offset_left = 865.0
+offset_top = 395.0
+offset_right = 985.0
+offset_bottom = 440.0
+text = "Mettre Prêt"

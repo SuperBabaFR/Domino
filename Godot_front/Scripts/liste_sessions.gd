@@ -58,4 +58,4 @@ func _on_btn_retour_pressed():
 func _on_rejoindre_pressed():
 	if input_code_session.text == "":
 		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
-	Global.rejoindre_session(input_code_session.text)
+	API.rejoindre_session(input_code_session.text)

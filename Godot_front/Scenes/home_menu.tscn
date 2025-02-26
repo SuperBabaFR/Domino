@@ -16,7 +16,7 @@ font_names = PackedStringArray("Arial")
 font = SubResource("SystemFont_k7oq6")
 font_color = Color(0, 0, 0, 1)
 
-[node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio")]
+[node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio", "profil")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,6 +31,7 @@ label_wins = NodePath("label_wins")
 label_games = NodePath("label_games")
 label_pigs = NodePath("label_pigs")
 label_ratio = NodePath("label_ratio")
+profil = NodePath("Profil")
 metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("2_jeyas")]
@@ -63,10 +64,10 @@ text = "Créer"
 
 [node name="btn_disconnect" type="Button" parent="."]
 layout_mode = 0
-offset_left = 19.0
-offset_top = 141.0
-offset_right = 135.0
-offset_bottom = 178.0
+offset_left = 16.0
+offset_top = 135.0
+offset_right = 132.0
+offset_bottom = 172.0
 text = "Déconnexion"
 
 [node name="label_wins" type="Label" parent="."]
@@ -114,11 +115,15 @@ label_settings = SubResource("LabelSettings_50o8r")
 vertical_alignment = 1
 
 [node name="Profil" parent="." instance=ExtResource("2_x8wce")]
+offset_left = -2.0
+offset_top = -32.0
+offset_right = -2.0
+offset_bottom = -32.0
 
 [node name="btn_join" type="Button" parent="."]
 layout_mode = 0
-offset_left = 532.0
-offset_top = 468.0
-offset_right = 691.0
-offset_bottom = 518.0
+offset_left = 527.0
+offset_top = 428.0
+offset_right = 686.0
+offset_bottom = 478.0
 text = "Rejoindre"

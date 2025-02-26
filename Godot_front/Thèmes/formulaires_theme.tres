@@ -1,0 +1,63 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bjqekpvhrjx88"]
+
+[ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="1_o5len"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvulk"]
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dv5ia"]
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ebuvm"]
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d2b1c"]
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+expand_margin_left = 20.0
+expand_margin_right = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r2g2p"]
+bg_color = Color(0.247059, 0.247059, 0.247059, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[resource]
+default_font = ExtResource("1_o5len")
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/constants/align_to_largest_stylebox = 0
+Button/font_sizes/font_size = 32
+Button/styles/focus = SubResource("StyleBoxFlat_xvulk")
+Button/styles/hover = SubResource("StyleBoxFlat_dv5ia")
+Button/styles/normal = SubResource("StyleBoxFlat_ebuvm")
+Button/styles/pressed = SubResource("StyleBoxFlat_d2b1c")
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 32
+Label/fonts/font = ExtResource("1_o5len")
+LineEdit/colors/font_color = Color(1, 1, 1, 1)
+LineEdit/font_sizes/font_size = 24
+LineEdit/styles/focus = null
+LineEdit/styles/normal = SubResource("StyleBoxFlat_r2g2p")

@@ -13,10 +13,11 @@ class SessionConsumer(AsyncWebsocketConsumer):
         self.group_name = f"session_{session.id}"
         game = await self.get_game()
         # Met a jour le statut du joueur
+        statut = None
         if not game:  # Si y'a aucune game en cours
-            await self.update_statut_player(6)  # on met a active
+            statut = await self.get_statut(6)
         else:
-            await self.update_statut_player(8)  # on met a active
+            statut = await self.get_statut(8)
 
         # Group name individuel
         self.individual_group_name = f"player_{self.scope['player'].id}"
@@ -36,13 +37,32 @@ class SessionConsumer(AsyncWebsocketConsumer):
         print(f"Joueur connecté : {self.scope['player'].pseudo}")
         print(f"Groupes : {self.group_name}, {self.individual_group_name}")
 
+        await self.channel_layer.group_send(
+            self.individual_group_name,
+            {
+                "type": "statut_player",
+                "statut": dict(id=statut.id, name=statut.name)
+            }
+        )
+
     # DECONNEXION DU CLIENT
     async def disconnect(self, close_code):
         if not self.scope["authorized"]:  # Vérifie si le joueur est authentifié
             return  # Ferme DIRECTEMENT la connexion si non authentifié
 
-        await self.update_statut_player(10)  # on met a hors ligne
         if self.group_name and self.individual_group_name:
+            # On le met hors ligne et on prévient tlm
+            statut = await self.get_statut(10)
+            await self.channel_layer.group_send(
+                self.individual_group_name,
+                {
+                    "type": "statut_player",
+                    "statut": dict(id=statut.id, name=statut.name)
+                }
+            )
+
+
+
             # Retirer la connexion du groupe de la session
             await self.channel_layer.group_discard(
                 self.group_name,
@@ -390,7 +410,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
                     info.save()
                     info.player.save()
                 data_end_game = dict(action="session.end_game",
-                                     data=dict(resultssdict(winner=winner["player"].pseudo, pigs=pigs)))
+                                     data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
                 notify_websocket.apply_async(args=("session", session.id, data_end_game))
 
             # Met a jour le statut du round

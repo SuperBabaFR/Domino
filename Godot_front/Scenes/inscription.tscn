@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/inscription.gd" id="1_1mxcp"]
 [ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://Thèmes/label_settings.tres" id="2_3bp8l"]
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_605gw"]
+[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_605gw"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_brhl7"]
 
 [node name="Inscription" type="Control" node_paths=PackedStringArray("file_dialog", "texture_rect", "button_import", "button_inscrire", "button_connect", "pseudo", "mdp")]

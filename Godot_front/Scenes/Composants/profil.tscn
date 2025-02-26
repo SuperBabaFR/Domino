@@ -6,7 +6,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_77pr0"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Profil" type="Control" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone")]
+[node name="Profil" type="Control" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone", "domino_count")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_glyvl")
@@ -14,6 +14,7 @@ lab_pseudo = NodePath("pseudo")
 lab_statut = NodePath("statut")
 texture_image = NodePath("image")
 texture_courone = NodePath("image/courone")
+domino_count = NodePath("domino_count")
 
 [node name="image" type="TextureRect" parent="."]
 layout_mode = 0
@@ -27,6 +28,7 @@ stretch_mode = 6
 
 [node name="courone" type="TextureRect" parent="image"]
 visible = false
+layout_mode = 0
 offset_left = 25.0
 offset_top = -50.0
 offset_right = 80.0
@@ -47,6 +49,7 @@ uppercase = true
 
 [node name="statut" type="Label" parent="."]
 visible = false
+layout_mode = 0
 offset_left = 143.0
 offset_top = 111.0
 offset_right = 286.0
@@ -55,3 +58,12 @@ text = "Statut"
 label_settings = SubResource("LabelSettings_77pr0")
 vertical_alignment = 1
 uppercase = true
+
+[node name="domino_count" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 23.0
+offset_top = 227.0
+offset_right = 89.0
+offset_bottom = 511.0
+rotation = -1.5708

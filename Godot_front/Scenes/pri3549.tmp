@@ -59,11 +59,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_0oxqe")
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/focus = SubResource("StyleBoxFlat_vegja")
-theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_vegja")
 theme_override_styles/hover = SubResource("StyleBoxFlat_vegja")
-theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_vegja")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_vegja")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vegja")
 icon = ExtResource("3_ftvox")
 

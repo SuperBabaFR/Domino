@@ -1,11 +1,11 @@
 [gd_scene load_steps=5 format=3 uid="uid://b8qutyen6k6l3"]
 
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="1_kxd6a"]
 [ext_resource type="Script" path="res://Scripts/jeu.gd" id="1_xs48l"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="2_sds0s"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="3_ukckx"]
+[ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="6_5njna"]
 
-[node name="Jeu" type="Control"]
+[node name="Jeu" type="Control" node_paths=PackedStringArray("btn_leave", "my_profil", "dominoes")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,38 +13,57 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xs48l")
+btn_leave = NodePath("btn_quitter")
+my_profil = NodePath("my_profil")
+dominoes = NodePath("dominos")
 metadata/_edit_lock_ = true
 
-[node name="Background" parent="." instance=ExtResource("1_kxd6a")]
+[node name="Background" parent="." instance=ExtResource("6_5njna")]
 layout_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="ChatTextuel" parent="." instance=ExtResource("2_sds0s")]
-offset_left = 1.0
-offset_top = 504.0
-offset_right = 1.0
-offset_bottom = 504.0
+offset_left = -4.0
+offset_top = 570.0
+offset_right = -4.0
+offset_bottom = 570.0
+scale = Vector2(0.76, 0.672699)
 
-[node name="Profil" parent="." instance=ExtResource("3_ukckx")]
-offset_left = 74.0
-offset_top = 174.0
-offset_right = 74.0
-offset_bottom = 174.0
+[node name="my_profil" parent="." instance=ExtResource("3_ukckx")]
+offset_left = 845.0
+offset_top = 550.0
+offset_right = 845.0
+offset_bottom = 550.0
 
-[node name="Profil2" parent="." instance=ExtResource("3_ukckx")]
-offset_left = 507.0
-offset_top = -6.0
-offset_right = 507.0
-offset_bottom = -6.0
+[node name="player1" parent="." instance=ExtResource("3_ukckx")]
+offset_left = -10.0
+offset_top = 208.0
+offset_right = -10.0
+offset_bottom = 208.0
 
-[node name="Profil3" parent="." instance=ExtResource("3_ukckx")]
-offset_left = 996.0
-offset_top = 199.0
-offset_right = 996.0
-offset_bottom = 199.0
+[node name="player2" parent="." instance=ExtResource("3_ukckx")]
+offset_left = 494.0
+offset_top = -40.0
+offset_right = 494.0
+offset_bottom = -40.0
 
-[node name="Profil4" parent="." instance=ExtResource("3_ukckx")]
-offset_left = 961.0
-offset_top = 547.0
-offset_right = 961.0
-offset_bottom = 547.0
+[node name="player3" parent="." instance=ExtResource("3_ukckx")]
+offset_left = 999.0
+offset_top = 216.0
+offset_right = 999.0
+offset_bottom = 216.0
+
+[node name="btn_quitter" type="Button" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 121.0
+offset_bottom = 64.0
+text = "Quitter"
+
+[node name="dominos" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 790.0
+offset_right = 447.0
+offset_bottom = 945.0

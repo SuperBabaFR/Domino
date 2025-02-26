@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dei1ltav0d68e"]
 
 [ext_resource type="Script" path="res://Scripts/create_game.gd" id="1_x4x2d"]
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/Background.tscn" id="2_jwlg5"]
+[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_jwlg5"]
 [ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://Thèmes/label_settings.tres" id="3_wcfaj"]
 
 [node name="CreateGame" type="Control" node_paths=PackedStringArray("slider_reflexion_time", "slider_nb_max_player", "btn_creer", "lab_nb_max_player_value", "lab_reflexion_time_value", "ragequit_penality", "is_public_game", "session_name")]

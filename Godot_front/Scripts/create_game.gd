@@ -33,13 +33,13 @@ func create_session():
 	
 	var response = await API.makeRequest("create", json_body)
 	
-	var response_code = response.response_code
-	body = response.body
+	
 	
 	if response.response_code == 201:
-		Global.set_session_data(response.data, true)
+		body = response.body
+		Global.set_session_data(body.data, true)
 		Utile.changeScene("lobby")
-	elif response_code == 401:
+	elif response.response_code == 401:
 		return
 
 

@@ -5,6 +5,7 @@ var is_hote = false
 @export var lab_statut: Label 
 @export var texture_image: TextureRect 
 @export var texture_courone: TextureRect 
+@export var domino_count: VBoxContainer 
 
 var parent_name: String
 
@@ -54,3 +55,8 @@ func update_statut(statut):
 
 func leave_player():
 	visible = false
+
+func show_dominos_count(count: int):
+	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
+	for i in range(1, count+1):
+		domino_count.add_child(domino_hand.instantiate())

@@ -38,7 +38,14 @@ func set_session_data(data: Dictionary, created: bool):
 	session_infos = data
 	print(session_infos)
 	if created:
-		add_player_info(data, true)
+		var data_creator = {
+			"pseudo": player_data.pseudo,
+			"image": player_data.image,
+			"games_win": 0,
+			"ping_count": 0,
+			"statut": "player.is_not_ready"
+		}
+		add_player_info(data_creator, true)
 	
 func add_player_info(data: Dictionary, is_hote: bool):
 	var info_player = {

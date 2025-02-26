@@ -64,6 +64,7 @@ func _on_start_game():
 	if response.response_code == HTTPClient.RESPONSE_CREATED:
 		var data = response.body.data
 		Global.set_game_data(data)
+		Utile.changeScene("jeu")
 	else:
 		print("Partie non créée : ", response.body)
 

@@ -1,9 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bae11n0hrsgiq"]
+[gd_scene load_steps=2 format=3 uid="uid://djwl8qa1crgq7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qyyvh"]
-bg_color = Color(1, 0.945098, 0.760784, 1)
+bg_color = Color(1, 1, 1, 1)
 
-[node name="Background" type="Control"]
+[node name="Background Game" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

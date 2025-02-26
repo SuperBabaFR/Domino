@@ -7,13 +7,11 @@ font = ExtResource("1_veisc")
 font_size = 100
 font_color = Color(0, 0, 0, 1)
 
-[node name="GameTitle" type="Control"]
-layout_mode = 3
-anchors_preset = 0
+[node name="GameTitle" type="VBoxContainer"]
+offset_right = 518.0
+offset_bottom = 100.0
 
-[node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="title" type="Label" parent="."]
+layout_mode = 2
 text = "DOminOO"
 label_settings = SubResource("LabelSettings_lt8v1")

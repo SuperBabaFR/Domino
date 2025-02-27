@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dkxwxlk4ubv1d"]
+[gd_scene load_steps=14 format=3 uid="uid://dkxwxlk4ubv1d"]
 
 [ext_resource type="Script" path="res://Scripts/connexion.gd" id="1_ilhuv"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_3r5rs"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_mfnmt"]
-[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://Thèmes/formulaires_theme.tres" id="5_g33av"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_fdgqg"]
+[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_g33av"]
 [ext_resource type="Texture2D" uid="uid://dl7hjc82jccca" path="res://Assets/icons/dark_signup.svg" id="6_p7mlh"]
 [ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="6_yna68"]
 
@@ -11,6 +12,21 @@
 bg_color = Color(1, 0.945098, 0.760784, 1)
 expand_margin_top = 100.0
 expand_margin_bottom = 100.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8lth4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_umkcl"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vfldd"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dfw4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_22o24"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="Connexion" type="Control" node_paths=PackedStringArray("pseudo", "mdp", "btn_connect", "btn_inscription")]
 layout_mode = 3
@@ -54,6 +70,7 @@ size_flags_vertical = 4
 
 [node name="formulaire" type="VBoxContainer" parent="MarginContainer/PanelContainer/Compatiments"]
 layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="label_pseudo" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
 layout_mode = 2
@@ -69,7 +86,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_g33av")
-placeholder_text = "TON PSEUDO FDP"
+placeholder_text = "quelque chose de stylé surement"
 alignment = 1
 
 [node name="label_mdp" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
@@ -85,7 +102,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_g33av")
-placeholder_text = "TON MDP FDP"
+placeholder_text = "ton mdp que personne connait"
 alignment = 1
 
 [node name="btn_connexion" type="Button" parent="MarginContainer/PanelContainer/Compatiments"]
@@ -94,28 +111,38 @@ size_flags_horizontal = 4
 theme = ExtResource("5_g33av")
 text = "Connexion"
 
+[node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/btn_connexion"]
+script = ExtResource("5_fdgqg")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
 [node name="inscrire" type="VBoxContainer" parent="MarginContainer/PanelContainer/Compatiments"]
 layout_mode = 2
 
 [node name="btn_inscription" type="Button" parent="MarginContainer/PanelContainer/Compatiments/inscrire"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme = ExtResource("5_g33av")
 theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_yna68")
 theme_override_font_sizes/font_size = 24
 theme_override_icons/icon = ExtResource("6_p7mlh")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8lth4")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_umkcl")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vfldd")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3dfw4")
+theme_override_styles/normal = SubResource("StyleBoxFlat_22o24")
 text = "Vous n'avez pas de compte ?"
 flat = true
 icon_alignment = 1
 vertical_icon_alignment = 2
 
-[node name="GameTitle" parent="." instance=ExtResource("3_mfnmt")]
-visible = false
-layout_mode = 0
-offset_left = 372.0
-offset_top = 62.0
-offset_right = 372.0
-offset_bottom = 62.0
+[node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/inscrire/btn_inscription"]
+script = ExtResource("5_fdgqg")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)

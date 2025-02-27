@@ -1,100 +1,56 @@
-[gd_scene load_steps=5 format=3 uid="uid://sp366cl6ssob"]
+[gd_scene load_steps=16 format=3 uid="uid://sp366cl6ssob"]
 
 [ext_resource type="Script" path="res://Scripts/inscription.gd" id="1_1mxcp"]
-[ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://Thèmes/label_settings.tres" id="2_3bp8l"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_605gw"]
-[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_brhl7"]
+[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="3_2che7"]
+[ext_resource type="Texture2D" uid="uid://di8yimw3xgyw3" path="res://Assets/icons/light_image_icon.svg" id="3_qumxb"]
+[ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_x5kbk"]
+[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_b2dcy"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="6_l4bm5"]
+[ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="7_qmt8u"]
+[ext_resource type="Texture2D" uid="uid://cuebl2wkoa0hh" path="res://Assets/icons/light_login_icon.svg" id="8_i8mmc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5beo"]
+bg_color = Color(1, 0.945098, 0.760784, 1)
+expand_margin_left = 100.0
+expand_margin_top = 100.0
+expand_margin_right = 100.0
+expand_margin_bottom = 100.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_73scu"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6s3i7"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5bcl"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_85gkk"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dd6ot"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="Inscription" type="Control" node_paths=PackedStringArray("file_dialog", "texture_rect", "button_import", "button_inscrire", "button_connect", "pseudo", "mdp")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_top = -4.0
-offset_right = -1.0
-offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1mxcp")
 file_dialog = NodePath("select_image_dialog")
-texture_rect = NodePath("img_preview")
+texture_rect = NodePath("MarginContainer/PanelContainer/Compatiments/VFlowContainer/image_mask/image_preview")
 button_import = NodePath("btn_import")
-button_inscrire = NodePath("btn_inscription")
-button_connect = NodePath("btn_connect")
-pseudo = NodePath("input_pseudo")
-mdp = NodePath("input_mdp")
+button_inscrire = NodePath("MarginContainer/PanelContainer/Compatiments/btn_inscription")
+button_connect = NodePath("MarginContainer/PanelContainer/Compatiments/connexion/btn_page_connexion")
+pseudo = NodePath("MarginContainer/PanelContainer/Compatiments/formulaire/input_pseudo")
+mdp = NodePath("MarginContainer/PanelContainer/Compatiments/formulaire/input_mdp")
 metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("2_605gw")]
 layout_mode = 1
-metadata/_edit_lock_ = true
-
-[node name="GameTitle" parent="Background" instance=ExtResource("3_brhl7")]
-offset_left = 337.0
-offset_top = 124.0
-offset_right = 337.0
-offset_bottom = 124.0
-
-[node name="img_preview" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 828.0
-offset_top = 264.0
-offset_right = 1053.0
-offset_bottom = 484.0
-expand_mode = 1
-stretch_mode = 6
-
-[node name="label_pseudo" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.002
-offset_left = 456.0
-offset_top = 322.0
-offset_right = 510.44
-offset_bottom = 345.0
-text = "pseudo
-"
-label_settings = ExtResource("2_3bp8l")
-
-[node name="label_mdp" type="Label" parent="."]
-layout_mode = 0
-offset_left = 411.0
-offset_top = 388.0
-offset_right = 514.0
-offset_bottom = 411.0
-text = "mot de passe"
-label_settings = ExtResource("2_3bp8l")
-
-[node name="input_pseudo" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 537.0
-offset_top = 316.0
-offset_right = 716.0
-offset_bottom = 350.0
-
-[node name="input_mdp" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 535.0
-offset_top = 380.0
-offset_right = 722.0
-offset_bottom = 417.0
-
-[node name="btn_import" type="Button" parent="."]
-layout_mode = 0
-offset_left = 862.0
-offset_top = 507.0
-offset_right = 1025.0
-offset_bottom = 538.0
-text = "Importer une photo"
-
-[node name="btn_inscription" type="Button" parent="."]
-layout_mode = 0
-offset_left = 561.0
-offset_top = 468.0
-offset_right = 699.0
-offset_bottom = 518.0
-text = "S'inscrire"
 
 [node name="select_image_dialog" type="FileDialog" parent="."]
 title = "Open a File"
@@ -106,12 +62,142 @@ file_mode = 0
 access = 2
 filters = PackedStringArray("*.png", "*.jpg", "*.jpeg")
 
-[node name="btn_connect" type="Button" parent="."]
+[node name="MarginContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_r5beo")
+
+[node name="Compatiments" type="VBoxContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="VFlowContainer" type="HSplitContainer" parent="MarginContainer/PanelContainer/Compatiments"]
+layout_mode = 2
+
+[node name="image_mask" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments/VFlowContainer"]
+clip_children = 1
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_x5kbk")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="image_preview" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments/VFlowContainer/image_mask"]
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 0
-offset_left = 559.0
-offset_top = 549.0
-offset_right = 707.0
-offset_bottom = 597.0
-text = "Se connecter ?"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_2che7")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="formulaire" type="VBoxContainer" parent="MarginContainer/PanelContainer/Compatiments"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="label_pseudo" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
+layout_mode = 2
+theme = ExtResource("5_b2dcy")
+text = "Pseudo
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="input_pseudo" type="LineEdit" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_b2dcy")
+placeholder_text = "Domino_master_971"
+alignment = 1
+
+[node name="label_mdp" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
+layout_mode = 2
+theme = ExtResource("5_b2dcy")
+text = "Mot de passe"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="input_mdp" type="LineEdit" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_b2dcy")
+placeholder_text = "8 caractères minimum stp"
+alignment = 1
+
+[node name="btn_inscription" type="Button" parent="MarginContainer/PanelContainer/Compatiments"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_b2dcy")
+text = "Inscription"
+
+[node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/btn_inscription"]
+script = ExtResource("6_l4bm5")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="connexion" type="VBoxContainer" parent="MarginContainer/PanelContainer/Compatiments"]
+layout_mode = 2
+
+[node name="btn_page_connexion" type="Button" parent="MarginContainer/PanelContainer/Compatiments/connexion"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("5_b2dcy")
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_qmt8u")
+theme_override_font_sizes/font_size = 24
+theme_override_icons/icon = ExtResource("8_i8mmc")
+theme_override_styles/focus = SubResource("StyleBoxFlat_73scu")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_6s3i7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_v5bcl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_85gkk")
+theme_override_styles/normal = SubResource("StyleBoxFlat_dd6ot")
+text = "J'ai déjà un compte"
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 2
+
+[node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/connexion/btn_page_connexion"]
+script = ExtResource("6_l4bm5")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="btn_import" type="Button" parent="."]
+layout_mode = 2
+offset_left = 672.0
+offset_top = 171.0
+offset_right = 728.0
+offset_bottom = 227.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "
+"
+icon = ExtResource("3_qumxb")
+flat = true
+icon_alignment = 1
+
+[node name="AnimationComponent" type="Node" parent="btn_import"]
+script = ExtResource("6_l4bm5")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
 
 [connection signal="file_selected" from="select_image_dialog" to="." method="_on_file_dialog_file_selected"]

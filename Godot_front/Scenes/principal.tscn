@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bpa4lyv6g6gov"]
+[gd_scene load_steps=9 format=3 uid="uid://bpa4lyv6g6gov"]
 
 [ext_resource type="Script" path="res://Scripts/principal.gd" id="1_rkwun"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_atcly"]
 [ext_resource type="Texture2D" uid="uid://clwp1lw5id0g1" path="res://Assets/images/boutton play.svg" id="3_ftvox"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_fxoe0"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_ic8g8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ymlfj"]
 bg_color = Color(1, 0.945098, 0.760784, 1)
@@ -67,7 +68,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_vegja")
 theme_override_styles/normal = SubResource("StyleBoxFlat_vegja")
 icon = ExtResource("3_ftvox")
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_0oxqe")
+[node name="AnimationComponent" type="Node" parent="MarginContainer/VBoxContainer/fond_btn/btn_start"]
+script = ExtResource("5_ic8g8")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)

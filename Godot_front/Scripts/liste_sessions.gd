@@ -6,7 +6,7 @@ var label_settings
 
 func _ready():
 	load_sessions()
-	label_settings = preload("res://Thèmes/label_settings.tres")
+	label_settings = preload("res://theme/label_settings.tres")
 	btn_join.connect("pressed", _on_rejoindre_pressed)
 	
 

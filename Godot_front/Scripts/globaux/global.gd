@@ -86,3 +86,15 @@ func set_game_data(data: Dictionary):
 func update_game_data(data: Dictionary):
 	game_data.player_turn = data.player_turn
 	game_data.player_time_end = data.player_time_end
+
+func update_scores(data: Dictionary):
+	var winner = data.results.winner
+	var pigs = data.results.pigs
+	
+	for player in player_list_data:
+		if player.pseudo == winner:
+			player.games_win += 1
+			continue
+		if player.pseudo in pigs:
+			player.pigs_count += 1
+			

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_mfnmt"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_fdgqg"]
 [ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_g33av"]
-[ext_resource type="Texture2D" uid="uid://dl7hjc82jccca" path="res://Assets/icons/dark_signup.svg" id="6_p7mlh"]
+[ext_resource type="Texture2D" uid="uid://dl7hjc82jccca" path="res://Assets/icons/light_signup_icon.svg" id="6_p7mlh"]
 [ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="6_yna68"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2y2gg"]
@@ -86,7 +86,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_g33av")
-placeholder_text = "quelque chose de stylé surement"
+placeholder_text = "t'as mis quoi?"
 alignment = 1
 
 [node name="label_mdp" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
@@ -102,7 +102,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_g33av")
-placeholder_text = "ton mdp que personne connait"
+placeholder_text = "ton mdp ?"
 alignment = 1
 
 [node name="btn_connexion" type="Button" parent="MarginContainer/PanelContainer/Compatiments"]

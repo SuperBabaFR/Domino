@@ -15,7 +15,7 @@ func _ready():
 	btn_ready.connect("pressed", _set_ready_statut)
 	
 	Websocket.session_player_statut.connect(_update_statut)
-	Websocket.session_player_leave.connect(_update_statut)
+	Websocket.session_start_game.connect(_game_started)
 	
 	Websocket.connect_to_websocket()
 	
@@ -104,3 +104,7 @@ func _on_player_leave(data):
 		
 	player_count -= 1
 		
+
+func _game_started(data):
+	Global.set_game_data(data)
+	Utile.changeScene("jeu")

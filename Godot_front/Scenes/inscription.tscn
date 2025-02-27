@@ -41,7 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1mxcp")
 file_dialog = NodePath("select_image_dialog")
-texture_rect = NodePath("MarginContainer/PanelContainer/Compatiments/VFlowContainer/image_mask/image_preview")
+texture_rect = NodePath("MarginContainer/PanelContainer/Compatiments/image_mask/image_preview")
 button_import = NodePath("btn_import")
 button_inscrire = NodePath("MarginContainer/PanelContainer/Compatiments/btn_inscription")
 button_connect = NodePath("MarginContainer/PanelContainer/Compatiments/connexion/btn_page_connexion")
@@ -80,10 +80,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_r5beo")
 layout_mode = 2
 theme_override_constants/separation = 50
 
-[node name="VFlowContainer" type="HSplitContainer" parent="MarginContainer/PanelContainer/Compatiments"]
-layout_mode = 2
-
-[node name="image_mask" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments/VFlowContainer"]
+[node name="image_mask" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments"]
 clip_children = 1
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
@@ -93,7 +90,7 @@ texture = ExtResource("3_x5kbk")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="image_preview" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments/VFlowContainer/image_mask"]
+[node name="image_preview" type="TextureRect" parent="MarginContainer/PanelContainer/Compatiments/image_mask"]
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 0
 size_flags_horizontal = 4
@@ -122,6 +119,8 @@ size_flags_horizontal = 4
 theme = ExtResource("5_b2dcy")
 placeholder_text = "Domino_master_971"
 alignment = 1
+clear_button_enabled = true
+caret_blink = true
 
 [node name="label_mdp" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]
 layout_mode = 2
@@ -184,9 +183,9 @@ click_scale = Vector2(0.95, 0.95)
 [node name="btn_import" type="Button" parent="."]
 layout_mode = 2
 offset_left = 672.0
-offset_top = 171.0
+offset_top = 158.0
 offset_right = 728.0
-offset_bottom = 227.0
+offset_bottom = 214.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "

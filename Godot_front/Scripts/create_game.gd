@@ -18,7 +18,7 @@ func _ready():
 
 func create_session():
 	var body = {
-		"session_name": session_name.placeholder_text,
+		"session_name": session_name.text,
 		"reflexion_time": slider_reflexion_time.value, 
 		"max_players_count": slider_nb_max_player.value, 
 		"definitive_leave": ragequit_penality.toggle_mode, 

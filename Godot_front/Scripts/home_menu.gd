@@ -12,19 +12,15 @@ extends Control
 @export var label_ratio : Label
 
 # Profil
-@export var profil : Node
+@export var profil_picture : TextureRect
+@export var lab_pseudo : Label
 
 
 func _ready():
 	if not Global.is_logged_in:
 		return
-	
-	# Infos du joueur
-	var player = Global.get_all_player_data()
-	var pseudo = player.pseudo
-	var image = Utile.load_profil_picture(player.image)
-	# Affiche le tout
-	profil.load_player_profile(pseudo, image)
+	# Affiche le profil
+	load_profil()
 	# Charge les dominos si necessaire
 	API.pull_list_dominos()
 	# Charge les stats
@@ -52,3 +48,13 @@ func load_stats():
 	label_pigs.text = "Cochons : " + str(stats.pigs)
 	var ratio = (stats.wins/stats.games) if stats.games > 0 else 0
 	label_ratio.text = "Ratio : " + str(ratio) + " (Victoires/Parties)"
+
+func load_profil():
+	# Infos du joueur
+	var player = Global.get_all_player_data()
+	var pseudo = player.pseudo
+	var image = Utile.load_profil_picture(player.image)
+	
+	profil_picture.texture = image
+	lab_pseudo.text = pseudo
+	

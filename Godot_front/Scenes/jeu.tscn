@@ -30,24 +30,28 @@ offset_bottom = 570.0
 scale = Vector2(0.76, 0.672699)
 
 [node name="my_profil" parent="." instance=ExtResource("3_ukckx")]
+layout_mode = 0
 offset_left = 845.0
 offset_top = 550.0
 offset_right = 845.0
 offset_bottom = 550.0
 
 [node name="player1" parent="." instance=ExtResource("3_ukckx")]
-offset_left = -10.0
-offset_top = 208.0
-offset_right = -10.0
-offset_bottom = 208.0
+layout_mode = 0
+offset_left = 10.0
+offset_top = 211.0
+offset_right = 154.0
+offset_bottom = 276.0
 
 [node name="player2" parent="." instance=ExtResource("3_ukckx")]
+layout_mode = 0
 offset_left = 494.0
 offset_top = -40.0
 offset_right = 494.0
 offset_bottom = -40.0
 
 [node name="player3" parent="." instance=ExtResource("3_ukckx")]
+layout_mode = 0
 offset_left = 999.0
 offset_top = 216.0
 offset_right = 999.0
@@ -63,7 +67,7 @@ text = "Quitter"
 
 [node name="dominos" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = -7.0
-offset_top = 790.0
-offset_right = 447.0
-offset_bottom = 945.0
+offset_left = 341.0
+offset_top = 554.0
+offset_right = 795.0
+offset_bottom = 709.0

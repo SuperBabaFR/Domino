@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://bw41ecw7l4jya"]
+[gd_scene load_steps=10 format=3 uid="uid://bw41ecw7l4jya"]
 
 [ext_resource type="Script" path="res://Scripts/home_menu.gd" id="1_27nal"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_jeyas"]
-[ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="2_x8wce"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_3pjq8"]
+[ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="4_hl6vo"]
+[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="5_fvfcn"]
+[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="6_ykiis"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
 font_size = 35
@@ -16,7 +18,7 @@ font_names = PackedStringArray("Arial")
 font = SubResource("SystemFont_k7oq6")
 font_color = Color(0, 0, 0, 1)
 
-[node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio", "profil")]
+[node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio", "profil_picture", "lab_pseudo")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,7 +33,8 @@ label_wins = NodePath("label_wins")
 label_games = NodePath("label_games")
 label_pigs = NodePath("label_pigs")
 label_ratio = NodePath("label_ratio")
-profil = NodePath("Profil")
+profil_picture = NodePath("HBoxContainer/image_mask/profil_picture")
+lab_pseudo = NodePath("HBoxContainer/lab_pseudo")
 metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("2_jeyas")]
@@ -39,6 +42,7 @@ layout_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="GameTitle" parent="Background" instance=ExtResource("3_3pjq8")]
+layout_mode = 0
 offset_left = 364.0
 offset_top = 111.0
 offset_right = 364.0
@@ -64,10 +68,10 @@ text = "Créer"
 
 [node name="btn_disconnect" type="Button" parent="."]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 135.0
-offset_right = 132.0
-offset_bottom = 172.0
+offset_left = 27.0
+offset_top = 163.0
+offset_right = 143.0
+offset_bottom = 200.0
 text = "Déconnexion"
 
 [node name="label_wins" type="Label" parent="."]
@@ -114,12 +118,6 @@ text = "Valeur :
 label_settings = SubResource("LabelSettings_50o8r")
 vertical_alignment = 1
 
-[node name="Profil" parent="." instance=ExtResource("2_x8wce")]
-offset_left = -2.0
-offset_top = -32.0
-offset_right = -2.0
-offset_bottom = -32.0
-
 [node name="btn_join" type="Button" parent="."]
 layout_mode = 0
 offset_left = 527.0
@@ -127,3 +125,31 @@ offset_top = 428.0
 offset_right = 686.0
 offset_bottom = 478.0
 text = "Rejoindre"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+
+[node name="image_mask" type="TextureRect" parent="HBoxContainer"]
+clip_children = 1
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_hl6vo")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="profil_picture" type="TextureRect" parent="HBoxContainer/image_mask"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("5_fvfcn")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="lab_pseudo" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+theme = ExtResource("6_ykiis")
+text = "PSeudo"
+vertical_alignment = 1
+uppercase = true

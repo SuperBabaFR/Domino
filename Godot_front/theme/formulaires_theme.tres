@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://bjqekpvhrjx88"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://bjqekpvhrjx88"]
 
-[ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="1_o5len"]
+[ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="1_dokwy"]
+[ext_resource type="FontFile" uid="uid://cx8fx4thr735i" path="res://Assets/fonts/FrancoisOne-Regular.ttf" id="2_c7iq7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xvulk"]
 bg_color = Color(0.247059, 0.247059, 0.247059, 1)
@@ -46,7 +47,7 @@ corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
 [resource]
-default_font = ExtResource("1_o5len")
+default_font = ExtResource("2_c7iq7")
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/constants/align_to_largest_stylebox = 0
 Button/font_sizes/font_size = 32
@@ -56,7 +57,7 @@ Button/styles/normal = SubResource("StyleBoxFlat_ebuvm")
 Button/styles/pressed = SubResource("StyleBoxFlat_d2b1c")
 Label/colors/font_color = Color(0, 0, 0, 1)
 Label/font_sizes/font_size = 32
-Label/fonts/font = ExtResource("1_o5len")
+Label/fonts/font = ExtResource("1_dokwy")
 LineEdit/colors/font_color = Color(1, 1, 1, 1)
 LineEdit/font_sizes/font_size = 24
 LineEdit/styles/focus = null

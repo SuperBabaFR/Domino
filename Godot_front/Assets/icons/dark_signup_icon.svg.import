@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl7hjc82jccca"
-path="res://.godot/imported/dark_signup.svg-888af59f3aa5f69a989d17033a7af9f6.ctex"
+uid="uid://md3rf05ymbdw"
+path="res://.godot/imported/dark_signup_icon.svg-edbe76e33ef81ba99ea25036ca496965.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/icons/dark_signup.svg"
-dest_files=["res://.godot/imported/dark_signup.svg-888af59f3aa5f69a989d17033a7af9f6.ctex"]
+source_file="res://Assets/icons/dark_signup_icon.svg"
+dest_files=["res://.godot/imported/dark_signup_icon.svg-edbe76e33ef81ba99ea25036ca496965.ctex"]
 
 [params]
 

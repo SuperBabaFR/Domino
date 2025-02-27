@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://md3rf05ymbdw"
-path="res://.godot/imported/light_signup.svg-8eba5da9e76c7c1aebd21942a6aa28e3.ctex"
+uid="uid://dl7hjc82jccca"
+path="res://.godot/imported/light_signup_icon.svg-e40dd127370b855884beeb08ed89fc6e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/icons/light_signup.svg"
-dest_files=["res://.godot/imported/light_signup.svg-8eba5da9e76c7c1aebd21942a6aa28e3.ctex"]
+source_file="res://Assets/icons/light_signup_icon.svg"
+dest_files=["res://.godot/imported/light_signup_icon.svg-e40dd127370b855884beeb08ed89fc6e.ctex"]
 
 [params]
 

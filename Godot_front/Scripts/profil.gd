@@ -11,20 +11,13 @@ var parent_name: String
 
 func _ready() -> void:
 	visible = false
-	
 	parent_name = get_parent().name
 	
 
-func load_player_profile(pseudo, image, is_hote=false, statut=""):
+func load_player_profile(pseudo, image):
 	lab_pseudo.text = pseudo
 	texture_image.texture = image
 	texture_image.queue_redraw()
-	
-	if parent_name != "HomeMenu":
-		is_hote = is_hote
-		# Afficher une courone
-		texture_courone.visible = is_hote
-		update_statut(statut)
 	visible = true
 
 func toggle_hote(pseudo):
@@ -34,6 +27,7 @@ func toggle_hote(pseudo):
 
 func update_statut(statut):
 	if statut == "":
+		lab_statut.visible = false
 		return
 	var color = Color.GREEN
 		

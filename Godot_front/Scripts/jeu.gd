@@ -6,9 +6,9 @@ var game_data: Dictionary = {}
 @export var dominoes: HBoxContainer
 
 func _ready():
-	load_game()
-	load_player()
-	
+	#load_game()
+	#load_player()
+	test_dominos()
 	Websocket.game_someone_played.connect(someone_play)
 	Websocket.game_someone_pass.connect(someone_pass)
 
@@ -73,3 +73,16 @@ func load_player():
 		var domino_img = load("res://Assets/images/Dominos/d" + str(domino.id) + ".svg")
 		domino_hand.texture = ImageTexture.create_from_image(domino_img)
 		dominoes.add_child(domino_hand.instantiate())
+
+
+func test_dominos():
+	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
+	
+	for i in range(1,8):
+		var domino_texture = load("res://Assets/images/Dominos/d" + str(i) + ".svg")
+		var domino_img = domino_texture.get_image()
+		domino_img.rotate_90(CLOCKWISE)
+		#print(domino_hand.can_instantiate())
+		#domino_hand = domino_hand.instantiate()
+		domino_hand.texture = ImageTexture.create_from_image(domino_img)
+		add_child(domino_hand)

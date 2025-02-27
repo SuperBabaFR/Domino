@@ -9,15 +9,11 @@
 [sub_resource type="LabelSettings" id="LabelSettings_d4wxm"]
 font_color = Color(0, 0, 0, 1)
 
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone", "domino_count")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("texture_courone")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_glyvl")
-lab_pseudo = NodePath("")
-lab_statut = NodePath("")
-texture_image = NodePath("")
 texture_courone = NodePath("HBoxContainer/picture/courone")
-domino_count = NodePath("")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

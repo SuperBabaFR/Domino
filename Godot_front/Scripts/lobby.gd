@@ -36,10 +36,12 @@ func load_players_info():
 		
 		profil_node.load_player_profile(
 			pseudo, 
-			image, 
-			player.hote, 
-			player.statut
-		)
+			image)
+		
+		if player.hote:
+			profil_node.toggle_hote(player.pseudo)
+		profil_node.update_statut(player.statut)
+
 		
 		if my_pseudo == pseudo:
 			my_profil = profil_node

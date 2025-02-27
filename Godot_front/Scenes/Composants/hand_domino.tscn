@@ -3,8 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://de0p7byuiy8bc" path="res://Assets/images/Dominos/Back.svg" id="1_7sg7a"]
 
 [node name="HandDomino" type="TextureRect"]
-offset_right = 48.0
-offset_bottom = 24.0
+custom_minimum_size = Vector2(84, 43)
 texture = ExtResource("1_7sg7a")
-expand_mode = 5
+expand_mode = 1
 stretch_mode = 5

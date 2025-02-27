@@ -13,12 +13,10 @@ var json_body
 
 func _ready():
 	session_name.text = "La session de " + Global.get_info("player", "pseudo")
-	pass
-
 
 func create_session():
 	var body = {
-		"session_name": session_name.text,
+		"session_name": "",
 		"reflexion_time": slider_reflexion_time.value, 
 		"max_players_count": slider_nb_max_player.value, 
 		"definitive_leave": ragequit_penality.toggle_mode, 
@@ -26,7 +24,7 @@ func create_session():
 	}
 	
 	if session_name.text != "":
-		body["session_name"] = session_name
+		body["session_name"] = session_name.text
 	
 	json_body = JSON.stringify(body, "  ")
 	print(json_body)

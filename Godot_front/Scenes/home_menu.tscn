@@ -127,6 +127,7 @@ offset_bottom = 478.0
 text = "Rejoindre"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
 
 [node name="image_mask" type="TextureRect" parent="HBoxContainer"]
 clip_children = 1

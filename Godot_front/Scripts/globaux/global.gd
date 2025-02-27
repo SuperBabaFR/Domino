@@ -45,9 +45,9 @@ func set_session_data(data: Dictionary, created: bool):
 			"ping_count": 0,
 			"statut": "player.is_not_ready"
 		}
-		add_player_info(data_creator, true)
+		add_player_info(data_creator)
 	
-func add_player_info(data: Dictionary, is_hote: bool):
+func add_player_info(data: Dictionary):
 	var info_player = {
 		"pseudo": data.pseudo,
 		"image": data.image,
@@ -55,8 +55,7 @@ func add_player_info(data: Dictionary, is_hote: bool):
 		"domino_count": 7,
 		"games_win": data.games_win,
 		"ping_count": data.ping_count,
-		"statut": data.statut,
-		"hote": is_hote
+		"statut": data.statut
 	}
 	player_list_data.append(info_player)
 

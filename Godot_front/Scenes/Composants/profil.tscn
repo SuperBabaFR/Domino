@@ -3,16 +3,17 @@
 [ext_resource type="Script" path="res://Scripts/profil.gd" id="1_glyvl"]
 [ext_resource type="Texture2D" uid="uid://be8mdn5relfcg" path="res://Assets/icons/light_crown_icon.svg" id="2_rjjgd"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_suj8a"]
-[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="4_csyty"]
 [ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="4_o8q56"]
+[ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="5_jeayu"]
+[ext_resource type="FontFile" uid="uid://mqlwwgnf7jsg" path="res://Assets/fonts/Mada-Regular.ttf" id="6_24hdp"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_d4wxm"]
-font_color = Color(0, 0, 0, 1)
-
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("texture_courone")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_glyvl")
+lab_pseudo = NodePath("HBoxContainer/name/pseudo")
+lab_statut = NodePath("HBoxContainer/name/statut")
+texture_image = NodePath("HBoxContainer/picture/image_mask/image")
 texture_courone = NodePath("HBoxContainer/picture/courone")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -20,7 +21,7 @@ layout_mode = 2
 
 [node name="picture" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = -5
+theme_override_constants/separation = 0
 
 [node name="courone" type="TextureRect" parent="HBoxContainer/picture"]
 visible = false
@@ -33,7 +34,7 @@ expand_mode = 3
 
 [node name="image_mask" type="TextureRect" parent="HBoxContainer/picture"]
 clip_children = 1
-custom_minimum_size = Vector2(65, 65)
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -62,7 +63,9 @@ alignment = 2
 
 [node name="pseudo" type="Label" parent="HBoxContainer/name"]
 layout_mode = 2
-theme = ExtResource("4_csyty")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_jeayu")
+theme_override_font_sizes/font_size = 32
 text = "PSeudo"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -70,8 +73,9 @@ uppercase = true
 
 [node name="statut" type="Label" parent="HBoxContainer/name"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_24hdp")
+theme_override_font_sizes/font_size = 20
 text = "Statut"
-label_settings = SubResource("LabelSettings_d4wxm")
-horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true

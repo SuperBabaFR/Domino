@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="1_powg8"]
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_stbpb"]
+[ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_n514r"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="4_0wkmg"]
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready")]
@@ -18,9 +18,8 @@ btn_start = NodePath("btn_start")
 btn_ready = NodePath("btn_ready")
 metadata/_edit_lock_ = true
 
-[node name="Background" parent="." instance=ExtResource("2_stbpb")]
+[node name="Background Game" parent="." instance=ExtResource("2_n514r")]
 layout_mode = 1
-metadata/_edit_lock_ = true
 
 [node name="P1" parent="." instance=ExtResource("1_powg8")]
 layout_mode = 0

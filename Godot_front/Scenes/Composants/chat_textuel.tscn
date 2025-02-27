@@ -1,17 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://cmbgvp7440237"]
+[gd_scene load_steps=6 format=3 uid="uid://cmbgvp7440237"]
 
 [ext_resource type="Script" path="res://Scripts/chat_textuel.gd" id="1_1mq7w"]
 [ext_resource type="Texture2D" uid="uid://dmuk6xne2mfpu" path="res://Assets/icons/dark_menu_icon.svg" id="3_3xk55"]
 [ext_resource type="Theme" uid="uid://b2wp48majtm4r" path="res://theme/chat_textuel.tres" id="3_5hy1n"]
 [ext_resource type="Texture2D" uid="uid://q6w416fjfbss" path="res://Assets/icons/dark_send_icon.svg" id="3_yedj7"]
 [ext_resource type="Texture2D" uid="uid://dvnrqcvbdjdei" path="res://Assets/icons/dark_volume_on_icon.svg" id="4_0gdvl"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e7c3"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_color = Color(0, 0, 0, 1)
 
 [node name="ChatTextuel" type="VBoxContainer" node_paths=PackedStringArray("input_msg", "list_msgs", "btn_send", "btn_mute", "channel_options")]
 offset_right = 320.0
@@ -33,8 +26,7 @@ horizontal_alignment = 1
 [node name="liste_msgs" type="RichTextLabel" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_5e7c3")
+theme = ExtResource("3_5hy1n")
 bbcode_enabled = true
 scroll_following = true
 
@@ -71,8 +63,3 @@ theme = ExtResource("3_5hy1n")
 text = "  "
 icon = ExtResource("3_yedj7")
 icon_alignment = 1
-
-[connection signal="text_submitted" from="HBoxContainer/input_msg" to="." method="_on_text_submitted"]
-[connection signal="item_selected" from="HBoxContainer/channel_options" to="." method="_on_channel_options_item_selected"]
-[connection signal="toggled" from="HBoxContainer/btn_mute" to="." method="_on_btn_mute_toggled"]
-[connection signal="pressed" from="HBoxContainer/btn_send" to="." method="send_msg"]

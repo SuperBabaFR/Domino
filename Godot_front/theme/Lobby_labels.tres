@@ -1,8 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://e8hq57rtfdh"]
-
-[ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="1_m8noo"]
-
-[resource]
-font = ExtResource("1_m8noo")
-font_size = 24
-font_color = Color(0, 0, 0, 1)

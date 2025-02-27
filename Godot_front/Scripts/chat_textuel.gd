@@ -8,11 +8,12 @@ extends Control
 @export var channel_options : OptionButton
 
 var channel : String
-var message : String
 var mute: bool = false
+var my_pseudo: String
 
 var volume_on_icon
 var volume_off_icon
+
 
 func _ready():
 	Websocket.chat_message.connect(_on_msg_received)
@@ -20,11 +21,15 @@ func _ready():
 	volume_off_icon = preload("res://Assets/icons/dark_volume_off_icon.svg")
 	volume_on_icon = preload("res://Assets/icons/dark_volume_on_icon.svg")
 	
+	input_msg.connect("text_submitted", _on_text_submitted)
+	btn_mute.connect("toggled", _on_btn_mute_toggled)
+	btn_send.connect("pressed", _on_btn_send_pressed)
+	
 	load_channels()
 
 func load_channels():
 	var players = Global.get_all_players_infos()
-	var my_pseudo = Global.get_info("player", "pseudo")
+	my_pseudo = Global.get_info("player", "pseudo")
 	for player in players:
 		if player.pseudo == my_pseudo:
 			continue
@@ -40,7 +45,8 @@ func _on_text_submitted(new_text):
 	send_msg(new_text)
 
 func _on_btn_send_pressed():
-	message = input_msg.text
+	var message = input_msg.text
+	print(message)
 	if message == "":
 		print("Aucun message")
 		return
@@ -48,7 +54,7 @@ func _on_btn_send_pressed():
 	
 
 func send_msg(message):
-	channel = channel_options.get_item_text(channel_options.get_selected_id())
+	channel = channel_options.get_item_text(channel_options.get_selected_id()).to_lower()
 	print("channel selectionné : ", channel)
 	print("message : ", message)
 	
@@ -60,22 +66,25 @@ func send_msg(message):
 		}
 	}
 	
+	if channel != "global":
+		add_msg_to_list(my_pseudo, message, true)
+	
 	if Websocket.send_json(json):
 		input_msg.clear()
 
 func _on_msg_received(data):
-	var player = Global.get_player_info(data.sender)
-	
-	#var image = "[img=20x20][/img]"
-	var pseudo = "[b]" + player.pseudo + "[/b]"
-	
-	#list_msgs.append_text(image)
-	list_msgs.append_text(pseudo + " : ")
-	list_msgs.append_text(data.message + "\n")
-	
+	add_msg_to_list(data.sender, data.message, data.is_private)
+
 	if not mute:
 		pass # Jouer les notifs
 
+func add_msg_to_list(pseudo, message, private: bool):
+	var all_msg = "[b]" + pseudo + "[/b] : " + message + "\n"
+	#var image = "[img=20x20][/img]"
+	if private:
+		all_msg = "[color=red]" + all_msg + "[/color]"
+	
+	list_msgs.append_text(all_msg)
 
 func _on_btn_mute_toggled(toggled_on):
 	mute = toggled_on

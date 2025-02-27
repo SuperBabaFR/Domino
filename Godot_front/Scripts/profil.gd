@@ -21,6 +21,8 @@ func load_player_profile(pseudo, image):
 	visible = true
 
 func toggle_hote(pseudo):
+	print("pseudo : ", pseudo)
+	print("lab_pseudo.text : ", lab_pseudo.text)
 	if lab_pseudo.text == pseudo:
 		is_hote = !is_hote
 		texture_courone.visible = is_hote

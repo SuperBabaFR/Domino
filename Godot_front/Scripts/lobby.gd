@@ -16,6 +16,7 @@ func _ready():
 	
 	Websocket.session_player_statut.connect(_update_statut)
 	Websocket.session_start_game.connect(_game_started)
+	Websocket.session_hote_leave.connect(func(): Utile.changeScene("home_menu"))
 	
 	Websocket.connect_to_websocket()
 	
@@ -26,7 +27,8 @@ func _ready():
 
 func load_players_info():
 	var players = Global.get_all_players_infos()
-	var my_pseudo = Global.get_info("player", "pseudo")
+	var hote_pseudo = Global.get_info("session", "session_hote")
+	print(hote_pseudo)
 	
 	player_count = 1	
 	for player in players:
@@ -37,14 +39,11 @@ func load_players_info():
 		profil_node.load_player_profile(
 			pseudo, 
 			image)
-		
-		if player.hote:
-			profil_node.toggle_hote(player.pseudo)
 		profil_node.update_statut(player.statut)
 
 		
-		if my_pseudo == pseudo:
-			my_profil = profil_node
+		if hote_pseudo == pseudo:
+			profil_node.toggle_hote(pseudo)
 		
 		player_count += 1
 
@@ -52,12 +51,12 @@ func _on_btn_leave_press():
 	var body = {"session_id": Global.session_infos.session_id}
 	var response = await API.makeRequest("kill", "", body)
 	
-	if response.response_code == HTTPClient.RESPONSE_OK:
+	if response.response_code in [HTTPClient.RESPONSE_OK, HTTPClient.RESPONSE_NOT_FOUND]:
 		Global.clear_session_data()
 		Websocket.socket.close()
 		Utile.changeScene("home_menu")
 	else:
-		print(body.message)
+		print(response.body)
 	
 func _on_start_game():
 	var body = {"session_id": Global.session_infos.session_id}

@@ -30,8 +30,9 @@ func rejoindre_session(session_code):
 		data.erase("players")
 		Global.set_session_data(data, false)
 		
+		
 		for player_info in players_data:
-			Global.add_player_info(player_info, false)
+			Global.add_player_info(player_info)
 		
 		Utile.changeScene("lobby")
 	elif response_code == 401:

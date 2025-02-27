@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://b2wp48majtm4r"]
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://b2wp48majtm4r"]
 
 [ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="1_7ptwl"]
 [ext_resource type="FontFile" uid="uid://b675y661wh2ro" path="res://Assets/fonts/Roboto-VariableFont_wdth,wght.ttf" id="1_d214s"]
+[ext_resource type="FontFile" uid="uid://ct2shfm1kwxa8" path="res://Assets/fonts/Rajdhani-Bold.ttf" id="2_d6msh"]
+[ext_resource type="FontFile" uid="uid://dprj0e0cx7d1c" path="res://Assets/fonts/Rajdhani-Regular.ttf" id="3_weyc1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iajss"]
 content_margin_left = 2.0
@@ -33,6 +35,13 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8kfx"]
 bg_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e7c3"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_color = Color(0, 0, 0, 1)
+
 [resource]
 default_font = ExtResource("1_7ptwl")
 Button/styles/focus = SubResource("StyleBoxFlat_iajss")
@@ -47,3 +56,10 @@ LineEdit/font_sizes/font_size = 16
 LineEdit/fonts/font = ExtResource("1_d214s")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_vkryh")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_r8kfx")
+RichTextLabel/colors/default_color = Color(0, 0, 0, 1)
+RichTextLabel/font_sizes/bold_font_size = 18
+RichTextLabel/font_sizes/normal_font_size = 16
+RichTextLabel/fonts/bold_font = ExtResource("2_d6msh")
+RichTextLabel/fonts/normal_font = ExtResource("3_weyc1")
+RichTextLabel/styles/focus = null
+RichTextLabel/styles/normal = SubResource("StyleBoxFlat_5e7c3")

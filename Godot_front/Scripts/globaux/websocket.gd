@@ -54,7 +54,7 @@ func connect_to_websocket():
 	set_process(true)
 
 
-func _process(delta):
+func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:

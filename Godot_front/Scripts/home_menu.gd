@@ -25,6 +25,8 @@ func _ready():
 	API.pull_list_dominos()
 	# Charge les stats
 	load_stats()
+	# Nettoie les données de session
+	Global.clear_session_data()
 
 	btn_create.connect("pressed", _on_start_pressed)
 	btn_join.connect("pressed", _on_join_pressed)

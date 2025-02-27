@@ -23,6 +23,7 @@ layout_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="ChatTextuel" parent="." instance=ExtResource("2_sds0s")]
+layout_mode = 0
 offset_left = -4.0
 offset_top = 570.0
 offset_right = -4.0

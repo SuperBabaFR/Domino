@@ -176,7 +176,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         message = dict(
             action="session.player_statut",
             data=dict(
-                player=player.pseudo,
+                pseudo=player.pseudo,
                 statut=statut.name
             )
         )
@@ -198,23 +198,23 @@ class SessionConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        pseudo = event.get("data").get("player")
+        pseudo = event.get("data").get("pseudo")
         image = event.get("data").get("image")
-        wins = event.get("data").get("wins")
-        pigs = event.get("data").get("pigs")
+        wins = event.get("data").get("games_win")
+        pigs = event.get("data").get("pig_count")
 
         message = dict(
             action="session.player_",
             data=dict(
-                player=pseudo
+                pseudo=pseudo
             ))
         message["action"] += action
         if action == "join":
             message["data"] = dict(
-                player=pseudo,
+                pseudo=pseudo,
                 image=image,
-                wins=wins,
-                pigs=pigs
+                games_win=wins,
+                pig_count=pigs
             )
         await self.send(text_data=json.dumps(message))
 

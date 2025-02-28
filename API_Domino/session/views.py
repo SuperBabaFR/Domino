@@ -171,7 +171,7 @@ class JoinSessionView(APIView):
 
         # Notifie les joueurs connectés à la session du nouveau joueur
         data_notify = dict(
-            player=player.pseudo,
+            pseudo=player.pseudo,
             image=player.image,
             games_win=info_player.games_win,
             pig_count=info_player.pig_count

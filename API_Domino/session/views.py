@@ -57,7 +57,7 @@ class CreateSessionView(APIView):
         session_name = data_request.get('session_name', f"Session de {player_hote.pseudo}")
 
         # Vérifie reflexion_time
-        if reflexion_time < 20 or reflexion_time > 60:
+        if reflexion_time < 20 or reflexion_time > 100:
             return Response(dict(code=400, message="Le temps de réflexion doit être compris entre 20 et 60 secondes."),
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -173,8 +173,8 @@ class JoinSessionView(APIView):
         data_notify = dict(
             player=player.pseudo,
             image=player.image,
-            wins=info_player.games_win,
-            pigs=info_player.pig_count
+            games_win=info_player.games_win,
+            ping_count=info_player.pig_count
         )
 
         notify_session.apply_async(args=(session.id, "join", data_notify))

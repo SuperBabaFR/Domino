@@ -247,7 +247,7 @@ class LeaveSessionView(APIView):
 
         # Notifie les joueurs connectés à la session du joueur qui a quitté
         data_notify = dict(
-            player=player.pseudo
+            pseudo=player.pseudo
         )
         notify_session.apply_async(args=(session.id, "leave", data_notify))
         # notify_session(session.id, "leave", data_notify)

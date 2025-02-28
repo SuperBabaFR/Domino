@@ -165,7 +165,7 @@ class JoinSessionView(APIView):
                 "image": player_x.image,
                 "statut": info_player_x.statut.name,
                 "games_win": info_player_x.games_win,
-                "ping_count": info_player_x.pig_count
+                "pig_count": info_player_x.pig_count
             }
             players_info.append(player_data)
 
@@ -174,7 +174,7 @@ class JoinSessionView(APIView):
             player=player.pseudo,
             image=player.image,
             games_win=info_player.games_win,
-            ping_count=info_player.pig_count
+            pig_count=info_player.pig_count
         )
 
         notify_session.apply_async(args=(session.id, "join", data_notify))

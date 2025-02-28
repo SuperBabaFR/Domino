@@ -1,56 +1,63 @@
 extends Control
 
-var is_hote = false
 @export var lab_pseudo: Label 
-@export var lab_statut: Label 
 @export var texture_image: TextureRect 
-@export var texture_courone: TextureRect 
-@export var domino_count: VBoxContainer 
+@export var texture_courone: TextureRect
+# Scores
+@export var lab_wins : Label
+@export var lab_pigs : Label
+# Statut 
+@export var lab_statut: Label 
+@export var icon_statut: TextureRect 
 
-var parent_name: String
+@export var domino_count: VBoxContainer
+
+var icon_ready
+var icon_not_ready
+var icon_hote
 
 func _ready() -> void:
+	icon_not_ready = preload("res://Assets/icons/light_not_ready_icon.png")
+	icon_ready = preload("res://Assets/icons/light_ready_icon.png")
+	icon_hote = preload("res://Assets/icons/light_crown_icon.svg")
 	visible = false
-	parent_name = get_parent().name
-	
 
 func load_player_profile(pseudo, image):
 	lab_pseudo.text = pseudo
 	texture_image.texture = image
 	texture_image.queue_redraw()
-	visible = true
 
-func toggle_hote(pseudo):
-	print("pseudo : ", pseudo)
-	print("lab_pseudo.text : ", lab_pseudo.text)
+func toggle_hote(pseudo: String, state: bool):
 	if lab_pseudo.text == pseudo:
-		is_hote = !is_hote
-		texture_courone.visible = is_hote
+		texture_courone.texture = icon_hote if state else null
 
 func update_statut(statut):
 	if statut == "":
 		lab_statut.visible = false
 		return
+	
 	var color = Color.GREEN
+	var statut_text = "Prêt"
 		
 	if statut.contains("not"):
 		color = Color.RED
-		statut = "Pas prêt"
+		statut_text = "Pas prêt"
 	elif statut.contains("afk"):
 		color = Color.ORANGE		
-		statut = "AFK"
+		statut_text = "AFK"
 	elif statut.contains("offline"):
 		color = Color.BLACK
-		statut = "Hors ligne"
-	else:
-		statut = "Prêt"
-	
-	lab_statut.text = statut
-	lab_statut.add_theme_color_override("font_color", color)
-	lab_statut.visible = true
+		statut_text = "Hors ligne"
 
-func leave_player():
-	visible = false
+	icon_statut.texture = icon_ready if statut.contains("is_ready") else icon_not_ready
+	
+	lab_statut.text = statut_text
+	lab_statut.add_theme_color_override("font_color", color)
+	$image_pseudo/name/statut_container.visible = true
+
+func set_scores(wins, pigs):
+	lab_wins.text = str(wins)
+	lab_pigs.text = str(pigs)
 
 func show_dominos_count(count: int):
 	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")

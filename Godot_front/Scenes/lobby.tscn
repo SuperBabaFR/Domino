@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_n514r"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="4_0wkmg"]
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready", "players_profiles")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,38 +16,13 @@ script = ExtResource("1_oddvw")
 btn_leave = NodePath("btn_leave")
 btn_start = NodePath("btn_start")
 btn_ready = NodePath("btn_ready")
+players_profiles = NodePath("players_profiles")
+profil_scene = ExtResource("1_powg8")
 metadata/_edit_lock_ = true
 
 [node name="Background Game" parent="." instance=ExtResource("2_n514r")]
 layout_mode = 1
-
-[node name="P1" parent="." instance=ExtResource("1_powg8")]
-layout_mode = 0
-offset_left = 63.0
-offset_top = 164.0
-offset_right = 63.0
-offset_bottom = 164.0
-
-[node name="P2" parent="." instance=ExtResource("1_powg8")]
-layout_mode = 0
-offset_left = 61.0
-offset_top = 347.0
-offset_right = 61.0
-offset_bottom = 347.0
-
-[node name="P3" parent="." instance=ExtResource("1_powg8")]
-layout_mode = 0
-offset_left = 464.0
-offset_top = 162.0
-offset_right = 464.0
-offset_bottom = 162.0
-
-[node name="P4" parent="." instance=ExtResource("1_powg8")]
-layout_mode = 0
-offset_left = 462.0
-offset_top = 344.0
-offset_right = 462.0
-offset_bottom = 344.0
+metadata/_edit_lock_ = true
 
 [node name="btn_leave" type="Button" parent="."]
 layout_mode = 0
@@ -59,10 +34,10 @@ text = "Quitter"
 
 [node name="btn_start" type="Button" parent="."]
 layout_mode = 0
-offset_left = 864.0
-offset_top = 239.0
-offset_right = 984.0
-offset_bottom = 284.0
+offset_left = 511.0
+offset_top = 489.0
+offset_right = 631.0
+offset_bottom = 534.0
 text = "Voyey allé"
 
 [node name="ChatTextuel" parent="." instance=ExtResource("4_0wkmg")]
@@ -77,8 +52,21 @@ grow_vertical = 0
 
 [node name="btn_ready" type="Button" parent="."]
 layout_mode = 0
-offset_left = 865.0
-offset_top = 395.0
-offset_right = 985.0
-offset_bottom = 440.0
+offset_left = 360.0
+offset_top = 486.0
+offset_right = 480.0
+offset_bottom = 531.0
 text = "Mettre Prêt"
+
+[node name="players_profiles" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 150
+alignment = 1

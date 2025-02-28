@@ -75,6 +75,8 @@ func _process(_delta):
 			
 			action = action.replace(".", "_")
 			
+			print("msg reçu : action = ", action)
+			
 			if self.has_signal(action):
 				print("data : ", data)
 				emit_signal(action, data)

@@ -1,38 +1,42 @@
-[gd_scene load_steps=7 format=3 uid="uid://doqihpqywa426"]
+[gd_scene load_steps=10 format=3 uid="uid://doqihpqywa426"]
 
 [ext_resource type="Script" path="res://Scripts/profil.gd" id="1_glyvl"]
-[ext_resource type="Texture2D" uid="uid://be8mdn5relfcg" path="res://Assets/icons/light_crown_icon.svg" id="2_rjjgd"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_suj8a"]
 [ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="4_o8q56"]
 [ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="5_jeayu"]
 [ext_resource type="FontFile" uid="uid://mqlwwgnf7jsg" path="res://Assets/fonts/Mada-Regular.ttf" id="6_24hdp"]
+[ext_resource type="Texture2D" uid="uid://7sykjrn5bqlt" path="res://Assets/icons/light_win_icon.png" id="7_5tx54"]
+[ext_resource type="Texture2D" uid="uid://cnp6tqcnkaw4h" path="res://Assets/icons/light_not_ready_icon.png" id="7_cri3r"]
+[ext_resource type="FontFile" uid="uid://br7n5ri56elxf" path="res://Assets/fonts/VT323-Regular.ttf" id="8_ctfnx"]
+[ext_resource type="Texture2D" uid="uid://b6ju18o25nue8" path="res://Assets/icons/light_pig_icon.png" id="8_pvqsm"]
 
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "texture_courone", "lab_wins", "lab_pigs", "lab_statut", "icon_statut")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_glyvl")
-lab_pseudo = NodePath("HBoxContainer/name/pseudo")
-lab_statut = NodePath("HBoxContainer/name/statut")
-texture_image = NodePath("HBoxContainer/picture/image_mask/image")
-texture_courone = NodePath("HBoxContainer/picture/courone")
+lab_pseudo = NodePath("image_pseudo/name/pseudo")
+texture_image = NodePath("image_pseudo/picture/image_mask/image")
+texture_courone = NodePath("image_pseudo/picture/courone")
+lab_wins = NodePath("scores/lab_win_count")
+lab_pigs = NodePath("scores/lab_pigs_count")
+lab_statut = NodePath("image_pseudo/name/statut_container/statut")
+icon_statut = NodePath("image_pseudo/name/statut_container/statut_icon")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="image_pseudo" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="picture" type="VBoxContainer" parent="HBoxContainer"]
+[node name="picture" type="VBoxContainer" parent="image_pseudo"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="courone" type="TextureRect" parent="HBoxContainer/picture"]
-visible = false
+[node name="courone" type="TextureRect" parent="image_pseudo/picture"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("2_rjjgd")
 expand_mode = 3
 
-[node name="image_mask" type="TextureRect" parent="HBoxContainer/picture"]
+[node name="image_mask" type="TextureRect" parent="image_pseudo/picture"]
 clip_children = 1
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
@@ -42,7 +46,7 @@ texture = ExtResource("3_suj8a")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="image" type="TextureRect" parent="HBoxContainer/picture/image_mask"]
+[node name="image" type="TextureRect" parent="image_pseudo/picture/image_mask"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,12 +60,12 @@ expand_mode = 4
 stretch_mode = 6
 metadata/_edit_lock_ = true
 
-[node name="name" type="VBoxContainer" parent="HBoxContainer"]
+[node name="name" type="VBoxContainer" parent="image_pseudo"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 2
 
-[node name="pseudo" type="Label" parent="HBoxContainer/name"]
+[node name="pseudo" type="Label" parent="image_pseudo/name"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("5_jeayu")
@@ -71,7 +75,11 @@ horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 
-[node name="statut" type="Label" parent="HBoxContainer/name"]
+[node name="statut_container" type="HBoxContainer" parent="image_pseudo/name"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="statut" type="Label" parent="image_pseudo/name/statut_container"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_24hdp")
@@ -79,3 +87,54 @@ theme_override_font_sizes/font_size = 20
 text = "Statut"
 vertical_alignment = 1
 uppercase = true
+
+[node name="statut_icon" type="TextureRect" parent="image_pseudo/name/statut_container"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("7_cri3r")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="scores" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="image_win" type="TextureRect" parent="scores"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("7_5tx54")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="lab_win_count" type="Label" parent="scores"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_ctfnx")
+theme_override_font_sizes/font_size = 35
+text = "0"
+
+[node name="ColorRect" type="ColorRect" parent="scores"]
+custom_minimum_size = Vector2(32, 3)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0, 0, 0, 1)
+
+[node name="image_pig" type="TextureRect" parent="scores"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("8_pvqsm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="lab_pigs_count" type="Label" parent="scores"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_ctfnx")
+theme_override_font_sizes/font_size = 35
+text = "0"

@@ -4,48 +4,45 @@ extends Control
 @export var btn_start : Button
 @export var btn_ready : Button
 
+@export var players_profiles : HBoxContainer
+
 var is_ready: bool = false
 const action_path = "session."
-var my_profil: Node
-var player_count = 0
+var hote_pseudo
+
+@export var profil_scene : PackedScene
 
 func _ready():
 	btn_leave.connect("pressed", _on_btn_leave_press)
 	btn_start.connect("pressed", _on_start_game)
 	btn_ready.connect("pressed", _set_ready_statut)
 	
-	Websocket.session_player_statut.connect(_update_statut)
+	# Partie lancée
 	Websocket.session_start_game.connect(_game_started)
+	# Mouvement de joueurs
+	Websocket.session_player_join.connect(_on_player_join)
+	Websocket.session_player_leave.connect(_on_player_leave)
 	Websocket.session_hote_leave.connect(func(): Utile.changeScene("home_menu"))
-	
+	# Changements de statuts
+	Websocket.session_player_statut.connect(_update_statut)
+	# Connexion au websocket
 	Websocket.connect_to_websocket()
-	
-	for i in range(1,5):
-		get_node("P"+str(i)).visible = false
+
 	load_players_info()
 
 
 func load_players_info():
 	var players = Global.get_all_players_infos()
-	var hote_pseudo = Global.get_info("session", "session_hote")
-	print(hote_pseudo)
+	hote_pseudo = Global.get_info("session", "session_hote")
+	print("hote de la session : ",hote_pseudo)
 	
-	player_count = 1	
 	for player in players:
-		var pseudo = player.pseudo
-		var image = Utile.load_profil_picture(player.image)
-		var profil_node = get_node("P"+str(player_count))
-		
-		profil_node.load_player_profile(
-			pseudo, 
-			image)
-		profil_node.update_statut(player.statut)
+		_on_player_join(player)
+	
+	var node_hote = players_profiles.get_node(hote_pseudo)
+	if node_hote:
+		node_hote.toggle_hote(hote_pseudo, true)
 
-		
-		if hote_pseudo == pseudo:
-			profil_node.toggle_hote(pseudo)
-		
-		player_count += 1
 
 func _on_btn_leave_press():
 	var body = {"session_id": Global.session_infos.session_id}
@@ -88,23 +85,41 @@ func _set_ready_statut():
 	btn_ready.text = "Retirer Prêt" if is_ready else "Mettre Prêt"
 
 func _update_statut(data):
-	for i in range(1,5):
-		var profil_node = get_node("P"+str(i))
-		
-		if profil_node.lab_pseudo.text != data.player:
-			continue
-		
+	var profil_node = players_profiles.get_node(data.pseudo)
+	if profil_node:
 		profil_node.update_statut(data.statut)
 
 func _on_player_leave(data):
-	for i in range(1,5):
-		var profil_node = get_node("P"+str(i))
-		
-		if profil_node.lab_pseudo.text != data.player:
-			continue
-		
-	player_count -= 1
-		
+	var profil_node = players_profiles.get_node(data.pseudo)
+	if profil_node:
+		profil_node.queue_free()
+
+func _on_player_join(data : Dictionary):
+	if players_profiles.get_node(data.pseudo):
+		return
+	
+	var pseudo = data.pseudo
+	var image = Utile.load_profil_picture(data.image)
+	var statut = "player.not_ready"
+	# Crée le node pour le profil
+	var profil_node = profil_scene.instantiate()
+	profil_node.name = pseudo
+	# L'ajoute à l'écran
+	players_profiles.add_child(profil_node)
+	
+	# Charge les informations
+	profil_node.load_player_profile(pseudo, image)
+	if data.has("statut"):
+		statut = data.statut if data.statut != "" else "player.not_ready"
+	profil_node.update_statut(statut)
+	# active la courone si c'est l'hote
+	if hote_pseudo == pseudo:
+		profil_node.toggle_hote(pseudo, true)
+	
+	profil_node.set_scores(data.games_win, data.pig_count)
+	profil_node.visible = true
+	
+
 
 func _game_started(data):
 	Global.set_game_data(data)

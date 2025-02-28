@@ -42,7 +42,7 @@ func set_session_data(data: Dictionary, created: bool):
 			"pseudo": player_data.pseudo,
 			"image": player_data.image,
 			"games_win": 0,
-			"ping_count": 0,
+			"pig_count": 0,
 			"statut": "player.is_not_ready"
 		}
 		add_player_info(data_creator)
@@ -54,7 +54,7 @@ func add_player_info(data: Dictionary):
 		"rounds_win": 0,
 		"domino_count": 7,
 		"games_win": data.games_win,
-		"ping_count": data.ping_count,
+		"pig_count": data.pig_count,
 		"statut": data.statut
 	}
 	player_list_data.append(info_player)

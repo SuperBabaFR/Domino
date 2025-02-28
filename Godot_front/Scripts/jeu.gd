@@ -5,6 +5,8 @@ var game_data: Dictionary = {}
 @export var my_profil: Control
 @export var dominoes: HBoxContainer
 
+const action_path = "game."
+
 func _ready():
 	#load_game()
 	#load_player()

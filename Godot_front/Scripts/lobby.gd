@@ -6,6 +6,10 @@ extends Control
 
 @export var players_profiles : HBoxContainer
 
+@export var session_name : Label
+@export var nb_joueurs : Label
+@export var reflexion_time : Label
+
 var is_ready: bool = false
 const action_path = "session."
 var hote_pseudo
@@ -29,6 +33,7 @@ func _ready():
 	Websocket.connect_to_websocket()
 
 	load_players_info()
+	load_session_info()
 
 
 func load_players_info():
@@ -43,6 +48,16 @@ func load_players_info():
 	if node_hote:
 		node_hote.toggle_hote(hote_pseudo, true)
 
+
+func load_session_info():
+	var name = Global.get_info("session", "session_name")
+	var joueurs_count = Global.get_all_players_infos().size()
+	var max_nb_joueurs = Global.get_info("session", "max_players_count")
+	var reflexion_time_value = Global.get_info("session", "reflexion_time")
+	
+	session_name.text = name
+	nb_joueurs.text = "Nombre de joueurs : " + str(joueurs_count) + "/" + str(max_nb_joueurs)
+	reflexion_time.text = "Temps par tours : " + str(reflexion_time_value) + "sec"
 
 func _on_btn_leave_press():
 	var body = {"session_id": Global.session_infos.session_id}

@@ -1,11 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqgd15taqxuqo"]
+[gd_scene load_steps=12 format=3 uid="uid://cqgd15taqxuqo"]
 
 [ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="1_powg8"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_n514r"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="4_0wkmg"]
+[ext_resource type="Theme" uid="uid://7rqwdm07j4v3" path="res://theme/lobby.tres" id="5_pjs1q"]
+[ext_resource type="Texture2D" uid="uid://bg06lrgp8li3x" path="res://Assets/icons/light_play_icon.png" id="6_5j7vq"]
+[ext_resource type="Texture2D" uid="uid://lhbke841yy51" path="res://Assets/icons/light_settings_icon.svg" id="6_pk738"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="7_vkql8"]
+[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="9_7ajrx"]
+[ext_resource type="Texture2D" uid="uid://dtuc4so6lpvv6" path="res://Assets/images/black_domino_back.svg" id="10_w65vq"]
+[ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://theme/label_settings.tres" id="11_c0d5u"]
 
-[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready", "players_profiles")]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready", "players_profiles", "session_name", "nb_joueurs", "reflexion_time")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,9 +21,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oddvw")
 btn_leave = NodePath("btn_leave")
-btn_start = NodePath("btn_start")
+btn_start = NodePath("HBoxContainer/btn_start")
 btn_ready = NodePath("btn_ready")
 players_profiles = NodePath("players_profiles")
+session_name = NodePath("Title/session_name")
+nb_joueurs = NodePath("HBoxContainer/BoxContainer/panel/VBoxContainer/lab_nb_joueurs")
+reflexion_time = NodePath("HBoxContainer/BoxContainer/panel/VBoxContainer/lab_reflexion_time")
 profil_scene = ExtResource("1_powg8")
 metadata/_edit_lock_ = true
 
@@ -26,19 +36,11 @@ metadata/_edit_lock_ = true
 
 [node name="btn_leave" type="Button" parent="."]
 layout_mode = 0
-offset_left = 35.0
-offset_top = 19.0
-offset_right = 129.0
-offset_bottom = 62.0
+offset_left = 61.0
+offset_top = 43.0
+offset_right = 155.0
+offset_bottom = 86.0
 text = "Quitter"
-
-[node name="btn_start" type="Button" parent="."]
-layout_mode = 0
-offset_left = 511.0
-offset_top = 489.0
-offset_right = 631.0
-offset_bottom = 534.0
-text = "Voyey allé"
 
 [node name="ChatTextuel" parent="." instance=ExtResource("4_0wkmg")]
 layout_mode = 1
@@ -52,10 +54,10 @@ grow_vertical = 0
 
 [node name="btn_ready" type="Button" parent="."]
 layout_mode = 0
-offset_left = 360.0
-offset_top = 486.0
-offset_right = 480.0
-offset_bottom = 531.0
+offset_left = -322.0
+offset_top = 715.0
+offset_right = -202.0
+offset_bottom = 760.0
 text = "Mettre Prêt"
 
 [node name="players_profiles" type="HBoxContainer" parent="."]
@@ -70,3 +72,177 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 150
 alignment = 1
+
+[node name="HBoxContainer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 336.0
+offset_top = -174.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+vertical = true
+
+[node name="panel" type="PanelContainer" parent="HBoxContainer/BoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("5_pjs1q")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/BoxContainer/panel"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="lab_nb_joueurs" type="Label" parent="HBoxContainer/BoxContainer/panel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_pjs1q")
+text = "NOMBRE DE JOUEURS : 4/4"
+
+[node name="lab_reflexion_time" type="Label" parent="HBoxContainer/BoxContainer/panel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("5_pjs1q")
+text = "TEMPS PAR TOURS : 60S"
+
+[node name="btn_modif_session" type="Button" parent="HBoxContainer/BoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("5_pjs1q")
+theme_override_font_sizes/font_size = 20
+text = "PARAMETRES DE LA SESSION"
+icon = ExtResource("6_pk738")
+flat = true
+
+[node name="btn_start" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("5_pjs1q")
+text = "PLAY"
+icon = ExtResource("6_5j7vq")
+flat = true
+
+[node name="AnimationComponent" type="Node" parent="HBoxContainer/btn_start"]
+script = ExtResource("7_vkql8")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.9, 0.9)
+
+[node name="Title" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+alignment = 1
+vertical = true
+
+[node name="GameTitle" parent="Title" instance=ExtResource("9_7ajrx")]
+layout_mode = 2
+
+[node name="session_name" type="Label" parent="Title"]
+layout_mode = 2
+theme = ExtResource("5_pjs1q")
+theme_override_font_sizes/font_size = 40
+text = "LA session de MACO"
+horizontal_alignment = 1
+
+[node name="BlackDominoBack" type="Sprite2D" parent="."]
+position = Vector2(166, 180)
+rotation = -0.785398
+texture = ExtResource("10_w65vq")
+
+[node name="BlackDominoBack2" type="Sprite2D" parent="."]
+position = Vector2(1108, 180)
+rotation = 0.785398
+texture = ExtResource("10_w65vq")
+
+[node name="Popup" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -237.0
+offset_top = -245.0
+offset_right = 289.0
+offset_bottom = 246.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="lab_nb_max_players" type="Label" parent="Popup"]
+layout_mode = 2
+text = "Nombre maximum de joueurs"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="slider_nb_max_players" type="HSlider" parent="Popup"]
+layout_mode = 2
+min_value = 2.0
+max_value = 4.0
+value = 2.0
+allow_greater = true
+allow_lesser = true
+tick_count = 3
+
+[node name="lab_nb_max_players_value" type="Label" parent="Popup"]
+layout_mode = 2
+text = "2 joueurs"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="lab_reflexion_time" type="Label" parent="Popup"]
+layout_mode = 2
+text = "Temps de réflexion"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="slider_reflexion_time" type="HSlider" parent="Popup"]
+layout_mode = 2
+min_value = 20.0
+value = 20.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+
+[node name="lab_reflexion_time_value" type="Label" parent="Popup"]
+layout_mode = 2
+text = "20 secondes"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="ragequit_penality" type="CheckButton" parent="Popup"]
+layout_mode = 2
+
+[node name="lab_ragequit" type="Label" parent="Popup"]
+layout_mode = 2
+text = "Pénalité de ragequit"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="is_public" type="CheckButton" parent="Popup"]
+layout_mode = 2
+
+[node name="lab_public" type="Label" parent="Popup"]
+layout_mode = 2
+text = "Partie publique
+"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="lab_session_name" type="Label" parent="Popup"]
+layout_mode = 2
+text = "Nom de la session"
+label_settings = ExtResource("11_c0d5u")
+
+[node name="session_name" type="LineEdit" parent="Popup"]
+layout_mode = 2
+placeholder_text = "La session du maco"

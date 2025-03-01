@@ -1,0 +1,43 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://7rqwdm07j4v3"]
+
+[ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="1_m5s8e"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_mk0qm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uxtyh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ggyk1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0cv7n"]
+content_margin_left = 30.0
+content_margin_top = 20.0
+content_margin_right = 30.0
+content_margin_bottom = 20.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 4
+shadow_offset = Vector2(0, 4)
+
+[resource]
+Button/colors/font_color = Color(0, 0, 0, 1)
+Button/colors/font_focus_color = Color(0, 0, 0, 1)
+Button/colors/font_hover_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(0, 0, 0, 1)
+Button/font_sizes/font_size = 48
+Button/fonts/font = ExtResource("1_m5s8e")
+Button/styles/focus = SubResource("StyleBoxEmpty_mk0qm")
+Button/styles/hover = SubResource("StyleBoxEmpty_uxtyh")
+Button/styles/pressed = SubResource("StyleBoxEmpty_ggyk1")
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 20
+Label/fonts/font = ExtResource("1_m5s8e")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_0cv7n")

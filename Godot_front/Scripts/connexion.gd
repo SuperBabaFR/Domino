@@ -18,7 +18,7 @@ func _on_connexion_pressed():
 		print("Veuillez remplir tous les champs ") # Afficher le message à l'utilisateur a la place du print
 		return
 	
-	var json = JSON.stringify({"pseudo": pseudo.text, "password": mdp.text})
+	var json = JSON.stringify({"pseudo": pseudo.text.strip_edges(), "password": mdp.text.strip_edges()})
 	var response = await API.makeRequest("login", json)
 	
 	var response_code = response.response_code

@@ -3,16 +3,17 @@ extends Control
 @export var btn_leave : Button
 @export var btn_start : Button
 @export var btn_ready : Button
+@export var btn_update_session : Button
 
 @export var players_profiles : HBoxContainer
 
 @export var session_name : Label
 @export var nb_joueurs : Label
 @export var reflexion_time : Label
+@export var code_session : Label
 
 var is_ready: bool = false
 const action_path = "session."
-var hote_pseudo
 
 @export var profil_scene : PackedScene
 
@@ -20,7 +21,9 @@ func _ready():
 	btn_leave.connect("pressed", _on_btn_leave_press)
 	btn_start.connect("pressed", _on_start_game)
 	btn_ready.connect("pressed", _set_ready_statut)
-	
+	btn_update_session.connect("pressed", _on_btn_update_press)
+	# Session modifiée
+	Websocket.session_update_infos.connect(session_updated)
 	# Partie lancée
 	Websocket.session_start_game.connect(_game_started)
 	# Mouvement de joueurs
@@ -38,11 +41,12 @@ func _ready():
 
 func load_players_info():
 	var players = Global.get_all_players_infos()
-	hote_pseudo = Global.get_info("session", "session_hote")
+	var hote_pseudo = Global.get_info("session", "session_hote")
 	print("hote de la session : ",hote_pseudo)
 	
 	for player in players:
-		_on_player_join(player)
+		print(player.pseudo)
+		add_player_node(player)
 	
 	var node_hote = players_profiles.get_node(hote_pseudo)
 	if node_hote:
@@ -50,14 +54,38 @@ func load_players_info():
 
 
 func load_session_info():
-	var name = Global.get_info("session", "session_name")
+	var name_session = Global.get_info("session", "session_name")
 	var joueurs_count = Global.get_all_players_infos().size()
 	var max_nb_joueurs = Global.get_info("session", "max_players_count")
 	var reflexion_time_value = Global.get_info("session", "reflexion_time")
 	
-	session_name.text = name
+	session_name.text = name_session
 	nb_joueurs.text = "Nombre de joueurs : " + str(joueurs_count) + "/" + str(max_nb_joueurs)
 	reflexion_time.text = "Temps par tours : " + str(reflexion_time_value) + "sec"
+	code_session.text = "CODE : " + Global.get_info("session", "session_code")
+
+
+func session_updated(data):
+	Global.update_session_data(data)
+	load_session_info()
+	
+	for player in Global.get_all_players_infos():
+		var profil = players_profiles.get_node(player.pseudo)
+		
+		if data.session_hote == player.pseudo:
+			profil.toggle_hote(player.pseudo, true)
+		else:
+			profil.toggle_hote(player.pseudo, false)
+			
+	
+
+
+func _on_btn_update_press():
+	if Global.get_info("player", "pseudo") != Global.get_info("session", "session_hote"):
+		print("Vous n'êtes pas l'hote")
+		return
+	get_node("UpdateSession").visible = true
+
 
 func _on_btn_leave_press():
 	var body = {"session_id": Global.session_infos.session_id}
@@ -100,19 +128,31 @@ func _set_ready_statut():
 	btn_ready.text = "Retirer Prêt" if is_ready else "Mettre Prêt"
 
 func _update_statut(data):
-	var profil_node = players_profiles.get_node(data.pseudo)
-	if profil_node:
+	if players_profiles.has_node(data.pseudo):
+		var profil_node = players_profiles.get_node(data.pseudo)
 		profil_node.update_statut(data.statut)
 
 func _on_player_leave(data):
-	var profil_node = players_profiles.get_node(data.pseudo)
-	if profil_node:
+	if players_profiles.has_node(data.pseudo):
+		var profil_node = players_profiles.get_node(data.pseudo)
+
+		Global.remove_player_info(data.pseudo)
 		profil_node.queue_free()
+		get_node("ChatTextuel").load_channels()
 
 func _on_player_join(data : Dictionary):
-	if players_profiles.get_node(data.pseudo):
-		return
+	Global.add_player_info(data)
+	var joueurs_count = Global.get_all_players_infos().size()
+	var max_player_count = Global.get_info("session", "max_players_count")
+	nb_joueurs.text = "Nombre de joueurs : " + str(joueurs_count) + "/" + str(max_player_count)
+	add_player_node(data)
+	get_node("ChatTextuel").load_channels()
 	
+
+func add_player_node(data : Dictionary):
+	if players_profiles.has_node(data.pseudo):
+		return
+	var hote_pseudo = Global.get_info("session", "session_hote")
 	var pseudo = data.pseudo
 	var image = Utile.load_profil_picture(data.image)
 	var statut = "player.not_ready"
@@ -133,7 +173,6 @@ func _on_player_join(data : Dictionary):
 	
 	profil_node.set_scores(data.games_win, data.pig_count)
 	profil_node.visible = true
-	
 
 
 func _game_started(data):

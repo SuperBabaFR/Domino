@@ -9,8 +9,6 @@ extends Control
 @export var is_public_game: CheckButton
 @export var session_name: LineEdit
 
-var json_body
-
 func _ready():
 	session_name.text = "La session de " + Global.get_info("player", "pseudo")
 
@@ -19,36 +17,23 @@ func create_session():
 		"session_name": "",
 		"reflexion_time": slider_reflexion_time.value, 
 		"max_players_count": slider_nb_max_player.value, 
-		"definitive_leave": ragequit_penality.toggle_mode, 
-		"is_public": is_public_game.toggle_mode
+		"definitive_leave": ragequit_penality.button_pressed, 
+		"is_public": is_public_game.button_pressed
 	}
 	
 	if session_name.text != "":
 		body["session_name"] = session_name.text
 	
-	json_body = JSON.stringify(body, "  ")
+	var json_body = JSON.stringify(body, "  ")
 	print(json_body)
 	
 	var response = await API.makeRequest("create", json_body)
 	
-	
-	
 	if response.response_code == 201:
-		body = response.body
-		Global.set_session_data(body.data, true)
+		Global.set_session_data(response.body.data, true)
 		Utile.changeScene("lobby")
-	elif response.response_code == 401:
-		return
-
-
-func _on_session_created(result, response_code, headers, body):
-	var json = JSON.new()
-	json.parse(body.get_string_from_utf8())
-	var response = json.get_data()
-	
-	
-	
-	#get_tree().change_scene_to_file("res://Scenes/home_menu.tscn")
+	else:
+		print(response.body)
 
 
 func _on_slider_nb_max_players_value_changed(value):

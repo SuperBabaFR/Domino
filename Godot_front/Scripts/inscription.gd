@@ -59,7 +59,7 @@ func _on_inscription_pressed():
 	if pseudo.text == "" and mdp.text == "":
 		print("remplir tous les champs")
 		
-	var body = {"pseudo": pseudo.text, "password": mdp.text}
+	var body = {"pseudo": pseudo.text.strip_edges(), "password": mdp.text.strip_edges()}
 	
 	if image_base64 != "":
 		body["image"] = image_base64

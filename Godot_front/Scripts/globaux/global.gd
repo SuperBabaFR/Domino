@@ -46,8 +46,16 @@ func set_session_data(data: Dictionary, created: bool):
 			"statut": "player.is_not_ready"
 		}
 		add_player_info(data_creator)
+
+func update_session_data(data: Dictionary):
+	print("old data : ",session_infos)
+	session_infos.merge(data, true)
+	print("new data : ",session_infos)
 	
-func add_player_info(data: Dictionary):
+func add_player_info(data: Dictionary):	
+	if not data.has("statut"):
+		data["statut"] = "player.not_ready"
+	
 	var info_player = {
 		"pseudo": data.pseudo,
 		"image": data.image,

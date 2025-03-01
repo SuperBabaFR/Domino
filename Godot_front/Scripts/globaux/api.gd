@@ -54,7 +54,7 @@ func makeRequest(action: String, jsonBody: String = "", urlParams = null):
 	var method = HTTPClient.Method.METHOD_GET
 
 	match action:
-		"login", "signup", "create":
+		"login", "signup", "create", "update", "play":
 			method = HTTPClient.Method.METHOD_POST
 		"dominos", "sessions", "stats", "join", "kill":
 			method = HTTPClient.Method.METHOD_GET

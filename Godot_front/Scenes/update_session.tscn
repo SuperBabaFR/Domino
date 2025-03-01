@@ -1,0 +1,175 @@
+[gd_scene load_steps=5 format=3 uid="uid://ckkbnrftons4i"]
+
+[ext_resource type="Script" path="res://Scripts/update_session.gd" id="1_0ntvs"]
+[ext_resource type="Material" uid="uid://dvcilsupisu57" path="res://Assets/materials/blur.tres" id="2_62wka"]
+[ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://theme/label_settings.tres" id="2_dat43"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g0lg2"]
+content_margin_left = 50.0
+content_margin_top = 50.0
+content_margin_right = 50.0
+content_margin_bottom = 50.0
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 10
+shadow_offset = Vector2(-10, -10)
+
+[node name="UpdateSession" type="Control" node_paths=PackedStringArray("slider_reflexion_time", "slider_nb_max_player", "btn_update", "btn_cancel", "lab_nb_max_player_value", "lab_reflexion_time_value", "ragequit_penality", "is_public_game", "session_name", "list_players")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0ntvs")
+slider_reflexion_time = NodePath("Panel/VBoxContainer/temps de reflexion/slider_reflexion_time")
+slider_nb_max_player = NodePath("Panel/VBoxContainer/nombre max de joueurs/slider_nb_max_players")
+btn_update = NodePath("Panel/VBoxContainer/boutons/btn_maj_session")
+btn_cancel = NodePath("Panel/VBoxContainer/boutons/btn_annuler")
+lab_nb_max_player_value = NodePath("Panel/VBoxContainer/nombre max de joueurs/lab_nb_max_players_value")
+lab_reflexion_time_value = NodePath("Panel/VBoxContainer/temps de reflexion/lab_reflexion_time_value")
+ragequit_penality = NodePath("Panel/VBoxContainer/ragequit/ragequit_penality")
+is_public_game = NodePath("Panel/VBoxContainer/partie publique/is_public")
+session_name = NodePath("Panel/VBoxContainer/session_name")
+list_players = NodePath("Panel/VBoxContainer/liste_players")
+metadata/_edit_lock_ = true
+
+[node name="Blur" type="ColorRect" parent="."]
+material = ExtResource("2_62wka")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -166.5
+offset_top = -161.0
+offset_right = 166.5
+offset_bottom = 161.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_g0lg2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="lab_session_name" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Nom de la session"
+label_settings = ExtResource("2_dat43")
+
+[node name="session_name" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "nom de session"
+
+[node name="lab_nb_max_players" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Nombre maximum de joueurs"
+label_settings = ExtResource("2_dat43")
+
+[node name="nombre max de joueurs" type="BoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="slider_nb_max_players" type="HSlider" parent="Panel/VBoxContainer/nombre max de joueurs"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 2.0
+max_value = 4.0
+value = 2.0
+allow_greater = true
+allow_lesser = true
+tick_count = 3
+
+[node name="lab_nb_max_players_value" type="Label" parent="Panel/VBoxContainer/nombre max de joueurs"]
+layout_mode = 2
+text = "2j"
+label_settings = ExtResource("2_dat43")
+
+[node name="lab_reflexion_time" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Temps de réflexion (secondes)"
+label_settings = ExtResource("2_dat43")
+
+[node name="temps de reflexion" type="BoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="slider_reflexion_time" type="HSlider" parent="Panel/VBoxContainer/temps de reflexion"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 20.0
+value = 20.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+
+[node name="lab_reflexion_time_value" type="Label" parent="Panel/VBoxContainer/temps de reflexion"]
+layout_mode = 2
+text = "20s"
+label_settings = ExtResource("2_dat43")
+
+[node name="partie publique" type="BoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="lab_public" type="Label" parent="Panel/VBoxContainer/partie publique"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Partie publique
+"
+label_settings = ExtResource("2_dat43")
+
+[node name="is_public" type="CheckButton" parent="Panel/VBoxContainer/partie publique"]
+layout_mode = 2
+
+[node name="ragequit" type="BoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="lab_ragequit" type="Label" parent="Panel/VBoxContainer/ragequit"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pénalité de ragequit"
+label_settings = ExtResource("2_dat43")
+
+[node name="ragequit_penality" type="CheckButton" parent="Panel/VBoxContainer/ragequit"]
+layout_mode = 2
+
+[node name="nouvel_hote" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Nouveau hôte de session"
+label_settings = ExtResource("2_dat43")
+
+[node name="liste_players" type="OptionButton" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="boutons" type="BoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="btn_annuler" type="Button" parent="Panel/VBoxContainer/boutons"]
+layout_mode = 2
+text = "Annuler"
+
+[node name="btn_maj_session" type="Button" parent="Panel/VBoxContainer/boutons"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Mise à jour"

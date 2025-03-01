@@ -400,8 +400,8 @@ class SessionUpdateInfoView(APIView):
 
         session.save()
 
-        new_session_infos = dict(session_id=session.id, name=session.name,
-                            hote=session.hote.pseudo, max_players_count=session.max_players_count,
+        new_session_infos = dict(session_id=session.id, session_name=session.name,
+                            session_hote=session.hote.pseudo, max_players_count=session.max_players_count,
                             reflexion_time=session.reflexion_time, definitive_leave=session.definitive_leave,
                             order=order_player, is_public=session.is_public)
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bae11n0hrsgiq"]
 
-[ext_resource type="Texture2D" uid="uid://de0p7byuiy8bc" path="res://Assets/images/Dominos/Back.svg" id="1_v382m"]
+[ext_resource type="Texture2D" uid="uid://bqx0ko0c4m8rn" path="res://Assets/images/background_motif.png" id="1_fltd6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qyyvh"]
 bg_color = Color(1, 0.945098, 0.760784, 1)
@@ -24,7 +24,6 @@ size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_qyyvh")
 
 [node name="BoxContainer2" type="BoxContainer" parent="."]
-modulate = Color(1, 1, 1, 0.4)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,56 +40,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -102,56 +101,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -163,56 +162,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -224,56 +223,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer4"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -285,56 +284,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer5"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -346,56 +345,56 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer6"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
@@ -407,55 +406,55 @@ vertical = true
 [node name="TextureRect" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect2" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect3" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect4" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect5" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect6" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect7" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3
 
 [node name="TextureRect8" type="TextureRect" parent="BoxContainer2/BoxContainer7"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_v382m")
+texture = ExtResource("1_fltd6")
 expand_mode = 1
 stretch_mode = 3

@@ -31,6 +31,7 @@ func load_channels():
 	var players = Global.get_all_players_infos()
 	my_pseudo = Global.get_info("player", "pseudo")
 	channel_options.clear()
+	channel_options.add_item("Global")
 	for player in players:
 		if player.pseudo == my_pseudo:
 			continue

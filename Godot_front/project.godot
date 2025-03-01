@@ -28,3 +28,7 @@ Websocket="*res://Scripts/globaux/websocket.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(1, 1, 1, 1)

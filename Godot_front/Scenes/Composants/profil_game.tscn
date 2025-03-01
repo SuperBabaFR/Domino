@@ -1,29 +1,32 @@
 [gd_scene load_steps=6 format=3 uid="uid://cfjb6pg6lunr2"]
 
-[ext_resource type="Script" path="res://Scripts/profil.gd" id="1_0ce23"]
+[ext_resource type="Script" path="res://Scenes/Composants/profil_game.gd" id="1_hhlm6"]
+[ext_resource type="StyleBox" uid="uid://ci66ghhd0ksts" path="res://theme/panel/profil_game.tres" id="2_ewt2y"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="2_xricf"]
-[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="3_qm35p"]
-[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="4_b3fy1"]
+[ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/old_default_profil.jpg" id="3_j6h8h"]
+[ext_resource type="Theme" uid="uid://7rqwdm07j4v3" path="res://theme/lobby.tres" id="4_ikecx"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_77pr0"]
-font_color = Color(0, 0, 0, 1)
-
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "lab_statut", "texture_image", "texture_courone", "domino_count")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color")]
 offset_right = 68.0
 offset_bottom = 23.0
-script = ExtResource("1_0ce23")
-lab_pseudo = NodePath("HBoxContainer/name/pseudo")
-lab_statut = NodePath("HBoxContainer/name/statut")
-texture_image = NodePath("HBoxContainer/image_mask/image")
-texture_courone = NodePath("")
-domino_count = NodePath("")
+script = ExtResource("1_hhlm6")
+lab_pseudo = NodePath("Container/name/pseudo")
+texture_image = NodePath("Container/PanelContainer/image_mask/image")
+border_color = NodePath("Container/PanelContainer")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Container" type="BoxContainer" parent="."]
 layout_mode = 2
+vertical = true
 
-[node name="image_mask" type="TextureRect" parent="HBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("2_ewt2y")
+
+[node name="image_mask" type="TextureRect" parent="Container/PanelContainer"]
 clip_children = 1
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -31,29 +34,25 @@ texture = ExtResource("2_xricf")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="image" type="TextureRect" parent="HBoxContainer/image_mask"]
-custom_minimum_size = Vector2(150, 150)
+[node name="image" type="TextureRect" parent="Container/PanelContainer/image_mask"]
+custom_minimum_size = Vector2(70, 70)
 layout_mode = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("3_qm35p")
+texture = ExtResource("3_j6h8h")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="name" type="VBoxContainer" parent="HBoxContainer"]
+[node name="name" type="VBoxContainer" parent="Container"]
 layout_mode = 2
 alignment = 1
 
-[node name="pseudo" type="Label" parent="HBoxContainer/name"]
+[node name="pseudo" type="Label" parent="Container/name"]
 layout_mode = 2
-theme = ExtResource("4_b3fy1")
+theme = ExtResource("4_ikecx")
 text = "PSeudo"
 vertical_alignment = 1
 uppercase = true
 
-[node name="statut" type="Label" parent="HBoxContainer/name"]
+[node name="domino_count" type="BoxContainer" parent="."]
 layout_mode = 2
-text = "Statut"
-label_settings = SubResource("LabelSettings_77pr0")
-vertical_alignment = 1
-uppercase = true

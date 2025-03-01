@@ -10,7 +10,6 @@ extends Control
 @export var lab_statut: Label 
 @export var icon_statut: TextureRect 
 
-@export var domino_count: VBoxContainer
 
 var icon_ready
 var icon_not_ready
@@ -58,8 +57,3 @@ func update_statut(statut):
 func set_scores(wins, pigs):
 	lab_wins.text = str(wins)
 	lab_pigs.text = str(pigs)
-
-func show_dominos_count(count: int):
-	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
-	for i in range(1, count+1):
-		domino_count.add_child(domino_hand.instantiate())

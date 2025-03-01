@@ -326,7 +326,7 @@ class SessionUpdateInfoView(APIView):
 
         # Vérifie reflexion_time
         if reflexion_time is not None and type(reflexion_time) is int:
-            if reflexion_time < 20 or reflexion_time > 60:
+            if reflexion_time < 20 or reflexion_time > 100:
                 return Response(
                     dict(code=400, message="Le temps de réflexion doit être compris entre 20 et 60 secondes.", data=None),
                     status=status.HTTP_400_BAD_REQUEST)

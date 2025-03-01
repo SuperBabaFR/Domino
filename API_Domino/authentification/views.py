@@ -38,7 +38,6 @@ class IsAuthenticatedWithJWT(BasePermission):
         try:
             payload = verify_token(token, token_type="access")
             player_id = payload.get("player_id")
-            print(payload)
             if not player_id:
                 raise InvalidAccessTokenException()
 

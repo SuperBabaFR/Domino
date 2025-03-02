@@ -115,6 +115,7 @@ DATABASES = {
         'PASSWORD': tmpPostgres.password,
         'HOST': tmpPostgres.hostname,
         'PORT': 5432,
+        'CONN_MAX_AGE': 600,  # Garde les connexions ouvertes pendant 10 minutes
     }
 }
 

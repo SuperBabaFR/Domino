@@ -63,13 +63,6 @@ class CreateGame(APIView):
         session.save()
 
         data_return["data"] = new_round(session, True)
-        #
-        # player_time_end = data_return["data"]["player_time_end"]
-        # round_id = data_return["data"]["round_id"]
-        # player_turn_id = Round.objects.get(id=round_id).player_turn.id
-        # dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
-
-
 
         # Transmet à l’hôte ses dominos
         return Response(data_return, status=status.HTTP_201_CREATED)

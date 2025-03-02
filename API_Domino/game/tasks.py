@@ -7,7 +7,7 @@ from celery import shared_task
 from celery.worker.control import revoke
 from channels.layers import get_channel_layer
 
-from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino
+from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino, Statut
 from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket
 
 
@@ -173,10 +173,12 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         # données si la partie est terminée
         data_end_game = None
 
+        # Statut non prêt
+        not_ready_statut = Statut.objects.get(id=6)
+
         if type_finish == "game":
             info_player.games_win += 1
             player.wins += 1
-            info_player.statut_id = 6
 
             pigs = []
 
@@ -187,9 +189,11 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 pigs.append(info.player.pseudo)
                 info.pig_count += 1
                 info.player.pigs += 1
-                info.statut_id = 6
                 info.save()
                 info.player.save()
+                notify_websocket.apply_async(
+                    args=(
+                    "player", info.player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name), "statut_player"))
             data_end_game = dict(action="session.end_game",
                                  data=dict(results=dict(winner=player.pseudo, pigs=pigs)))
 
@@ -226,6 +230,9 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         info_player.save()
         player.save()
 
+        notify_websocket.apply_async(
+            args=("player", player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name), "statut_player"))
+
         # données pour la requete http
         data_return["message"] = "Tu as gagne"
         data_return["data"] = dict(domino=domino.id,
@@ -252,13 +259,16 @@ def new_round(session, first=False):
     player_hote_hand = None
     hands_list = []
 
+    # Statut actif
+    actif_statut = Statut.objects.get(id=8)
+
     # Pour chacun des joueurs dans la partie
     for player_id in player_id_list:
         dominoes = []
         player_x = Player.objects.filter(id=player_id).first()
-        info_player = Infosession.objects.get(player=player_x, session=session)
-        info_player.statut_id = 8
-        info_player.save()
+
+        notify_websocket.apply_async(args=("player", player_x.id, dict(id=actif_statut.id, name=actif_statut.name), "statut_player"))
+
         # Choisis 7 Dominos dans la liste
         for i in range(0, 7):
             new_domino = random.choice(domino_list)

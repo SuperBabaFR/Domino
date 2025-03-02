@@ -1,0 +1,26 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://c0o88anmlcpo0"]
+
+[ext_resource type="StyleBox" uid="uid://ci66ghhd0ksts" path="res://theme/panel/profil_game.tres" id="1_0xo1c"]
+[ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="1_j5yvi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p6342"]
+bg_color = Color(0.85098, 0.85098, 0.85098, 1)
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31twn"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 80
+corner_radius_top_right = 80
+corner_radius_bottom_right = 80
+corner_radius_bottom_left = 80
+
+[resource]
+Label/colors/font_color = Color(0, 0, 0, 1)
+Label/font_sizes/font_size = 20
+Label/fonts/font = ExtResource("1_j5yvi")
+PanelContainer/styles/panel = ExtResource("1_0xo1c")
+ProgressBar/styles/background = SubResource("StyleBoxFlat_p6342")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_31twn")

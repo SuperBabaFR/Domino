@@ -4,13 +4,15 @@ extends Control
 var game_data: Dictionary = {}
 @export var my_profil: Control
 @export var dominoes: HBoxContainer
+@export var players_profiles : BoxContainer
 
 const action_path = "game."
+var player_turn = ""
+var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
 
 func _ready():
-	#load_game()
-	#load_player()
-	test_dominos()
+	load_game()
+	load_player()
 	Websocket.game_someone_played.connect(someone_play)
 	Websocket.game_someone_pass.connect(someone_pass)
 
@@ -39,14 +41,9 @@ func load_game():
 		var profil_node = get_node("player"+str(player_count))
 		
 		
-		profil_node.load_player_profile(
-			pseudo, 
-			image, 
-			player.hote, 
-			player.statut
-		)
-		
+		profil_node.load_player_profile(pseudo, image)		
 		profil_node.show_dominos_count(player.domino_count)
+		profil_node.update_statut("actif")
 
 		player_count += 1
 	
@@ -60,31 +57,13 @@ func load_player():
 	var player = Global.get_all_player_data()
 	var pseudo = player.pseudo
 	var image = Utile.load_profil_picture(player.image)
-	my_profil.load_player_profile(
-		pseudo, 
-		image, 
-		player.hote, 
-		player.statut
-	)
 
+	my_profil.load_player_profile(pseudo, image)		
+	my_profil.update_statut("actif")
 	
 	var dominoes = game_data.dominoes
-	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
 	
 	for domino in dominoes:
-		var domino_img = load("res://Assets/images/Dominos/d" + str(domino.id) + ".svg")
-		domino_hand.texture = ImageTexture.create_from_image(domino_img)
-		dominoes.add_child(domino_hand.instantiate())
-
-
-func test_dominos():
-	var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
-	
-	for i in range(1,8):
-		var domino_texture = load("res://Assets/images/Dominos/d" + str(i) + ".svg")
-		var domino_img = domino_texture.get_image()
-		domino_img.rotate_90(CLOCKWISE)
-		#print(domino_hand.can_instantiate())
-		#domino_hand = domino_hand.instantiate()
-		domino_hand.texture = ImageTexture.create_from_image(domino_img)
-		add_child(domino_hand)
+		var my_domino = domino_hand.instantiate()
+		my_domino.load_texture(domino.id)
+		dominoes.add_child(my_domino)

@@ -1,18 +1,22 @@
 [gd_scene load_steps=6 format=3 uid="uid://cfjb6pg6lunr2"]
 
-[ext_resource type="Script" path="res://Scenes/Composants/profil_game.gd" id="1_hhlm6"]
-[ext_resource type="StyleBox" uid="uid://ci66ghhd0ksts" path="res://theme/panel/profil_game.tres" id="2_ewt2y"]
+[ext_resource type="Script" path="res://Scripts/profil_game.gd" id="1_hhlm6"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="2_xricf"]
 [ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/old_default_profil.jpg" id="3_j6h8h"]
-[ext_resource type="Theme" uid="uid://7rqwdm07j4v3" path="res://theme/lobby.tres" id="4_ikecx"]
+[ext_resource type="Texture2D" uid="uid://bb2y8vcd36t20" path="res://Assets/icons/light_time_icon.png" id="5_w5711"]
+[ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_cidoe"]
 
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color", "reflexion_time", "player_time_end", "reflexion_container", "domino_count")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_hhlm6")
 lab_pseudo = NodePath("Container/name/pseudo")
 texture_image = NodePath("Container/PanelContainer/image_mask/image")
 border_color = NodePath("Container/PanelContainer")
+reflexion_time = NodePath("Container/reflexion/reflexion_time")
+player_time_end = NodePath("player_time_end")
+reflexion_container = NodePath("Container/reflexion")
+domino_count = NodePath("domino_count")
 
 [node name="Container" type="BoxContainer" parent="."]
 layout_mode = 2
@@ -22,7 +26,7 @@ vertical = true
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_styles/panel = ExtResource("2_ewt2y")
+theme = ExtResource("6_cidoe")
 
 [node name="image_mask" type="TextureRect" parent="Container/PanelContainer"]
 clip_children = 1
@@ -49,10 +53,32 @@ alignment = 1
 
 [node name="pseudo" type="Label" parent="Container/name"]
 layout_mode = 2
-theme = ExtResource("4_ikecx")
+theme = ExtResource("6_cidoe")
 text = "PSeudo"
+horizontal_alignment = 1
 vertical_alignment = 1
 uppercase = true
 
+[node name="reflexion" type="BoxContainer" parent="Container"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="progress_icon" type="TextureRect" parent="Container/reflexion"]
+layout_mode = 2
+texture = ExtResource("5_w5711")
+
+[node name="reflexion_time" type="ProgressBar" parent="Container/reflexion"]
+custom_minimum_size = Vector2(80, 11)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("6_cidoe")
+value = 50.0
+show_percentage = false
+
 [node name="domino_count" type="BoxContainer" parent="."]
 layout_mode = 2
+
+[node name="player_time_end" type="Timer" parent="."]
+one_shot = true

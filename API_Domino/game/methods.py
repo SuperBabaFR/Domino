@@ -7,7 +7,7 @@ from celery import shared_task
 from channels.layers import get_channel_layer
 from rest_framework import status
 from rest_framework.response import Response
-from authentification.models import Player, Domino, Round, HandPlayer, Infosession
+from authentification.models import Player, Domino
 
 
 # Create your views here.
@@ -62,10 +62,10 @@ def verify_objets(objets):
 #     return player_dominoes
 
 
-def domino_playable(domino, table_de_jeu, side, domino_list=None):
+def domino_playable(domino, table_de_jeu, side, domino_list):
     # Si y'a aucun domino
     if len(table_de_jeu) == 0:
-        return dict(left=domino.left, right=domino.right)
+        return "normal"
 
     # si y'a qu'un domino
     if len(table_de_jeu) == 1:
@@ -74,35 +74,44 @@ def domino_playable(domino, table_de_jeu, side, domino_list=None):
         else:
             domino_one = domino_list[table_de_jeu[0]["id"] - 1]
 
-        if (side == "left" and domino_one.left not in [domino.left, domino.right]) or (
-                side == "right" and domino_one.right not in [domino.left, domino.right]):
-            return False
-        return dict(left=domino_one.left, right=domino_one.right)
+        orientation = table_de_jeu[0]["orientation"]
+        value = (
+            domino_one.left if orientation == "normal"
+            else domino_one.right
+        ) if side == "left" else (
+            domino_one.right if orientation == "normal"
+            else domino_one.left
+        )
+    # Plus d'un
+    elif len(table_de_jeu) > 1:
+        # Charge les dominos avant
+        if not domino_list:
+            domino_left = Domino.objects.get(id=table_de_jeu[0]["id"])  # Domino tout à gauche
+            domino_right = Domino.objects.get(id=table_de_jeu[-1]["id"]) # Domino tout à droite
+        else:
+            domino_left = domino_list[table_de_jeu[0]["id"] - 1]  # Domino tout à gauche
+            domino_right = domino_list[table_de_jeu[-1]["id"] - 1] # Domino tout à droite
 
-    # Charge les dominos avant
-    if not domino_list:
-        domino_left = Domino.objects.get(id=table_de_jeu[0]["id"])
-        domino_right = Domino.objects.get(id=table_de_jeu[len(table_de_jeu) - 1]["id"])
-    else:
-        domino_left = domino_list[table_de_jeu[0]["id"] - 1]
-        domino_right = domino_list[table_de_jeu[len(table_de_jeu) - 1]["id"] - 1]
+        orientation_left = table_de_jeu[0]["orientation"]  # Domino tout à gauche
+        orientation_right = table_de_jeu[-1]["orientation"] # Domino tout à droite
 
-    # Domino tout à gauche
-    domino_left = dict(left=domino_left.left, right=domino_left.right, orientation=table_de_jeu[0]["orientation"])
-    # Valeur de gauche disponible
-    value_left = domino_left["left"] if domino_left["orientation"] == "normal" else domino_left["right"]
+        value = (
+            domino_left.left if orientation_left == "normal"
+            else domino_left.right
+        ) if side == "left" else (
+            domino_right.right if orientation_right == "normal"
+            else domino_right.left
+        )
 
-    # Domino tout à droite
-    domino_right = dict(left=domino_right.left, right=domino_right.right,
-                        orientation=table_de_jeu[len(table_de_jeu) - 1]["orientation"])
-    # Valeur de droite disponible
-    value_right = domino_right["right"] if domino_right["orientation"] == "normal" else domino_right["left"]
+    # Domino bien jouable là ou il est placé et dans quel sens
+    if domino.left == domino.right and value == domino.right:
+        return "double"
 
-    # Domino bien jouable là ou il est placé
-    if (side == "left" and value_left not in [domino.left, domino.right]) or (
-            side == "right" and value_right not in [domino.left, domino.right]):
-        return False
-    return dict(left=value_left, right=value_right)
+    if side == "left":
+        return "normal" if value == domino.right else "inverse" if value == domino.left else False
+    elif side == "right":
+        return "normal" if value == domino.left else "inverse" if value == domino.right else False
+    return False
 
 
 def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet=False):

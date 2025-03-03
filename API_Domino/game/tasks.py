@@ -44,10 +44,8 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
                                 )
         notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
         # Ajouter la tâche avec un ETA
-        if len(playable_dominoes) == 1:
-            result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
-        else:
-            result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id, playable_dominoes[0]), eta=dt_utc)
+        result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+
         round.auto_play_task_id = result.id
         round.save()
 
@@ -88,10 +86,10 @@ def auto_play_domino_task(player_id, session_id, round_id, domino_id=None):
 
     domino_list = list(Domino.objects.all())
 
-    play_domino(player, session, round, domino_list, domino=domino)
+    play_domino(player=player, session=session, round=round, domino_list=domino_list, domino=domino)
 
 
-def play_domino(player, session, round, domino_list, side=None, playable_values=None, domino=None):
+def play_domino(player, session, round, domino_list, side=None, orientation=None, domino=None):
     if not round.player_turn == player:
         return
 
@@ -100,8 +98,6 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
     # Dominos du joueurs
     hand_player = HandPlayer.objects.filter(player=player, round=round, session=session).first()
     player_dominoes: list = json.loads(hand_player.dominoes)
-    print(f'avant le choix : liste des dominos : {str(player_dominoes)}')
-
 
     # Dominos sur la table
     table_de_jeu: list = json.loads(round.table)
@@ -117,19 +113,11 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 domino = random.choice(playable_dominoes)
                 side = random.choice(sides)
                 is_playable = domino_playable(domino, table_de_jeu, side, domino_list)
-        playable_values = is_playable
+        # Détermine dans quelle orientation le domino sera joué
+        orientation = is_playable
 
-
+    # Si c son dernier domino
     is_last_domino = True if len(player_dominoes) == 1 else False
-
-    # Détermine dans quelle orientation le domino sera joué
-    orientation = "normal"
-    if domino.left != domino.right:
-        if (side == "left" and domino.left == playable_values["left"]) or (
-                side == "right" and domino.right == playable_values["right"]):
-            orientation = "inverse"
-    else:
-        orientation = "double"
 
     domino_value = dict(id=domino.id, orientation=orientation)
 

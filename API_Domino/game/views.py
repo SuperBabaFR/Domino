@@ -139,16 +139,16 @@ class PlaceDomino(APIView):
             return Response(dict(code=400, message="Le joueur doit jouer son plus gros domino", data=None),
                             status=status.HTTP_400_BAD_REQUEST)
 
-        playable_values = domino_playable(domino, table_de_jeu, side, domino_list)
+        orientation = domino_playable(domino, table_de_jeu, side, domino_list)
         # Si ce n'est pas le premier domino à poser, on vérifie qu'il est bien jouable
-        if len(table_de_jeu) > 0 and playable_values == False:
+        if len(table_de_jeu) > 0 and orientation == False:
             return Response(dict(code=400, message="Domino non jouable", data=None),
                             status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
 
         # Révoque la tâche programmée au plus vite
         revoke_auto_play_task(round)
 
-        data_return = play_domino(player, session, round, domino_list, side, playable_values, domino)
+        data_return = play_domino(player=player, session=session, round=round, domino_list=domino_list, side=side, orientation=orientation, domino=domino)
 
         return Response(data_return, status=status.HTTP_200_OK)
 

@@ -8,20 +8,20 @@ func _ready():
 	pass
 	
 
-func load_texture(texture_id: int = 0, orientation_texture: String = "double"):
+func load_texture(texture_id: int = 0, orientation_texture: String = "double", table = false):
 	self.id = texture_id
 	self.orientation = orientation_texture
 	
 	var my_texture = load("res://Assets/images/Dominos/d" + str(id) + ".svg")
 	var image = my_texture.get_image()
-	custom_minimum_size = Vector2(45, 23)
+	custom_minimum_size = Vector2(80, 41) if table else Vector2(45, 23)
 	
 	match orientation:
 		"normal":
 			pass
 		"double":
 			image.rotate_90(CLOCKWISE)
-			custom_minimum_size = Vector2(23, 45)
+			custom_minimum_size = Vector2(41, 80) if table else Vector2(23, 45)
 		"inverse":
 			image.flip_x()
 	

@@ -64,7 +64,7 @@ func send_msg(message):
 		"action": "chat_message",
 		"data": {
 			"channel": channel,
-			"message": message
+			"message": message.replace('\'', '')
 		}
 	}
 	

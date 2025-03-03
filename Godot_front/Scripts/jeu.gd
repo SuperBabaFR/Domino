@@ -87,12 +87,10 @@ func someone_pass(data: Dictionary):
 		new_turn(data.pseudo)
 
 func new_turn(old_player):
-	if old_player != Global.get_info("player", "pseudo"):
-		players_profiles.get_node(old_player).force_end_reflexion_time()
-	else:
+	if old_player == Global.get_info("player", "pseudo"):
 		my_profil.force_end_reflexion_time()
-	
-	if not Global.game_data.player_turn:
+	else:
+		players_profiles.get_node(old_player).force_end_reflexion_time()
 		var profil = players_profiles.get_node(Global.game_data.player_turn)
 		profil.activate_time_reflexion(Global.game_data.player_time_end)
 
@@ -169,7 +167,7 @@ func load_table(dominoes_table):
 		if typeof(domino) == TYPE_STRING:
 			domino = str_to_var(domino)
 		var my_domino = domino_hand.instantiate()
-		my_domino.load_texture(domino.id, domino.orientation)
+		my_domino.load_texture(domino.id, domino.orientation, true)
 		table.add_child(my_domino)
 		my_domino.name = str(domino.id)
 

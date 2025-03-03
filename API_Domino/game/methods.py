@@ -63,9 +63,15 @@ def verify_objets(objets):
 
 
 def domino_playable(domino, table_de_jeu, side, domino_list):
+    print(f"\n--- DEBUG: Vérification du domino {domino} sur la table ---")
+    print(f"Table actuelle: {table_de_jeu}")
+    print(f"Position demandée: {side}")
+
     # Si y'a aucun domino
     if len(table_de_jeu) == 0:
-        return "double" if domino.right == domino.left else "normal"
+        result = "double" if domino.right == domino.left else "normal"
+        print(f"Table vide -> Résultat: {result}")
+        return result
 
     # si y'a qu'un domino
     if len(table_de_jeu) == 1:
@@ -82,6 +88,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
             domino_one.right if orientation == "normal"
             else domino_one.left
         )
+        print(f"Un seul domino présent ({domino_one}), orientation: {orientation}, valeur à {side}: {value}")
     # Plus d'un
     elif len(table_de_jeu) > 1:
         # Charge les dominos avant
@@ -103,15 +110,23 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
             else domino_right.left
         )
 
+        print(f"Plusieurs dominos présents - Gauche: {domino_left}, Droite: {domino_right}")
+        print(f"Orientation gauche: {orientation_left}, droite: {orientation_right}, valeur à {side}: {value}")
+
     # Domino bien jouable là ou il est placé et dans quel sens
     if domino.left == domino.right and value == domino.right:
+        print(f"Domino double détecté -> Résultat: double")
         return "double"
 
     if side == "left":
-        return "normal" if value == domino.right else "inverse" if value == domino.left else False
+        result = "normal" if value == domino.right else "inverse" if value == domino.left else False
     elif side == "right":
-        return "normal" if value == domino.left else "inverse" if value == domino.right else False
-    return False
+        result = "normal" if value == domino.left else "inverse" if value == domino.right else False
+    else:
+        result = False
+
+    print(f"Résultat final: {result}")
+    return result
 
 
 def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet=False):

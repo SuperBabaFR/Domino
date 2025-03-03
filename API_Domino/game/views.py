@@ -140,6 +140,9 @@ class PlaceDomino(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         orientation = domino_playable(domino, table_de_jeu, side, domino_list)
+
+        print(f'func PlaceDomino(): player : {player.pseudo}, session : {session.id}, Round : {round.id}, side : {side}, orientation : {orientation}, domino : {domino.id}[{domino.left}/{domino.right}]')
+
         # Si ce n'est pas le premier domino à poser, on vérifie qu'il est bien jouable
         if len(table_de_jeu) > 0 and orientation == False:
             return Response(dict(code=400, message="Domino non jouable", data=None),

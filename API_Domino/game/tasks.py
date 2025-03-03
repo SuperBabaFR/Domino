@@ -108,6 +108,7 @@ def play_domino(player, session, round, domino_list, side=None, orientation=None
         is_playable = False
         if len(table_de_jeu) == 0:
             domino = domino_list[max(player_dominoes) - 1]
+            orientation = "double" if domino.left == domino.right else "normal"
         elif len(table_de_jeu) >= 1:
             sides = ["left", "right"]
             playable_dominoes = get_all_playable_dominoes(domino_list, player_dominoes, table_de_jeu, True)
@@ -115,8 +116,8 @@ def play_domino(player, session, round, domino_list, side=None, orientation=None
                 domino = random.choice(playable_dominoes)
                 side = random.choice(sides)
                 is_playable = domino_playable(domino, table_de_jeu, side, domino_list)
-        # Détermine dans quelle orientation le domino sera joué
-        orientation = is_playable
+            # Détermine dans quelle orientation le domino sera joué
+            orientation = is_playable
 
     # Si c son dernier domino
     is_last_domino = True if len(player_dominoes) == 1 else False

@@ -65,7 +65,7 @@ def verify_objets(objets):
 def domino_playable(domino, table_de_jeu, side, domino_list):
     # Si y'a aucun domino
     if len(table_de_jeu) == 0:
-        return "normal"
+        return "double" if domino.right == domino.left else "normal"
 
     # si y'a qu'un domino
     if len(table_de_jeu) == 1:

@@ -16,7 +16,6 @@ var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
 func _ready():
 	panel = preload("res://theme/panel/profil_game.tres")
 	player_time_end.timeout.connect(reflexion_time_end)
-	show_dominos_count(7)
 
 
 func _process(_delta):
@@ -32,7 +31,7 @@ func update_statut(statut):
 		return
 	
 	var color = Color.GREEN
-		
+	
 	if statut.contains("afk"):
 		color = Color.ORANGE		
 	elif statut.contains("offline"):
@@ -59,14 +58,12 @@ func activate_time_reflexion(time_end: String):
 	# Convertit les dictionnaires en timestamps (secondes depuis 1970)
 	var my_timestamp = Time.get_unix_time_from_datetime_dict(my_time)
 	var reflexion_end_timestamp = Time.get_unix_time_from_datetime_dict(reflexion_end_time)
-
 	
 	# Calcul de la différence en secondes
 	var remaining_time = reflexion_end_timestamp - my_timestamp
 
 	# Assurer que la durée est positive
 	remaining_time = max(remaining_time, 1)
-	
 	
 	reflexion_container.modulate = Color.WHITE
 	reflexion_time.max_value = remaining_time

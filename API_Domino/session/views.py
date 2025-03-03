@@ -275,7 +275,7 @@ class SessionListView(APIView):
         for session in sessions:
             code = session.code if session.is_public else "(HIDE)"
             player_count = len(json.loads(session.order))
-            info = dict(session_name=session.name, code=code, player_count=player_count,
+            info = dict(session_name=session.name, code=code, player_count=player_count, session_hote=session.hote.pseudo,
                         max_players_count=session.max_players_count, statut=session.statut.name,
                         is_public=session.is_public)
             sessions_info.append(info)

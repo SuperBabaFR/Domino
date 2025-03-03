@@ -121,6 +121,9 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
 
     is_last_domino = True if len(player_dominoes) == 1 else False
 
+    if side == None:
+        side = "left"
+
     # Détermine dans quelle orientation le domino sera joué
     orientation = "normal"
     if domino.left != domino.right:

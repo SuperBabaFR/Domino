@@ -1,6 +1,6 @@
 from rest_framework.utils import json
 from rest_framework.views import APIView
-from authentification.models import Game, Session
+from authentification.models import Game, Session, HandPlayer, Round, Infosession
 from authentification.views import IsAuthenticatedWithJWT
 from game.methods import *
 from game.serializers import DominoSerializer

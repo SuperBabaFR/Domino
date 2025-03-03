@@ -9,7 +9,7 @@ var session_infos: Dictionary
 # Liste des infos des joueurs dans la session
 var player_list_data = []
 
-var game_data = {"table" : []}
+var game_data = {'table' : "[]"}
 
 func get_info(objet: String, key: String, default_value = null):
 	if objet == "session":
@@ -94,14 +94,23 @@ func get_all_players_infos():
 func clear_session_data():
 	session_infos.clear()
 	player_list_data.clear()
-	game_data = {"table" : []}
+	game_data = {'table' : "[]"}
 
 func set_game_data(data: Dictionary):
 	game_data.merge(data)
 
-func update_game_data(data: Dictionary):
+func update_player_turn(data: Dictionary):
 	game_data.player_turn = data.player_turn
 	game_data.player_time_end = data.player_time_end
+
+func update_player_game_data(data: Dictionary):
+	game_data.dominoes = data.dominoes
+	game_data.table = data.table
+	update_player_turn(data)
+
+func its_my_turn():
+	return Global.game_data.player_turn == Global.get_info("player", "pseudo")
+
 
 func update_scores(data: Dictionary):
 	var winner = data.results.winner

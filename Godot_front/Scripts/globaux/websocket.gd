@@ -83,6 +83,8 @@ func _process(_delta):
 				else:
 					print("data : ", data)
 				emit_signal(action, data)
+			else:
+				print("comment ça ça n'existe pas : ", action)
 			
 			
 	elif state == WebSocketPeer.STATE_CLOSING:

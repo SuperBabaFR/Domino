@@ -42,10 +42,11 @@ func update_statut(statut):
 
 func show_dominos_count(count: int):
 	
-	var domino_count = dominoes.get_child_count()
-	var count_to_add = count - domino_count
+	var children = dominoes.get_children()
+	for child in children:
+		child.free()
 	
-	for i in range(0, count_to_add):
+	for i in range(0, count):
 		var domino = domino_hand.instantiate()
 		domino.load_texture()
 		dominoes.add_child(domino)
@@ -63,7 +64,7 @@ func activate_time_reflexion(time_end: String):
 	var remaining_time = reflexion_end_timestamp - my_timestamp
 
 	# Assurer que la durée est positive
-	remaining_time = max(remaining_time, 0)
+	remaining_time = max(remaining_time, 1)
 	
 	
 	reflexion_container.modulate = Color.WHITE

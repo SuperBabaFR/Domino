@@ -97,6 +97,8 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
     # Dominos du joueurs
     hand_player = HandPlayer.objects.filter(player=player, round=round, session=session).first()
     player_dominoes: list = json.loads(hand_player.dominoes)
+    print(f'avant le choix : liste des dominos : {str(player_dominoes)}')
+
 
     # Dominos sur la table
     table_de_jeu: list = json.loads(round.table)
@@ -136,6 +138,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
     round.table = json.dumps(table_de_jeu)
 
     # Soustrait le domino joué de sa main
+    print(f'domino a jouer : {str(domino.id)}, liste des dominos : {str(player_dominoes)}')
     player_dominoes.remove(domino.id)
     hand_player.dominoes = json.dumps(player_dominoes)
     hand_player.save()

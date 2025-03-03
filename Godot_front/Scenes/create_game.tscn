@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://dei1ltav0d68e"]
+[gd_scene load_steps=7 format=3 uid="uid://dei1ltav0d68e"]
 
 [ext_resource type="Script" path="res://Scripts/create_game.gd" id="1_x4x2d"]
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_jwlg5"]
+[ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_o5l2d"]
 [ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://theme/label_settings.tres" id="3_wcfaj"]
+[ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="4_mbqy4"]
+[ext_resource type="Theme" uid="uid://7rcqq16denry" path="res://theme/menu.tres" id="4_otdm2"]
+[ext_resource type="Texture2D" uid="uid://cb17at4x15let" path="res://Assets/icons/light-icon-back.png" id="4_xdxse"]
 
 [node name="CreateGame" type="Control" node_paths=PackedStringArray("slider_reflexion_time", "slider_nb_max_player", "btn_creer", "lab_nb_max_player_value", "lab_reflexion_time_value", "ragequit_penality", "is_public_game", "session_name")]
 layout_mode = 3
@@ -12,79 +15,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_x4x2d")
-slider_reflexion_time = NodePath("slider_reflexion_time")
-slider_nb_max_player = NodePath("slider_nb_max_players")
+slider_reflexion_time = NodePath("all/reflexion_time/slider_reflexion_time")
+slider_nb_max_player = NodePath("all/nb joueurs/slider_nb_max_players")
 btn_creer = NodePath("btn_creer")
-lab_nb_max_player_value = NodePath("lab_nb_max_players_value")
-lab_reflexion_time_value = NodePath("lab_reflexion_time_value")
-ragequit_penality = NodePath("ragequit_penality")
-is_public_game = NodePath("is_public")
-session_name = NodePath("session_name")
+lab_nb_max_player_value = NodePath("all/nb joueurs/lab_nb_max_players_value")
+lab_reflexion_time_value = NodePath("all/reflexion_time/lab_reflexion_time_value")
+ragequit_penality = NodePath("all/penality/ragequit_penality")
+is_public_game = NodePath("all/public/is_public")
+session_name = NodePath("all/name/session_name")
 metadata/_edit_lock_ = true
 
-[node name="Background" parent="." instance=ExtResource("2_jwlg5")]
+[node name="Background Game" parent="." instance=ExtResource("2_o5l2d")]
 layout_mode = 1
-
-[node name="lab_nb_max_players" type="Label" parent="."]
-layout_mode = 0
-offset_left = 494.0
-offset_top = 206.0
-offset_right = 727.0
-offset_bottom = 229.0
-text = "Nombre maximum de joueurs"
-label_settings = ExtResource("3_wcfaj")
-
-[node name="slider_nb_max_players" type="HSlider" parent="."]
-layout_mode = 0
-offset_left = 490.0
-offset_top = 242.0
-offset_right = 729.0
-offset_bottom = 258.0
-min_value = 2.0
-max_value = 4.0
-value = 2.0
-allow_greater = true
-allow_lesser = true
-tick_count = 3
-
-[node name="lab_nb_max_players_value" type="Label" parent="."]
-layout_mode = 0
-offset_left = 745.0
-offset_top = 238.0
-offset_right = 828.0
-offset_bottom = 261.0
-text = "2 joueurs"
-label_settings = ExtResource("3_wcfaj")
-
-[node name="lab_reflexion_time" type="Label" parent="."]
-layout_mode = 0
-offset_left = 494.0
-offset_top = 300.0
-offset_right = 727.0
-offset_bottom = 323.0
-text = "Temps de réflexion"
-label_settings = ExtResource("3_wcfaj")
-
-[node name="slider_reflexion_time" type="HSlider" parent="."]
-layout_mode = 0
-offset_left = 490.0
-offset_top = 336.0
-offset_right = 729.0
-offset_bottom = 352.0
-min_value = 20.0
-value = 20.0
-rounded = true
-allow_greater = true
-allow_lesser = true
-
-[node name="lab_reflexion_time_value" type="Label" parent="."]
-layout_mode = 0
-offset_left = 745.0
-offset_top = 333.0
-offset_right = 840.0
-offset_bottom = 356.0
-text = "20 secondes"
-label_settings = ExtResource("3_wcfaj")
+metadata/_edit_lock_ = true
 
 [node name="btn_creer" type="Button" parent="."]
 layout_mode = 0
@@ -97,66 +40,147 @@ text = "Créer la session"
 
 [node name="btn_back" type="Button" parent="."]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 17.0
-offset_right = 117.0
-offset_bottom = 65.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 86.0
+offset_bottom = 83.0
 scale = Vector2(0.967202, 0.994004)
-text = "Retour"
+icon = ExtResource("4_xdxse")
+flat = true
+icon_alignment = 1
+expand_icon = true
 
-[node name="ragequit_penality" type="CheckButton" parent="."]
-layout_mode = 0
-offset_left = 665.0
-offset_top = 405.0
-offset_right = 709.0
-offset_bottom = 429.0
-scale = Vector2(1.5, 1.5)
+[node name="GameTitle" parent="." instance=ExtResource("4_mbqy4")]
+layout_mode = 2
+offset_left = 380.0
+offset_top = 18.0
+offset_right = 898.0
+offset_bottom = 118.0
 
-[node name="lab_ragequit" type="Label" parent="."]
-layout_mode = 0
-offset_left = 492.0
-offset_top = 409.0
-offset_right = 648.0
-offset_bottom = 432.0
-text = "Pénalité de ragequit"
+[node name="all" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -302.0
+offset_top = 186.0
+offset_right = 330.0
+offset_bottom = -154.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+vertical = true
+
+[node name="name" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/separation = 100
+
+[node name="lab_session_name" type="Label" parent="all/name"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "Nom de la session"
 label_settings = ExtResource("3_wcfaj")
 
-[node name="is_public" type="CheckButton" parent="."]
-layout_mode = 0
-offset_left = 665.0
-offset_top = 464.0
-offset_right = 709.0
-offset_bottom = 488.0
-scale = Vector2(1.5, 1.5)
+[node name="session_name" type="LineEdit" parent="all/name"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+placeholder_text = "nom de session"
+alignment = 1
 
-[node name="lab_public" type="Label" parent="."]
-layout_mode = 0
-offset_left = 492.0
-offset_top = 468.0
-offset_right = 648.0
-offset_bottom = 491.0
+[node name="nb joueurs" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/separation = 10
+
+[node name="lab_nb_max_players" type="Label" parent="all/nb joueurs"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "Nombre maximum de joueurs"
+label_settings = ExtResource("3_wcfaj")
+
+[node name="slider_nb_max_players" type="HSlider" parent="all/nb joueurs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_otdm2")
+min_value = 2.0
+max_value = 4.0
+value = 2.0
+allow_greater = true
+allow_lesser = true
+tick_count = 3
+
+[node name="lab_nb_max_players_value" type="Label" parent="all/nb joueurs"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "2 joueurs"
+label_settings = ExtResource("3_wcfaj")
+
+[node name="reflexion_time" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/separation = 10
+
+[node name="lab_reflexion_time" type="Label" parent="all/reflexion_time"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "Temps de réflexion"
+label_settings = ExtResource("3_wcfaj")
+
+[node name="slider_reflexion_time" type="HSlider" parent="all/reflexion_time"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_otdm2")
+min_value = 20.0
+value = 20.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+
+[node name="lab_reflexion_time_value" type="Label" parent="all/reflexion_time"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "20 secondes"
+label_settings = ExtResource("3_wcfaj")
+
+[node name="public" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/separation = 10
+
+[node name="lab_public" type="Label" parent="all/public"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
 text = "Partie publique
 "
 label_settings = ExtResource("3_wcfaj")
 
-[node name="lab_session_name" type="Label" parent="."]
-layout_mode = 0
-offset_left = 493.0
-offset_top = 95.0
-offset_right = 634.0
-offset_bottom = 118.0
-text = "Nom de la session"
+[node name="is_public" type="CheckButton" parent="all/public"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+
+[node name="penality" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/separation = 10
+
+[node name="lab_ragequit" type="Label" parent="all/penality"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
+text = "Pénalité de ragequit"
 label_settings = ExtResource("3_wcfaj")
 
-[node name="session_name" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = 492.0
-offset_top = 131.0
-offset_right = 725.0
-offset_bottom = 162.0
-placeholder_text = "nom de session"
+[node name="ragequit_penality" type="CheckButton" parent="all/penality"]
+layout_mode = 2
+theme = ExtResource("4_otdm2")
 
-[connection signal="value_changed" from="slider_nb_max_players" to="." method="_on_slider_nb_max_players_value_changed"]
-[connection signal="value_changed" from="slider_reflexion_time" to="." method="_on_slider_reflexion_time_value_changed"]
+[node name="btns" type="BoxContainer" parent="all"]
+layout_mode = 2
+size_flags_horizontal = 4
+
 [connection signal="pressed" from="btn_creer" to="." method="_on_btn_creer_pressed"]
 [connection signal="pressed" from="btn_back" to="." method="_on_btn_back_pressed"]
+[connection signal="value_changed" from="all/nb joueurs/slider_nb_max_players" to="." method="_on_slider_nb_max_players_value_changed"]
+[connection signal="value_changed" from="all/reflexion_time/slider_reflexion_time" to="." method="_on_slider_reflexion_time_value_changed"]

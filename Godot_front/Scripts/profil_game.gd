@@ -79,4 +79,8 @@ func hide_pseudo(value):
 func reflexion_time_end():
 	reflexion_container.modulate = Color.TRANSPARENT
 	set_process(false)
-	
+
+func force_end_reflexion_time():
+	reflexion_container.modulate = Color.TRANSPARENT
+	player_time_end.stop()
+	set_process(false)

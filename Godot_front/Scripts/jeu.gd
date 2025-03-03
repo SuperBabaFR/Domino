@@ -52,7 +52,7 @@ func someone_play(data: Dictionary):
 	if data.pseudo == Global.get_info("player", "pseudo"):
 		return
 	
-	new_turn()
+	new_turn(data.pseudo)
 	
 	var player_played = Global.get_player_info(data.pseudo)
 	player_played.domino_count -= 1
@@ -84,9 +84,12 @@ func add_on_table(domino, orientation: String, side: String):
 func someone_pass(data: Dictionary):
 	Global.update_player_turn(data)
 	if data.player_turn != Global.get_info("player", "pseudo"):
-		new_turn()
+		new_turn(data.pseudo)
 
-func new_turn():
+func new_turn(old_player):
+	
+	players_profiles.get_node(old_player).force_end_reflexion_time()
+	
 	if not Global.game_data.player_turn:
 		var profil = players_profiles.get_node(Global.game_data.player_turn)
 		profil.activate_time_reflexion(Global.game_data.player_time_end)
@@ -228,7 +231,7 @@ func refresh_after_play(data: Dictionary):
 	Global.update_player_game_data(data)
 	load_my_dominoes(data.dominoes)
 	load_table(data.table)
-	new_turn()
+	new_turn(Global.get_info("player", "pseudo"))
 	pass
 
 

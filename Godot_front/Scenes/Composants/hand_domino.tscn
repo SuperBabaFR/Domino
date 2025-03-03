@@ -3,7 +3,8 @@
 [ext_resource type="Script" path="res://hand_domino.gd" id="2_uaa8e"]
 
 [node name="HandDomino" type="TextureRect"]
-size_flags_horizontal = 0
-expand_mode = 3
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
 stretch_mode = 5
 script = ExtResource("2_uaa8e")

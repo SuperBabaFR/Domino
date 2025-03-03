@@ -8,7 +8,8 @@ from celery.worker.control import revoke
 from channels.layers import get_channel_layer
 
 from authentification.models import Player, HandPlayer, Infosession, Round, Session, Domino, Statut
-from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket
+from game.methods import get_all_playable_dominoes, domino_playable, update_player_turn, notify_websocket, \
+    notify_websocket_statut
 
 
 def notify_player_for_his_turn(round, session, player_time_end, domino_list=None):
@@ -191,9 +192,8 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 info.player.pigs += 1
                 info.save()
                 info.player.save()
-                notify_websocket.apply_async(
-                    args=(
-                    "player", info.player.id, dict(statut=dict(id=not_ready_statut.id, name=not_ready_statut.name)), "statut_player"))
+                notify_websocket_statut.apply_async(
+                    args=(info.player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name)))
             data_end_game = dict(action="session.end_game",
                                  data=dict(results=dict(winner=player.pseudo, pigs=pigs)))
 
@@ -230,8 +230,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         info_player.save()
         player.save()
 
-        notify_websocket.apply_async(
-            args=("player", player.id, dict(statut=dict(id=not_ready_statut.id, name=not_ready_statut.name)), "statut_player"))
+        notify_websocket_statut.apply_async(args=(player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name)))
 
         # données pour la requete http
         data_return["message"] = "Tu as gagne"
@@ -267,7 +266,7 @@ def new_round(session, first=False):
         dominoes = []
         player_x = Player.objects.filter(id=player_id).first()
 
-        notify_websocket.apply_async(args=("player", player_x.id, dict(statut=dict(id=actif_statut.id, name=actif_statut.name)), "statut_player"))
+        notify_websocket_statut.apply_async(args=(player_x.id, dict(id=actif_statut.id, name=actif_statut.name)))
 
         # Choisis 7 Dominos dans la liste
         for i in range(0, 7):

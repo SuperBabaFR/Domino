@@ -23,6 +23,18 @@ def notify_websocket(cible, id, data, type="send_session_updates"):
         }
     )
 
+@shared_task
+def notify_websocket_statut(id, data):
+
+    channel_layer = get_channel_layer()  # Récupérer le Channel Layer de Django Channels
+    async_to_sync(channel_layer.group_send)(
+        f"player_{id}",  # Nom du groupe WebSocket
+        {
+            "type": "statut_player",
+            "statut": data
+        }
+    )
+
 
 def verify_values(data, keys):
     for key in keys:

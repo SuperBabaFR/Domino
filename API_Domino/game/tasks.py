@@ -151,6 +151,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                             data=dict(
                                 pseudo=player.pseudo,
                                 domino=domino.id,
+                                orientation=orientation,
                                 side=side,
                                 player_turn=round.player_turn.pseudo,
                                 player_time_end=player_time_end
@@ -213,6 +214,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                                 pseudo=player.pseudo,
                                 domino=domino.id,
                                 side=side,
+                                orientation=orientation,
                                 type_finish=type_finish,
                                 winstreak=have_winstreak
                             )
@@ -239,6 +241,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         data_return["message"] = "Tu as gagne"
         data_return["data"] = dict(domino=domino.id,
                                    side=side,
+                                   orientation=orientation,
                                    type_finish=type_finish)
     return data_return
 

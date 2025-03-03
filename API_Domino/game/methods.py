@@ -67,6 +67,8 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
     print(f"Table actuelle: {table_de_jeu}")
     print(f"Position demandée: {side}")
 
+    domino_dict = {d.id: d for d in domino_list}
+
     # Si y'a aucun domino
     if len(table_de_jeu) == 0:
         result = "double" if domino.right == domino.left else "normal"
@@ -78,7 +80,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
         if not domino_list:
             domino_one = Domino.objects.get(id=table_de_jeu[0]["id"])
         else:
-            domino_one = domino_list[table_de_jeu[0]["id"] - 1]
+            domino_one = domino_dict[table_de_jeu[0]["id"]]
 
         orientation = table_de_jeu[0]["orientation"]
         value = (
@@ -96,8 +98,8 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
             domino_left = Domino.objects.get(id=table_de_jeu[0]["id"])  # Domino tout à gauche
             domino_right = Domino.objects.get(id=table_de_jeu[-1]["id"]) # Domino tout à droite
         else:
-            domino_left = domino_list[table_de_jeu[0]["id"] - 1]  # Domino tout à gauche
-            domino_right = domino_list[table_de_jeu[-1]["id"] - 1] # Domino tout à droite
+            domino_left = domino_dict[table_de_jeu[0]["id"]]  # Domino tout à gauche
+            domino_right = domino_dict[table_de_jeu[-1]["id"]] # Domino tout à droite
 
         orientation_left = table_de_jeu[0]["orientation"]  # Domino tout à gauche
         orientation_right = table_de_jeu[-1]["orientation"] # Domino tout à droite
@@ -118,6 +120,7 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
         print(f"Domino double détecté -> Résultat: double")
         return "double"
 
+    print(f"DEBUG - Vérification de side: {side}")
     if side == "left":
         result = "normal" if value == domino.right else "inverse" if value == domino.left else False
     elif side == "right":
@@ -126,6 +129,9 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
         result = False
 
     print(f"Résultat final: {result}")
+    print(
+        f"DEBUG - Domino testé: [{domino.left}/{domino.right}], côté: {side}, valeur à comparer: {value}, résultat: {result}")
+
     return result
 
 

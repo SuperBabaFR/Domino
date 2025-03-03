@@ -87,8 +87,10 @@ func someone_pass(data: Dictionary):
 		new_turn(data.pseudo)
 
 func new_turn(old_player):
-	
-	players_profiles.get_node(old_player).force_end_reflexion_time()
+	if old_player != Global.get_info("player", "pseudo"):
+		players_profiles.get_node(old_player).force_end_reflexion_time()
+	else:
+		my_profil.force_end_reflexion_time()
 	
 	if not Global.game_data.player_turn:
 		var profil = players_profiles.get_node(Global.game_data.player_turn)

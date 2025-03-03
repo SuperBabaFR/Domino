@@ -16,6 +16,7 @@ var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
 func _ready():
 	panel = preload("res://theme/panel/profil_game.tres")
 	player_time_end.timeout.connect(reflexion_time_end)
+	show_dominos_count(7)
 
 
 func _process(_delta):

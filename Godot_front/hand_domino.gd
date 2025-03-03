@@ -14,14 +14,14 @@ func load_texture(texture_id: int = 0, orientation_texture: String = "double"):
 	
 	var my_texture = load("res://Assets/images/Dominos/d" + str(id) + ".svg")
 	var image = my_texture.get_image()
-	#custom_minimum_size = Vector2(84, 40)
+	custom_minimum_size = Vector2(45, 0)
 	
 	match orientation:
 		"left":
 			pass
 		"double":
 			image.rotate_90(CLOCKWISE)
-			#custom_minimum_size = Vector2(40, 84)
+			custom_minimum_size = Vector2(0, 45)
 		"right":
 			image.flip_x()
 	

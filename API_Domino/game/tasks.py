@@ -44,7 +44,10 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
                                 )
         notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
         # Ajouter la tâche avec un ETA
-        result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+        if len(playable_dominoes) == 1:
+            result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+        else:
+            result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id, playable_dominoes[0]), eta=dt_utc)
         round.auto_play_task_id = result.id
         round.save()
 

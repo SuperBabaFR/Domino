@@ -90,6 +90,8 @@ def auto_play_domino_task(player_id, session_id, round_id, domino_id=None):
 
 
 def play_domino(player, session, round, domino_list, side=None, orientation=None, domino=None):
+    print(f'func play_domino(): session : {player.pseudo}, session : {session.id}, Round : {round.id}, side : {side}, orientation : {orientation}, domino : {domino}')
+
     if not round.player_turn == player:
         return
 

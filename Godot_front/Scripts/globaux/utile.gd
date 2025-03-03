@@ -11,7 +11,7 @@ func load_profil_picture(base64_str):
 	var image = Image.new()
 	
 	if base64_str == null:
-		image = Image.load_from_file("res://Assets/images/default_profil.jpg")
+		image = Image.load_from_file("res://Assets/images/default_profil.png")
 		print("Image par défaut")
 		return ImageTexture.create_from_image(image)
 		

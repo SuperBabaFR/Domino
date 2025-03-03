@@ -13,7 +13,6 @@ config_version=5
 config/name="Domino_2D"
 run/main_scene="res://Scenes/principal.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-boot_splash/bg_color=Color(0.301961, 0.431373, 0.576471, 1)
 config/icon="res://Assets/images/icon.svg"
 
 [autoload]
@@ -28,7 +27,3 @@ Websocket="*res://Scripts/globaux/websocket.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-
-[rendering]
-
-environment/defaults/default_clear_color=Color(1, 1, 1, 1)

@@ -19,7 +19,6 @@ func _ready() -> void:
 	icon_not_ready = preload("res://Assets/icons/light_not_ready_icon.png")
 	icon_ready = preload("res://Assets/icons/light_ready_icon.png")
 	icon_hote = preload("res://Assets/icons/light_crown_icon.svg")
-	visible = false
 
 func load_player_profile(pseudo, image):
 	lab_pseudo.text = pseudo
@@ -35,23 +34,18 @@ func update_statut(statut):
 		lab_statut.visible = false
 		return
 	
-	var color = Color.GREEN
 	var statut_text = "Prêt"
 		
 	if statut.contains("not"):
-		color = Color.RED
 		statut_text = "Pas prêt"
 	elif statut.contains("afk"):
-		color = Color.ORANGE		
 		statut_text = "AFK"
 	elif statut.contains("offline"):
-		color = Color.BLACK
 		statut_text = "Hors ligne"
 
 	icon_statut.texture = icon_ready if statut.contains("is_ready") else icon_not_ready
 	
 	lab_statut.text = statut_text
-	lab_statut.add_theme_color_override("font_color", color)
 	$image_pseudo/name/statut_container.visible = true
 
 func set_scores(wins, pigs):

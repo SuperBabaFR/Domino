@@ -8,21 +8,21 @@ extends VBoxContainer
 @export var reflexion_container: BoxContainer
 var panel: StyleBoxFlat
 
-@export var domino_count: BoxContainer
+@export var pseudo_container: VBoxContainer
+
+@export var dominoes: BoxContainer
 var domino_hand = preload("res://Scenes/Composants/hand_domino.tscn")
 
 func _ready():
 	panel = preload("res://theme/panel/profil_game.tres")
-	#show_dominos_count(7)
-	#update_statut("actif")
 	player_time_end.timeout.connect(reflexion_time_end)
 
 
-func _process(delta):
+func _process(_delta):
 	reflexion_time.value = player_time_end.time_left
 
 func load_player_profile(pseudo, image):
-	lab_pseudo.text = pseudo
+	lab_pseudo.text = "VOUS" if pseudo == Global.get_info("player", "pseudo") else pseudo
 	texture_image.texture = image
 	texture_image.queue_redraw()
 
@@ -32,21 +32,23 @@ func update_statut(statut):
 	
 	var color = Color.GREEN
 		
-	if statut.contains("not"):
-		color = Color.RED
-	elif statut.contains("afk"):
+	if statut.contains("afk"):
 		color = Color.ORANGE		
 	elif statut.contains("offline"):
-		color = Color.BLACK
+		color = Color.RED
 
 	panel.border_color = color
 	border_color.add_theme_stylebox_override("panel", panel)
 
 func show_dominos_count(count: int):
-	for i in range(1, count+1):
+	
+	var domino_count = dominoes.get_child_count()
+	var count_to_add = count - domino_count
+	
+	for i in range(0, count_to_add):
 		var domino = domino_hand.instantiate()
 		domino.load_texture()
-		domino_count.add_child(domino)
+		dominoes.add_child(domino)
 
 func activate_time_reflexion(time_end: String):
 	var my_time = Time.get_datetime_dict_from_system(true)
@@ -70,6 +72,8 @@ func activate_time_reflexion(time_end: String):
 	set_process(true)
 	player_time_end.start()
 
+func hide_pseudo(value):
+	pseudo_container.visible = value
 
 func reflexion_time_end():
 	reflexion_container.modulate = Color.TRANSPARENT

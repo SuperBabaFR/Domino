@@ -75,10 +75,13 @@ func _process(_delta):
 			
 			action = action.replace(".", "_")
 			
-			print("msg reçu : action = ", action)
+			print("action = ", action)
 			
 			if self.has_signal(action):
-				print("data : ", data)
+				if data.has("image"):
+					print("data : y'a une image c trop long")
+				else:
+					print("data : ", data)
 				emit_signal(action, data)
 			
 			

@@ -6,29 +6,42 @@
 [ext_resource type="Texture2D" uid="uid://bb2y8vcd36t20" path="res://Assets/icons/light_time_icon.png" id="5_w5711"]
 [ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_cidoe"]
 
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color", "reflexion_time", "player_time_end", "reflexion_container", "domino_count")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color", "reflexion_time", "player_time_end", "reflexion_container", "pseudo_container", "dominoes")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_hhlm6")
-lab_pseudo = NodePath("Container/name/pseudo")
-texture_image = NodePath("Container/PanelContainer/image_mask/image")
-border_color = NodePath("Container/PanelContainer")
-reflexion_time = NodePath("Container/reflexion/reflexion_time")
+lab_pseudo = NodePath("all_items/name/pseudo")
+texture_image = NodePath("all_items/PanelContainer/image_mask/image")
+border_color = NodePath("all_items/PanelContainer")
+reflexion_time = NodePath("all_items/reflexion/reflexion_time")
 player_time_end = NodePath("player_time_end")
-reflexion_container = NodePath("Container/reflexion")
-domino_count = NodePath("domino_count")
+reflexion_container = NodePath("all_items/reflexion")
+pseudo_container = NodePath("all_items/name")
+dominoes = NodePath("domino_count")
 
-[node name="Container" type="BoxContainer" parent="."]
+[node name="all_items" type="BoxContainer" parent="."]
 layout_mode = 2
 vertical = true
 
-[node name="PanelContainer" type="PanelContainer" parent="Container"]
+[node name="name" type="VBoxContainer" parent="all_items"]
+layout_mode = 2
+alignment = 1
+
+[node name="pseudo" type="Label" parent="all_items/name"]
+layout_mode = 2
+theme = ExtResource("6_cidoe")
+text = "PSeudo"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="PanelContainer" type="PanelContainer" parent="all_items"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource("6_cidoe")
 
-[node name="image_mask" type="TextureRect" parent="Container/PanelContainer"]
+[node name="image_mask" type="TextureRect" parent="all_items/PanelContainer"]
 clip_children = 1
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
@@ -38,7 +51,7 @@ texture = ExtResource("2_xricf")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="image" type="TextureRect" parent="Container/PanelContainer/image_mask"]
+[node name="image" type="TextureRect" parent="all_items/PanelContainer/image_mask"]
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 0
 size_flags_horizontal = 4
@@ -47,28 +60,15 @@ texture = ExtResource("3_j6h8h")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="name" type="VBoxContainer" parent="Container"]
-layout_mode = 2
-alignment = 1
-
-[node name="pseudo" type="Label" parent="Container/name"]
-layout_mode = 2
-theme = ExtResource("6_cidoe")
-text = "PSeudo"
-horizontal_alignment = 1
-vertical_alignment = 1
-uppercase = true
-
-[node name="reflexion" type="BoxContainer" parent="Container"]
-modulate = Color(1, 1, 1, 0)
+[node name="reflexion" type="BoxContainer" parent="all_items"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="progress_icon" type="TextureRect" parent="Container/reflexion"]
+[node name="progress_icon" type="TextureRect" parent="all_items/reflexion"]
 layout_mode = 2
 texture = ExtResource("5_w5711")
 
-[node name="reflexion_time" type="ProgressBar" parent="Container/reflexion"]
+[node name="reflexion_time" type="ProgressBar" parent="all_items/reflexion"]
 custom_minimum_size = Vector2(80, 11)
 layout_mode = 2
 size_flags_horizontal = 4

@@ -9,7 +9,7 @@
 [ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="6_yna68"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2y2gg"]
-bg_color = Color(1, 0.968627, 0.854902, 1)
+bg_color = Color(1, 1, 1, 1)
 expand_margin_top = 100.0
 expand_margin_bottom = 100.0
 

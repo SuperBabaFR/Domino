@@ -1,11 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://b8qutyen6k6l3"]
+[gd_scene load_steps=8 format=3 uid="uid://b8qutyen6k6l3"]
 
 [ext_resource type="Script" path="res://Scripts/jeu.gd" id="1_xs48l"]
+[ext_resource type="PackedScene" uid="uid://c37skj7ivofx5" path="res://Scenes/Composants/hand_domino.tscn" id="2_lx6xb"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="2_sds0s"]
 [ext_resource type="PackedScene" uid="uid://cfjb6pg6lunr2" path="res://Scenes/Composants/profil_game.tscn" id="4_obius"]
+[ext_resource type="Theme" uid="uid://chpey7qmivu2i" path="res://theme/btn_logout.tres" id="5_18ld6"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="6_5njna"]
+[ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="6_217uf"]
 
-[node name="Jeu" type="Control" node_paths=PackedStringArray("btn_leave", "my_profil", "dominoes", "players_profiles")]
+[node name="Jeu" type="Control" node_paths=PackedStringArray("btn_leave", "btn_pass", "my_profil", "players_profiles", "dominoes", "table")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,9 +17,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_xs48l")
 btn_leave = NodePath("btn_quitter")
+btn_pass = NodePath("btn_pass")
 my_profil = NodePath("Me")
-dominoes = NodePath("dominos")
 players_profiles = NodePath("players_profiles")
+dominoes = NodePath("dominos")
+table = NodePath("table")
+domino_hand = ExtResource("2_lx6xb")
+game_profil = ExtResource("4_obius")
 metadata/_edit_lock_ = true
 
 [node name="Background" parent="." instance=ExtResource("6_5njna")]
@@ -25,25 +32,37 @@ metadata/_edit_lock_ = true
 
 [node name="btn_quitter" type="Button" parent="."]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 113.0
-offset_bottom = 62.0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 112.0
+offset_bottom = 100.0
+theme = ExtResource("5_18ld6")
 text = "Quitter"
+icon = ExtResource("6_217uf")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
 [node name="dominos" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 341.0
-offset_top = 536.0
-offset_right = 864.0
-offset_bottom = 709.0
+offset_left = 336.0
+offset_top = 544.0
+offset_right = 971.0
+offset_bottom = 717.0
+
+[node name="table" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 208.0
+offset_right = 1280.0
+offset_bottom = 456.0
 
 [node name="ChatTextuel" parent="." instance=ExtResource("2_sds0s")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -219.0
+offset_top = -192.0
 offset_bottom = 0.0
 grow_vertical = 0
 
@@ -58,7 +77,16 @@ offset_bottom = 688.0
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_left = 120.0
+offset_left = 168.0
 offset_bottom = 120.0
 grow_horizontal = 2
 alignment = 1
+
+[node name="btn_pass" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 256.0
+offset_top = 480.0
+offset_right = 366.0
+offset_bottom = 511.0
+text = "Je suis boudé"

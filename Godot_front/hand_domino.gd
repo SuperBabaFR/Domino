@@ -7,9 +7,9 @@ func _ready():
 	pass
 	
 
-func load_texture(id: int = 0, orientation: String = "double"):
-	self.id = id
-	self.orientation = orientation
+func load_texture(texture_id: int = 0, orientation_texture: String = "double"):
+	self.id = texture_id
+	self.orientation = orientation_texture
 	
 	var my_texture = load("res://Assets/images/Dominos/d" + str(id) + ".svg")
 	var image = my_texture.get_image()

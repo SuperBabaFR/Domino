@@ -45,7 +45,6 @@ func load_players_info():
 	print("hote de la session : ",hote_pseudo)
 	
 	for player in players:
-		print(player.pseudo)
 		add_player_node(player)
 	
 	var node_hote = players_profiles.get_node(hote_pseudo)
@@ -103,9 +102,7 @@ func _on_start_game():
 	var response = await API.makeRequest("start", "", body)
 	
 	if response.response_code == HTTPClient.RESPONSE_CREATED:
-		var data = response.body.data
-		Global.set_game_data(data)
-		Utile.changeScene("jeu")
+		_game_started(response.body.data)
 	else:
 		print("Partie non créée : ", response.body)
 
@@ -130,6 +127,7 @@ func _set_ready_statut():
 func _update_statut(data):
 	if players_profiles.has_node(data.pseudo):
 		var profil_node = players_profiles.get_node(data.pseudo)
+		Global.update_player_statut(data)
 		profil_node.update_statut(data.statut)
 
 func _on_player_leave(data):
@@ -141,6 +139,8 @@ func _on_player_leave(data):
 		get_node("ChatTextuel").load_channels()
 
 func _on_player_join(data : Dictionary):
+	if players_profiles.has_node(data.pseudo):
+		return
 	Global.add_player_info(data)
 	var joueurs_count = Global.get_all_players_infos().size()
 	var max_player_count = Global.get_info("session", "max_players_count")
@@ -150,15 +150,13 @@ func _on_player_join(data : Dictionary):
 	
 
 func add_player_node(data : Dictionary):
-	if players_profiles.has_node(data.pseudo):
-		return
 	var hote_pseudo = Global.get_info("session", "session_hote")
-	var pseudo = data.pseudo
+	var pseudo = "VOUS" if data.pseudo == Global.get_info("player", "pseudo") else data.pseudo
 	var image = Utile.load_profil_picture(data.image)
 	var statut = "player.not_ready"
 	# Crée le node pour le profil
 	var profil_node = profil_scene.instantiate()
-	profil_node.name = pseudo
+	profil_node.name = data.pseudo
 	# L'ajoute à l'écran
 	players_profiles.add_child(profil_node)
 	
@@ -168,11 +166,10 @@ func add_player_node(data : Dictionary):
 		statut = data.statut if data.statut != "" else "player.not_ready"
 	profil_node.update_statut(statut)
 	# active la courone si c'est l'hote
-	if hote_pseudo == pseudo:
+	if hote_pseudo == data.pseudo:
 		profil_node.toggle_hote(pseudo, true)
 	
 	profil_node.set_scores(data.games_win, data.pig_count)
-	profil_node.visible = true
 
 
 func _game_started(data):

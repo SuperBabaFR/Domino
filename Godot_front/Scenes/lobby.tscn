@@ -1,17 +1,19 @@
-[gd_scene load_steps=13 format=3 uid="uid://cqgd15taqxuqo"]
+[gd_scene load_steps=15 format=3 uid="uid://cqgd15taqxuqo"]
 
 [ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="1_powg8"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_n514r"]
 [ext_resource type="PackedScene" uid="uid://cmbgvp7440237" path="res://Scenes/Composants/chat_textuel.tscn" id="4_0wkmg"]
+[ext_resource type="Theme" uid="uid://chpey7qmivu2i" path="res://theme/btn_logout.tres" id="4_065x1"]
+[ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="5_m43xw"]
 [ext_resource type="Theme" uid="uid://7rqwdm07j4v3" path="res://theme/lobby.tres" id="5_pjs1q"]
 [ext_resource type="Texture2D" uid="uid://bg06lrgp8li3x" path="res://Assets/icons/light_play_icon.png" id="6_5j7vq"]
 [ext_resource type="Texture2D" uid="uid://lhbke841yy51" path="res://Assets/icons/light_settings_icon.svg" id="6_pk738"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="7_vkql8"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="9_7ajrx"]
-[ext_resource type="Texture2D" uid="uid://dtuc4so6lpvv6" path="res://Assets/images/black_domino_back.svg" id="10_w65vq"]
 [ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://theme/label_settings.tres" id="11_c0d5u"]
 [ext_resource type="PackedScene" uid="uid://ckkbnrftons4i" path="res://Scenes/update_session.tscn" id="11_rggrf"]
+[ext_resource type="FontFile" uid="uid://dprj0e0cx7d1c" path="res://Assets/fonts/Rajdhani-Regular.ttf" id="12_bptpx"]
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready", "btn_update_session", "players_profiles", "session_name", "nb_joueurs", "reflexion_time", "code_session")]
 layout_mode = 3
@@ -39,11 +41,17 @@ metadata/_edit_lock_ = true
 
 [node name="btn_leave" type="Button" parent="."]
 layout_mode = 0
-offset_left = 61.0
-offset_top = 43.0
-offset_right = 155.0
-offset_bottom = 86.0
+offset_left = 12.0
+offset_top = 11.0
+offset_right = 99.0
+offset_bottom = 99.0
+theme = ExtResource("4_065x1")
 text = "Quitter"
+icon = ExtResource("5_m43xw")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
 [node name="ChatTextuel" parent="." instance=ExtResource("4_0wkmg")]
 layout_mode = 1
@@ -159,19 +167,10 @@ layout_mode = 2
 [node name="session_name" type="Label" parent="Title"]
 layout_mode = 2
 theme = ExtResource("5_pjs1q")
+theme_override_fonts/font = ExtResource("12_bptpx")
 theme_override_font_sizes/font_size = 40
 text = "LA session de MACO"
 horizontal_alignment = 1
-
-[node name="BlackDominoBack" type="Sprite2D" parent="."]
-position = Vector2(166, 180)
-rotation = -0.785398
-texture = ExtResource("10_w65vq")
-
-[node name="BlackDominoBack2" type="Sprite2D" parent="."]
-position = Vector2(1108, 180)
-rotation = 0.785398
-texture = ExtResource("10_w65vq")
 
 [node name="UpdateSession" parent="." instance=ExtResource("11_rggrf")]
 visible = false

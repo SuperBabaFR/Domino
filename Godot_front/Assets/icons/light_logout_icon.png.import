@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckodltw52m7bh"
-path="res://.godot/imported/light_pig_icon.png-7719ccc0d45ff799def01af22f9d4357.ctex"
+uid="uid://prwserrsjpsl"
+path="res://.godot/imported/light_logout_icon.png-04a4193114b341dcc88bc60cd8afdd29.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/icons/light_pig_icon.png"
-dest_files=["res://.godot/imported/light_pig_icon.png-7719ccc0d45ff799def01af22f9d4357.ctex"]
+source_file="res://Assets/icons/light_logout_icon.png"
+dest_files=["res://.godot/imported/light_logout_icon.png-04a4193114b341dcc88bc60cd8afdd29.ctex"]
 
 [params]
 

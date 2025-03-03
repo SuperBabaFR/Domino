@@ -80,12 +80,21 @@ func get_player_info(pseudo: String):
 			return player_info
 	return false
 
+func update_player_statut(data: Dictionary):
+	for player_info in player_list_data:
+		if player_info.pseudo == data.pseudo:
+			player_info.statut = data.statut
+			print("statut de " + data.pseudo + ", maj de " + player_info.statut + " vers -> " + data.statut)
+			return
+	print("joueur à maj non trouvé")
+
 func get_all_players_infos():
 	return player_list_data
 
 func clear_session_data():
 	session_infos.clear()
 	player_list_data.clear()
+	game_data = {"table" : []}
 
 func set_game_data(data: Dictionary):
 	game_data.merge(data)

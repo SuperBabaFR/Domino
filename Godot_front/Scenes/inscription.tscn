@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cuebl2wkoa0hh" path="res://Assets/icons/light_login_icon.svg" id="8_i8mmc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5beo"]
-bg_color = Color(1, 0.968627, 0.854902, 1)
+bg_color = Color(1, 1, 1, 1)
 expand_margin_left = 100.0
 expand_margin_top = 100.0
 expand_margin_right = 100.0
@@ -119,7 +119,6 @@ size_flags_horizontal = 4
 theme = ExtResource("5_b2dcy")
 placeholder_text = "Domino_master_971"
 alignment = 1
-clear_button_enabled = true
 caret_blink = true
 
 [node name="label_mdp" type="Label" parent="MarginContainer/PanelContainer/Compatiments/formulaire"]

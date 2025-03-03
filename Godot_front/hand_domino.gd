@@ -17,12 +17,12 @@ func load_texture(texture_id: int = 0, orientation_texture: String = "double"):
 	custom_minimum_size = Vector2(45, 23)
 	
 	match orientation:
-		"left":
+		"normal":
 			pass
 		"double":
 			image.rotate_90(CLOCKWISE)
 			custom_minimum_size = Vector2(23, 45)
-		"right":
+		"inverse":
 			image.flip_x()
 	
 	self.texture = ImageTexture.create_from_image(image)

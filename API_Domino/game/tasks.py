@@ -193,7 +193,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 info.player.save()
                 notify_websocket.apply_async(
                     args=(
-                    "player", info.player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name), "statut_player"))
+                    "player", info.player.id, dict(statut=dict(id=not_ready_statut.id, name=not_ready_statut.name)), "statut_player"))
             data_end_game = dict(action="session.end_game",
                                  data=dict(results=dict(winner=player.pseudo, pigs=pigs)))
 
@@ -231,7 +231,7 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
         player.save()
 
         notify_websocket.apply_async(
-            args=("player", player.id, dict(id=not_ready_statut.id, name=not_ready_statut.name), "statut_player"))
+            args=("player", player.id, dict(statut=dict(id=not_ready_statut.id, name=not_ready_statut.name)), "statut_player"))
 
         # données pour la requete http
         data_return["message"] = "Tu as gagne"
@@ -267,7 +267,7 @@ def new_round(session, first=False):
         dominoes = []
         player_x = Player.objects.filter(id=player_id).first()
 
-        notify_websocket.apply_async(args=("player", player_x.id, dict(id=actif_statut.id, name=actif_statut.name), "statut_player"))
+        notify_websocket.apply_async(args=("player", player_x.id, dict(statut=dict(id=actif_statut.id, name=actif_statut.name)), "statut_player"))
 
         # Choisis 7 Dominos dans la liste
         for i in range(0, 7):

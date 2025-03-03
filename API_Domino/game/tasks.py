@@ -118,11 +118,22 @@ def play_domino(player, session, round, domino_list, side=None, playable_values=
                 side = random.choice(sides)
                 is_playable = domino_playable(domino, table_de_jeu, side, domino_list)
         playable_values = is_playable
+    else:
+        if side == None:
+            sides = ["left", "right"]
+            is_playable = False
+            for cote in sides:
+                is_playable = domino_playable(domino, table_de_jeu, cote, domino_list)
+                if is_playable:
+                    break
+            playable_values = is_playable
+
+            if not playable_values:
+                print(f'Impossible de jouer ce domino : {domino.id}')
+                return
+
 
     is_last_domino = True if len(player_dominoes) == 1 else False
-
-    if side == None:
-        side = "left"
 
     # Détermine dans quelle orientation le domino sera joué
     orientation = "normal"

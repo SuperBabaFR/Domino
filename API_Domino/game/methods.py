@@ -136,12 +136,13 @@ def domino_playable(domino, table_de_jeu, side, domino_list):
 
 
 def get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu, objet=False):
+    domino_dict = {d.id: d for d in domino_list}
     playable_dominoes = []
     for domino_id in hand_player_turn:
         if not domino_list:
             domino_x = Domino.objects.get(id=domino_id)
         else:
-            domino_x = domino_list[domino_id - 1]
+            domino_x = domino_dict[domino_id]
 
         if (not domino_playable(domino_x, table_de_jeu, "left", domino_list)
                 and not domino_playable(domino_x, table_de_jeu,"right", domino_list)):

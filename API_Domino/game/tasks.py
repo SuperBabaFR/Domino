@@ -114,6 +114,7 @@ def play_domino(player, session, round, domino_list, side=None, orientation=None
             playable_dominoes = get_all_playable_dominoes(domino_list, player_dominoes, table_de_jeu, True)
             while not is_playable:
                 domino = random.choice(playable_dominoes)
+                print(f"domino choisi {domino}, liste {playable_dominoes}")
                 side = random.choice(sides)
                 is_playable = domino_playable(domino, table_de_jeu, side, domino_list)
             # Détermine dans quelle orientation le domino sera joué

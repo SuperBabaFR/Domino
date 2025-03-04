@@ -45,13 +45,9 @@ python manage.py migrate
 📌 **Lancer le serveur Django :**  
 ```bash
 python manage.py runserver
-```
-L'API est accessible sur **`http://127.0.0.1:8000/`**
-
-📌 **Lancer le serveur Django :**  
-```bash
 celery -A API_Domino worker --log-level=info 
 ```
+L'API est accessible sur **`http://127.0.0.1:8000/`**
 
 ### **2️⃣ Lancer le Front (Godot)**  
 

@@ -150,7 +150,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         # Un joueur boudé passe son tour
         if "game.pass" in data["action"]:
             await self.channel_layer.group_send(
-                group_name, {
+                f"player_{self.scope['player'].id}", {
                     "type": "player_pass",
                     "round_id": data["data"]["round_id"]
                 }
@@ -243,6 +243,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
         round_id = event.get("round_id")
         session = self.scope.get("session")
 
+        print(f"[DEBUG] Passage de tour détecté pour {player.pseudo}, Round ID : {round_id}")
+
         response = await self.update_next_player(round_id, session.id)
         if response == False:
             await self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
@@ -321,123 +323,119 @@ class SessionConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def update_next_player(self, round_id, session_id):
 
-        from game.methods import notify_websocket, update_player_turn
-        from authentification.models import Infosession, Round, Player, HandPlayer, Domino, Session
+        from game.methods import update_player_turn
+        from authentification.models import  HandPlayer, Round,  Session
         from game.tasks import revoke_auto_play_task
 
         round = Round.objects.filter(id=round_id).first()
-        if not round:
-            print("Round not found")
+        session = Session.objects.filter(id=session_id).first()
+
+        if not round or not session:
+            print("[ERROR] Round ou session introuvable")
             return False
 
-        session = Session.objects.filter(id=session_id).first()
-        self.scope["session"] = session
-        print(f'Round id {round.id}, session id : {session.id}, game_id :  {round.game_id}, session GAME id :  {session.game_id_id}')
-        print(f'round statut id : {round.statut_id}')
+        # Forcer la synchronisation avant de modifier les données
+        round.refresh_from_db()
+        session.refresh_from_db()
 
         if round.game_id != session.game_id_id or round.statut_id != 11:
-            print("Round terminé ou round plus de la game")
+            print("[ERROR] Round terminé ou plus lié au jeu")
             return False
 
         # Révoque la tâche programmée au plus vite
         revoke_auto_play_task(round)
 
         hand_players = list(HandPlayer.objects.filter(session=session, round=round).all())
-        partie_blocked = True
-        hand_player = HandPlayer()
-
-        # Vérifier si quelqu'un n'est pas boudé
-        for hand in hand_players:
-            if not hand.blocked and hand.player != self.scope['player']:
-                partie_blocked = False
-            if hand.player == self.scope['player']:
-                hand_player = hand
+        partie_blocked = all(hand.blocked or hand.player == self.scope['player'] for hand in hand_players)
 
         # si tout le monde est boudé
         if partie_blocked:
-            player = self.scope['player']
-            # Finir le round
-            winner = dict(score=999, player=Player())
-            player_id_list = json.loads(session.order)
+            print("[INFO] Tous les joueurs sont boudés -> Fin du round")
+            return self.finish_round(round, session)
 
-            data_players = []
-
-            for player_id in player_id_list:
-                hand_player = HandPlayer.objects.filter(player_id=player_id, session=session, round=round).first()
-                dominoes = json.loads(hand_player.dominoes)
-                sum_of_dominoes = 0
-                for domino_id in dominoes:
-                    domino = Domino.objects.get(id=domino_id)
-                    sum_of_dominoes += domino.left + domino.right
-
-                if sum_of_dominoes < winner.get("score"):
-                    winner = dict(score=sum_of_dominoes, player=hand_player.player)
-
-                data_players.append(dict(pseudo=hand_player.player.pseudo,
-                                         dominoes=hand_player.dominoes,
-                                         points_remaining=sum_of_dominoes))
-
-            info_player = Infosession.objects.filter(player=winner["player"], session=session).first()
-            info_player.round_win += 1
-            type_finish = "game" if info_player.round_win == 3 else "round"
-            win_streak = True if session.game_id.last_winner == winner["player"] else False
-
-            data_finish = dict(action="game.blocked",
-                               data=dict(
-                                   list_players=data_players,
-                                   winner_pseudo=winner["player"].pseudo,
-                                   points_remaining=winner["score"],
-                                   type_finish=type_finish,
-                                   win_streak=win_streak))
-            notify_websocket.apply_async(args=("session", session.id, data_finish))
-
-            # Met a jour le dernier gagnant
-            session.game_id.last_winner = self.scope['player']
-
-            if type_finish == "game":
-                session.game_id.statut_id = 2  # Met a jour le statut de la partie
-
-                info_players = list(Infosession.objects.filter(session=session).all())
-                info_players.remove(info_player)
-
-                info_player.games_win += 1
-                player.wins += 1
-
-                pigs = []
-
-                for info in info_players:
-                    if info.round_win > 0:
-                        continue
-                    # COCHON pour ceux qui ont pas de points
-                    pigs.append(info.player.pseudo)
-                    info.pig_count += 1
-                    info.player.pigs += 1
-                    info.save()
-                    info.player.save()
-                data_end_game = dict(action="session.end_game",
-                                     data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
-                notify_websocket.apply_async(args=("session", session.id, data_end_game))
-
-            # Met a jour le statut du round
-            round.statut_id = 12
-            round.save()
-            session.game_id.save()
-
-            if type_finish == "game":
-                session.game_id = None
-                session.save()
-
-            info_player.save()
-            player.save()
-
-            return True
         else:
-            hand_player.blocked = True
-            hand_player.save()
+            hand_player = next((hand for hand in hand_players if hand.player.id == self.scope['player'].id), None)
+            if hand_player:
+                hand_player.blocked = True
+                hand_player.save()
 
         player_time_end, next_player = update_player_turn(round, session)
 
+        # Vérifier si le tour a bien été mis à jour
+        round.refresh_from_db()
+        print(f"[DEBUG] Nouveau joueur à jouer : {next_player.pseudo}")
+
         return [next_player, round, player_time_end]
+
+    def finish_round(self, round, session):
+        from game.methods import notify_websocket
+        from authentification.models import Infosession, Player, Domino, HandPlayer
+        player = self.scope['player']
+        # Finir le round
+        winner = dict(score=999, player=Player())
+        player_id_list = json.loads(session.order)
+        data_players = []
+        for player_id in player_id_list:
+            hand_player = HandPlayer.objects.filter(player_id=player_id, session=session, round=round).first()
+            dominoes = json.loads(hand_player.dominoes)
+            sum_of_dominoes = 0
+            for domino_id in dominoes:
+                domino = Domino.objects.get(id=domino_id)
+                sum_of_dominoes += domino.left + domino.right
+
+            if sum_of_dominoes < winner.get("score"):
+                winner = dict(score=sum_of_dominoes, player=hand_player.player)
+
+            data_players.append(dict(pseudo=hand_player.player.pseudo,
+                                     dominoes=hand_player.dominoes,
+                                     points_remaining=sum_of_dominoes))
+        info_player = Infosession.objects.filter(player=winner["player"], session=session).first()
+        info_player.round_win += 1
+        type_finish = "game" if info_player.round_win == 3 else "round"
+        win_streak = True if session.game_id.last_winner == winner["player"] else False
+        data_finish = dict(action="game.blocked",
+                           data=dict(
+                               list_players=data_players,
+                               winner_pseudo=winner["player"].pseudo,
+                               points_remaining=winner["score"],
+                               type_finish=type_finish,
+                               win_streak=win_streak))
+        notify_websocket.apply_async(args=("session", session.id, data_finish))
+        # Met a jour le dernier gagnant
+        session.game_id.last_winner = self.scope['player']
+        if type_finish == "game":
+            session.game_id.statut_id = 2  # Met a jour le statut de la partie
+
+            info_players = list(Infosession.objects.filter(session=session).all())
+            info_players.remove(info_player)
+
+            info_player.games_win += 1
+            player.wins += 1
+
+            pigs = []
+
+            for info in info_players:
+                if info.round_win > 0:
+                    continue
+                # COCHON pour ceux qui ont pas de points
+                pigs.append(info.player.pseudo)
+                info.pig_count += 1
+                info.player.pigs += 1
+                info.save()
+                info.player.save()
+            data_end_game = dict(action="session.end_game",
+                                 data=dict(results=dict(winner=winner["player"].pseudo, pigs=pigs)))
+            notify_websocket.apply_async(args=("session", session.id, data_end_game))
+        # Met a jour le statut du round
+        round.statut_id = 12
+        round.save()
+        session.game_id.save()
+        if type_finish == "game":
+            session.game_id = None
+            session.save()
+        info_player.save()
+        player.save()
+        return True
 
     @database_sync_to_async
     def get_statut(self, statut_id):

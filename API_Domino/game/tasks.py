@@ -13,8 +13,7 @@ from game.methods import get_all_playable_dominoes, domino_playable, update_play
 
 
 def notify_player_for_his_turn(round, session, player_time_end, domino_list=None):
-    if round.auto_play_task_id:
-        revoke_auto_play_task(round)
+    revoke_auto_play_task(round)
 
     table_de_jeu = json.loads(round.table)
 
@@ -30,6 +29,11 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
 
     dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
 
+    # Assurer que la sauvegarde des données est bien faite avant de créer une nouvelle tâche
+    round.refresh_from_db()
+    if session:
+        session.refresh_from_db()
+
     # Notifie la personne qui doit jouer
     if len(playable_dominoes) == 0:
         data_next_player = dict(action="game.your_turn_no_match",
@@ -40,8 +44,7 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
         # Récupérer la file d'attente
         # Ajouter la tâche avec un ETA
         result = player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
-        round.auto_play_task_id = result.id
-        round.save()
+
     else:
         data_next_player = dict(action="game.your_turn",
                                 data=dict(
@@ -53,12 +56,12 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
         # Ajouter la tâche avec un ETA
         result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
 
-        round.auto_play_task_id = result.id
-        round.save()
+    round.auto_play_task_id = result.id
+    round.save()
 
 def revoke_auto_play_task(round):
     if round.auto_play_task_id:
-        print("Revoking auto-play task {id} for player {p}".format(id=round.auto_play_task_id, p=round.player_turn_id))
+        print("Revoking auto-play task {id} for player {p}".format(id=round.auto_play_task_id, p=round.player_turn.pseudo))
         revoke(task_id=round.auto_play_task_id, state='REVOKED', terminate=True)
         # Supprimer l'ID pour éviter une révocation multiple
         round.auto_play_task_id = None

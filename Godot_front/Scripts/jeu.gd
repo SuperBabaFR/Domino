@@ -87,12 +87,17 @@ func someone_pass(data: Dictionary):
 		new_turn(data.pseudo)
 
 func new_turn(old_player):
-	if old_player == Global.get_info("player", "pseudo"):
+	var my_pseudo = Global.get_info("player", "pseudo")
+	if old_player == my_pseudo:
 		my_profil.force_end_reflexion_time()
 	else:
 		players_profiles.get_node(old_player).force_end_reflexion_time()
-		var profil = players_profiles.get_node(Global.game_data.player_turn)
-		profil.activate_time_reflexion(Global.game_data.player_time_end)
+	
+	if Global.game_data.player_turn == my_pseudo:
+		return
+	
+	var profil = players_profiles.get_node(Global.game_data.player_turn)
+	profil.activate_time_reflexion(Global.game_data.player_time_end)
 
 
 func load_game():

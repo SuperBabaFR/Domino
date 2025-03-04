@@ -1,16 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://cfjb6pg6lunr2"]
+[gd_scene load_steps=7 format=3 uid="uid://cfjb6pg6lunr2"]
 
 [ext_resource type="Script" path="res://Scripts/profil_game.gd" id="1_hhlm6"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="2_xricf"]
 [ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/old_default_profil.jpg" id="3_j6h8h"]
 [ext_resource type="Texture2D" uid="uid://bb2y8vcd36t20" path="res://Assets/icons/light_time_icon.png" id="5_w5711"]
 [ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_cidoe"]
+[ext_resource type="FontFile" uid="uid://cx8fx4thr735i" path="res://Assets/fonts/FrancoisOne-Regular.ttf" id="6_ngs3a"]
 
-[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "texture_image", "border_color", "reflexion_time", "player_time_end", "reflexion_container", "pseudo_container", "dominoes")]
+[node name="Profil" type="VBoxContainer" node_paths=PackedStringArray("lab_pseudo", "pts_restants", "texture_image", "border_color", "reflexion_time", "player_time_end", "reflexion_container", "pseudo_container", "dominoes")]
 offset_right = 68.0
 offset_bottom = 23.0
 script = ExtResource("1_hhlm6")
 lab_pseudo = NodePath("all_items/name/pseudo")
+pts_restants = NodePath("pts_restants")
 texture_image = NodePath("all_items/PanelContainer/image_mask/image")
 border_color = NodePath("all_items/PanelContainer")
 reflexion_time = NodePath("all_items/reflexion/reflexion_time")
@@ -85,3 +87,10 @@ theme_override_constants/separation = 1
 
 [node name="player_time_end" type="Timer" parent="."]
 one_shot = true
+
+[node name="pts_restants" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_ngs3a")
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1

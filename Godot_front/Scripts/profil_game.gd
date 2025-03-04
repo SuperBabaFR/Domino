@@ -1,6 +1,7 @@
 extends VBoxContainer
 
 @export var lab_pseudo: Label 
+@export var pts_restants: Label 
 @export var texture_image: TextureRect
 @export var border_color: PanelContainer
 @export var reflexion_time: ProgressBar
@@ -50,6 +51,18 @@ func show_dominos_count(count: int):
 		var domino = domino_hand.instantiate()
 		domino.load_texture()
 		dominoes.add_child(domino)
+
+func show_list_dominos(list):
+		
+	var children = dominoes.get_children()
+	for child in children:
+		child.free()
+	
+	for id in list:
+		var domino = domino_hand.instantiate()
+		domino.load_texture(id)
+		dominoes.add_child(domino)
+
 
 func activate_time_reflexion(time_end: String):
 	var my_time = Time.get_datetime_dict_from_system(true)

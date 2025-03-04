@@ -43,6 +43,13 @@ func _ready():
 	
 	# Changements de statuts
 	Websocket.session_player_statut.connect(_update_statut)
+	
+	# Round fini
+	Websocket.game_blocked.connect(_update_statut)
+	Websocket.game_someone_win.connect(_someone_win)
+	
+	# New round
+	#Websocket.game_new_round.connect(_new_round)
 
 func someone_play(data: Dictionary):
 	Global.update_player_turn(data)
@@ -142,6 +149,29 @@ func _update_statut(data):
 		profil_node.update_statut(data.statut)
 
 
+func _game_blocked(data):
+	Global.game_data.player_turn = ""
+	
+	my_profil.force_end_reflexion_time()
+	for player in data.list_players:
+		if player.pseudo == Global.player_data.pseudo:
+			my_profil.pts_restants.text = "Points restants : \n " + str(player.points_remaining)
+			continue
+		var profil = players_profiles.get_node(player.pseudo)
+		profil.pts_restants.text = "Points restants : \n " + str(player.points_remaining)	
+		profil.force_end_reflexion_time()
+		profil.show_list_dominos(player.dominoes)
+
+func _someone_win(data):
+	print("winnner")
+	Global.game_data.player_turn = ""
+	
+	my_profil.force_end_reflexion_time()
+	for player in Global.player_list_data:
+		if player.pseudo == Global.player_data.pseudo:
+			continue
+		players_profiles.get_node(player.pseudo).force_end_reflexion_time()
+
 func _game_ended(data):
 	Utile.changeScene("lobby")
 
@@ -153,7 +183,6 @@ func load_player():
 
 	my_profil.load_player_profile(pseudo, image)
 	my_profil.update_statut("actif")
-	my_profil.hide_pseudo(true)
 	
 	if Global.game_data.player_turn == pseudo:
 		my_profil.activate_time_reflexion(Global.game_data.player_time_end)

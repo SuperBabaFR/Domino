@@ -322,7 +322,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
     def update_next_player(self, round_id, session_id):
 
         from game.methods import notify_websocket, update_player_turn
-        from authentification.models import Infosession, Round, Player, HandPlayer, Domino
+        from authentification.models import Infosession, Round, Player, HandPlayer, Domino, Session
         from game.tasks import revoke_auto_play_task
 
         round = Round.objects.filter(id=round_id).first()
@@ -330,7 +330,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
             print("Round not found")
             return False
 
-        session = self.get_session(session_id)
+        session = Session.objects.filter(id=session_id).first()
         self.scope["session"] = session
         print(f'Round id {round.id}, session id : {session.id}, game_id :  {round.game_id}, session GAME id :  {session.game_id_id}')
         print(f'round statut id : {round.statut_id}')

@@ -260,8 +260,7 @@ Le client peut envoyer les messages suivants au serveur :
 - **Retour au lobby avec possibilité de relancer une partie.**  
 
 ## 🔗 Liens utiles  
-- **Documentation API :** [Disponible via Postman]  
-- **Rapport académique :** *(ajouter un lien si applicable)*  
+- **Documentation API :** [En cours de réalisation]
 
 ---
 

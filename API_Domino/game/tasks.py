@@ -13,6 +13,9 @@ from game.methods import get_all_playable_dominoes, domino_playable, update_play
 
 
 def notify_player_for_his_turn(round, session, player_time_end, domino_list=None):
+    if round.auto_play_task_id:
+        revoke_auto_play_task(round)
+
     table_de_jeu = json.loads(round.table)
 
     # Récupère les dominos jouables du prochain joueur
@@ -142,6 +145,8 @@ def play_domino(player, session, round, domino_list, side=None, orientation=None
     player_dominoes.remove(domino.id)
     hand_player.dominoes = json.dumps(player_dominoes)
     hand_player.save()
+
+    HandPlayer.objects.filter(round=round, session=session).update(blocked=False)
 
     if not is_last_domino:
         player_time_end, next_player = update_player_turn(round, session)

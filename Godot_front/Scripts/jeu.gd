@@ -45,7 +45,7 @@ func _ready():
 	Websocket.session_player_statut.connect(_update_statut)
 	
 	# Round fini
-	Websocket.game_blocked.connect(_update_statut)
+	Websocket.game_blocked.connect(_game_blocked)
 	Websocket.game_someone_win.connect(_someone_win)
 	
 	# New round

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/inscription.gd" id="1_1mxcp"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_605gw"]
-[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="3_2che7"]
+[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/old_default_profil.png" id="3_2che7"]
 [ext_resource type="Texture2D" uid="uid://di8yimw3xgyw3" path="res://Assets/icons/light_image_icon.svg" id="3_qumxb"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_x5kbk"]
 [ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_b2dcy"]

@@ -58,9 +58,9 @@ func show_list_dominos(list):
 	for child in children:
 		child.free()
 	
-	for id in list:
+	for id in str_to_var(list):
 		var domino = domino_hand.instantiate()
-		domino.load_texture(str(id))
+		domino.load_texture(id)
 		dominoes.add_child(domino)
 
 

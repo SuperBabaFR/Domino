@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/profil.gd" id="1_glyvl"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_suj8a"]
-[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/default_profil.png" id="4_o8q56"]
+[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/old_default_profil.png" id="4_o8q56"]
 [ext_resource type="FontFile" uid="uid://7xx1dekioglq" path="res://Assets/fonts/BebasNeue-Regular.ttf" id="5_jeayu"]
 [ext_resource type="Texture2D" uid="uid://7pff0mv2mu5n" path="res://Assets/icons/light_win_icon.png" id="7_5tx54"]
 [ext_resource type="Texture2D" uid="uid://cnp6tqcnkaw4h" path="res://Assets/icons/light_not_ready_icon.png" id="7_cri3r"]

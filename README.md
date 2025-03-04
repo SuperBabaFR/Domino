@@ -265,7 +265,7 @@ Le client peut envoyer les messages suivants au serveur :
 ---
 
 🎲 **Projet réalisé en MASTER MIAGE 2ème Année**  
-📅 Dates : **1 Décembre 2024 → 7 mars 2025**  
+📅 Dates : **1 Décembre 2024 → 4 mars 2025**  
 👤 **Développeurs :** 
 - Bastien SINITAMBIRIVOUTIN
 - Nicolas BARBEU

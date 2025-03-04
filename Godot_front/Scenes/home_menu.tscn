@@ -1,22 +1,52 @@
-[gd_scene load_steps=10 format=3 uid="uid://bw41ecw7l4jya"]
+[gd_scene load_steps=16 format=3 uid="uid://bw41ecw7l4jya"]
 
 [ext_resource type="Script" path="res://Scripts/home_menu.gd" id="1_27nal"]
-[ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_jeyas"]
+[ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_5dn6r"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_3pjq8"]
+[ext_resource type="Theme" uid="uid://chpey7qmivu2i" path="res://theme/btn_logout.tres" id="4_05hrk"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="4_hl6vo"]
-[ext_resource type="Texture2D" uid="uid://chqxqk6qhg65l" path="res://Assets/images/old_default_profil.png" id="5_fvfcn"]
-[ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="6_ykiis"]
+[ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="5_cqchh"]
+[ext_resource type="Theme" uid="uid://bxoogj41dvgvp" path="res://theme/home_menu.tres" id="6_3o3uo"]
+[ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_pixm3"]
+[ext_resource type="Texture2D" uid="uid://ccl08xo6uxlh4" path="res://Assets/icons/light-icon-stats.png" id="7_oi4l2"]
+[ext_resource type="FontFile" uid="uid://dprj0e0cx7d1c" path="res://Assets/fonts/Rajdhani-Regular.ttf" id="8_2pfdq"]
+[ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/default_profil.jpg" id="8_tc0j7"]
+[ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="11_h0rlq"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_8kqgb"]
-font_size = 35
-font_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drc81"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.121569, 0.717647, 0.192157, 1)
+border_blend = true
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+corner_detail = 20
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 4
+shadow_offset = Vector2(-4, 4)
 
-[sub_resource type="SystemFont" id="SystemFont_k7oq6"]
-font_names = PackedStringArray("Arial")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpgse"]
+bg_color = Color(0.670588, 0.658824, 0.658824, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
-[sub_resource type="LabelSettings" id="LabelSettings_50o8r"]
-font = SubResource("SystemFont_k7oq6")
-font_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hy5ri"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
 
 [node name="HomeMenu" type="Control" node_paths=PackedStringArray("btn_disconnect", "btn_create", "btn_join", "label_wins", "label_games", "label_pigs", "label_ratio", "profil_picture", "lab_pseudo")]
 layout_mode = 3
@@ -27,111 +57,77 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_27nal")
 btn_disconnect = NodePath("btn_disconnect")
-btn_create = NodePath("btn_create")
-btn_join = NodePath("btn_join")
-label_wins = NodePath("label_wins")
-label_games = NodePath("label_games")
-label_pigs = NodePath("label_pigs")
-label_ratio = NodePath("label_ratio")
-profil_picture = NodePath("HBoxContainer/image_mask/profil_picture")
-lab_pseudo = NodePath("HBoxContainer/lab_pseudo")
+btn_create = NodePath("séparer/btns/btn_create")
+btn_join = NodePath("séparer/btns/btn_join")
+label_wins = NodePath("séparer/stats profil/stats/p1/wins/label_wins")
+label_games = NodePath("séparer/stats profil/stats/p1/parties/label_games")
+label_pigs = NodePath("séparer/stats profil/stats/p2/cochons/label_pigs")
+label_ratio = NodePath("séparer/stats profil/stats/p2/ratio/label_ratio")
+profil_picture = NodePath("séparer/stats profil/HBoxContainer/PanelContainer/image_mask/profil_picture")
+lab_pseudo = NodePath("séparer/stats profil/HBoxContainer/BoxContainer/lab_pseudo")
 metadata/_edit_lock_ = true
 
-[node name="Background" parent="." instance=ExtResource("2_jeyas")]
+[node name="Background Game" parent="." instance=ExtResource("2_5dn6r")]
 layout_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="GameTitle" parent="Background" instance=ExtResource("3_3pjq8")]
-layout_mode = 0
-offset_left = 364.0
-offset_top = 111.0
-offset_right = 364.0
-offset_bottom = 111.0
-
-[node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = 27.0
-offset_top = 584.0
-offset_right = 370.0
-offset_bottom = 706.0
-text = "Vinn pren on place!
-Si ki tab ou kay sizé?"
-label_settings = SubResource("LabelSettings_8kqgb")
-
-[node name="btn_create" type="Button" parent="."]
-layout_mode = 0
-offset_left = 549.0
-offset_top = 333.0
-offset_right = 665.0
-offset_bottom = 382.0
-text = "Créer"
+[node name="GameTitle" parent="." instance=ExtResource("3_3pjq8")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -259.0
+offset_right = 259.0
+grow_horizontal = 2
 
 [node name="btn_disconnect" type="Button" parent="."]
 layout_mode = 0
-offset_left = 27.0
-offset_top = 163.0
-offset_right = 143.0
-offset_bottom = 200.0
-text = "Déconnexion"
+offset_left = 44.0
+offset_top = 30.0
+offset_right = 134.0
+offset_bottom = 118.0
+theme = ExtResource("4_05hrk")
+text = "QUITTER"
+icon = ExtResource("5_cqchh")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+expand_icon = true
 
-[node name="label_wins" type="Label" parent="."]
-layout_mode = 0
-offset_left = 1030.0
-offset_top = 40.0
-offset_right = 1273.0
-offset_bottom = 76.0
-text = "Valeur : 
-"
-label_settings = SubResource("LabelSettings_50o8r")
-vertical_alignment = 1
+[node name="séparer" type="BoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.0
+offset_top = -20.0
+offset_right = 71.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
 
-[node name="label_games" type="Label" parent="."]
-layout_mode = 0
-offset_left = 1033.0
-offset_top = 9.0
-offset_right = 1276.0
-offset_bottom = 45.0
-text = "Valeur : 
-"
-label_settings = SubResource("LabelSettings_50o8r")
-vertical_alignment = 1
+[node name="stats profil" type="BoxContainer" parent="séparer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+vertical = true
 
-[node name="label_pigs" type="Label" parent="."]
-layout_mode = 0
-offset_left = 1029.0
-offset_top = 76.0
-offset_right = 1272.0
-offset_bottom = 112.0
-text = "Valeur : 
-"
-label_settings = SubResource("LabelSettings_50o8r")
-vertical_alignment = 1
+[node name="HBoxContainer" type="HBoxContainer" parent="séparer/stats profil"]
+layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="label_ratio" type="Label" parent="."]
-layout_mode = 0
-offset_left = 1027.0
-offset_top = 110.0
-offset_right = 1270.0
-offset_bottom = 146.0
-text = "Valeur : 
-"
-label_settings = SubResource("LabelSettings_50o8r")
-vertical_alignment = 1
+[node name="PanelContainer" type="PanelContainer" parent="séparer/stats profil/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("6_pixm3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_drc81")
 
-[node name="btn_join" type="Button" parent="."]
-layout_mode = 0
-offset_left = 527.0
-offset_top = 428.0
-offset_right = 686.0
-offset_bottom = 478.0
-text = "Rejoindre"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
-layout_mode = 0
-
-[node name="image_mask" type="TextureRect" parent="HBoxContainer"]
+[node name="image_mask" type="TextureRect" parent="séparer/stats profil/HBoxContainer/PanelContainer"]
 clip_children = 1
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(90, 90)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -139,18 +135,231 @@ texture = ExtResource("4_hl6vo")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="profil_picture" type="TextureRect" parent="HBoxContainer/image_mask"]
-custom_minimum_size = Vector2(150, 150)
+[node name="profil_picture" type="TextureRect" parent="séparer/stats profil/HBoxContainer/PanelContainer/image_mask"]
+custom_minimum_size = Vector2(90, 90)
 layout_mode = 0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-texture = ExtResource("5_fvfcn")
+texture = ExtResource("8_tc0j7")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="lab_pseudo" type="Label" parent="HBoxContainer"]
+[node name="BoxContainer" type="BoxContainer" parent="séparer/stats profil/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("6_ykiis")
-text = "PSeudo"
+alignment = 1
+vertical = true
+
+[node name="BoxContainer" type="BoxContainer" parent="séparer/stats profil/HBoxContainer/BoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="mes stats" type="Label" parent="séparer/stats profil/HBoxContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+theme = ExtResource("6_3o3uo")
+theme_override_font_sizes/font_size = 32
+text = "MES STATS"
 vertical_alignment = 1
 uppercase = true
+
+[node name="TextureRect" type="TextureRect" parent="séparer/stats profil/HBoxContainer/BoxContainer/BoxContainer"]
+layout_mode = 2
+texture = ExtResource("7_oi4l2")
+
+[node name="lab_pseudo" type="Label" parent="séparer/stats profil/HBoxContainer/BoxContainer"]
+layout_mode = 2
+theme = ExtResource("6_3o3uo")
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.345098, 1)
+theme_override_font_sizes/font_size = 20
+text = "PSeudo"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="stats" type="BoxContainer" parent="séparer/stats profil"]
+layout_mode = 2
+theme_override_constants/separation = 30
+vertical = true
+
+[node name="p1" type="BoxContainer" parent="séparer/stats profil/stats"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="separation2" type="Panel" parent="séparer/stats profil/stats/p1"]
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpgse")
+
+[node name="parties" type="BoxContainer" parent="séparer/stats profil/stats/p1"]
+layout_mode = 2
+vertical = true
+
+[node name="PARTIES" type="Label" parent="séparer/stats profil/stats/p1/parties"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0.670588, 0.658824, 0.658824, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 32
+text = "PARTIES
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="label_games" type="Label" parent="séparer/stats profil/stats/p1/parties"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 36
+text = "0
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="separation" type="Panel" parent="séparer/stats profil/stats/p1"]
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpgse")
+
+[node name="wins" type="BoxContainer" parent="séparer/stats profil/stats/p1"]
+layout_mode = 2
+alignment = 1
+vertical = true
+
+[node name="WIN" type="Label" parent="séparer/stats profil/stats/p1/wins"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0.670588, 0.658824, 0.658824, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 32
+text = "WIN
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="label_wins" type="Label" parent="séparer/stats profil/stats/p1/wins"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 36
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="p2" type="BoxContainer" parent="séparer/stats profil/stats"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="separation" type="Panel" parent="séparer/stats profil/stats/p2"]
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpgse")
+
+[node name="cochons" type="BoxContainer" parent="séparer/stats profil/stats/p2"]
+layout_mode = 2
+vertical = true
+
+[node name="COCHON" type="Label" parent="séparer/stats profil/stats/p2/cochons"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0.670588, 0.658824, 0.658824, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 32
+text = "COCHON"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="label_pigs" type="Label" parent="séparer/stats profil/stats/p2/cochons"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 36
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="separation2" type="Panel" parent="séparer/stats profil/stats/p2"]
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpgse")
+
+[node name="ratio" type="BoxContainer" parent="séparer/stats profil/stats/p2"]
+layout_mode = 2
+vertical = true
+
+[node name="RATIO P_W" type="Label" parent="séparer/stats profil/stats/p2/ratio"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0.670588, 0.658824, 0.658824, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 32
+text = "RATIO P/W
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="label_ratio" type="Label" parent="séparer/stats profil/stats/p2/ratio"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 7
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("11_h0rlq")
+theme_override_font_sizes/font_size = 36
+text = "0/0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="separation" type="Panel" parent="séparer"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hy5ri")
+
+[node name="btns" type="BoxContainer" parent="séparer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+vertical = true
+
+[node name="rejoindre" type="Label" parent="séparer/btns"]
+layout_mode = 2
+theme = ExtResource("6_3o3uo")
+theme_override_font_sizes/font_size = 24
+text = "Rejoindre une session"
+horizontal_alignment = 1
+
+[node name="btn_join" type="Button" parent="séparer/btns"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_3o3uo")
+text = "Rejoindre"
+
+[node name="ou" type="Label" parent="séparer/btns"]
+layout_mode = 2
+theme = ExtResource("6_3o3uo")
+theme_override_fonts/font = ExtResource("8_2pfdq")
+theme_override_font_sizes/font_size = 24
+text = "OU"
+horizontal_alignment = 1
+
+[node name="creer" type="Label" parent="séparer/btns"]
+layout_mode = 2
+theme = ExtResource("6_3o3uo")
+theme_override_font_sizes/font_size = 24
+text = "Créer une session"
+horizontal_alignment = 1
+
+[node name="btn_create" type="Button" parent="séparer/btns"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("6_3o3uo")
+text = "Créer"

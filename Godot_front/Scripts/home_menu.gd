@@ -45,11 +45,10 @@ func _on_disconnect_pressed():
 
 func load_stats():
 	var stats = await API.load_player_stats()
-	label_wins.text = "Parties gagnées : " + str(stats.wins)
-	label_games.text = "Parties disputées : " + str(stats.games)
-	label_pigs.text = "Cochons : " + str(stats.pigs)
-	var ratio = (stats.wins/stats.games) if stats.games > 0 else 0
-	label_ratio.text = "Ratio : " + str(ratio) + " (Victoires/Parties)"
+	label_wins.text = str(stats.wins)
+	label_games.text = str(stats.games)
+	label_pigs.text = str(stats.pigs)
+	label_ratio.text = str(stats.games) + "/" + str(stats.wins)
 
 func load_profil():
 	# Infos du joueur

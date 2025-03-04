@@ -90,7 +90,6 @@ metadata/_edit_lock_ = true
 
 [node name="Background Game" parent="." instance=ExtResource("2_o5l2d")]
 layout_mode = 1
-metadata/_edit_lock_ = true
 
 [node name="btn_back" type="Button" parent="."]
 layout_mode = 0

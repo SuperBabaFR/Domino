@@ -60,7 +60,7 @@ func show_list_dominos(list):
 	
 	for id in list:
 		var domino = domino_hand.instantiate()
-		domino.load_texture(id)
+		domino.load_texture(str(id))
 		dominoes.add_child(domino)
 
 

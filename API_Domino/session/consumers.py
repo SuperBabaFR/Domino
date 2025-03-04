@@ -243,7 +243,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         round_id = event.get("round_id")
         session = self.scope.get("session")
 
-        response = await self.update_next_player(round_id, session)
+        response = await self.update_next_player(round_id, session.id)
         if response == False:
             await self.send(text_data=json.dumps({"action": "error", "data": {"message": "Round incorrect"}}))
             return
@@ -319,7 +319,7 @@ class SessionConsumer(AsyncWebsocketConsumer):
         return Session.objects.filter(id=session_id).first()
 
     @database_sync_to_async
-    def update_next_player(self, round_id, session):
+    def update_next_player(self, round_id, session_id):
 
         from game.methods import notify_websocket, update_player_turn
         from authentification.models import Infosession, Round, Player, HandPlayer, Domino
@@ -330,6 +330,8 @@ class SessionConsumer(AsyncWebsocketConsumer):
             print("Round not found")
             return False
 
+        session = self.get_session(session_id)
+        self.scope["session"] = session
         print(f'Round id {round.id}, session id : {session.id}, game_id :  {round.game_id}, session GAME id :  {session.game_id_id}')
         print(f'round statut id : {round.statut_id}')
 

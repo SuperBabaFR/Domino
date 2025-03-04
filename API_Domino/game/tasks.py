@@ -19,6 +19,10 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
     hand_player_turn = HandPlayer.objects.filter(player=round.player_turn, round=round, session=session).first()
 
     hand_player_turn = json.loads(hand_player_turn.dominoes)
+
+    if domino_list is None:
+        domino_list = list(Domino.objects.all())
+
     playable_dominoes = get_all_playable_dominoes(domino_list, hand_player_turn, table_de_jeu)
 
     dt_utc = datetime.strptime(player_time_end, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)

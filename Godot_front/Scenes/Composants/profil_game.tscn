@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/profil_game.gd" id="1_hhlm6"]
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="2_xricf"]
-[ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/old_default_profil.jpg" id="3_j6h8h"]
+[ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/zdefault_profil.jpg" id="3_j6h8h"]
 [ext_resource type="Texture2D" uid="uid://bb2y8vcd36t20" path="res://Assets/icons/light_time_icon.png" id="5_w5711"]
 [ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_cidoe"]
 [ext_resource type="FontFile" uid="uid://cx8fx4thr735i" path="res://Assets/fonts/FrancoisOne-Regular.ttf" id="6_ngs3a"]

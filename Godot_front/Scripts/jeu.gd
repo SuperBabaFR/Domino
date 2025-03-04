@@ -6,6 +6,8 @@ extends Control
 @export var btn_left: Button
 @export var btn_right: Button
 
+@export var btn_mix: Button
+
 @export var my_profil: Control
 @export var players_profiles : BoxContainer
 @export var sides : BoxContainer
@@ -31,6 +33,8 @@ func _ready():
 	btn_leave.pressed.connect(_on_btn_leave_press)
 	btn_pass.pressed.connect(_i_pass)
 	
+	btn_mix.pressed.connect(_i_mix_the_dominoes)
+	
 	btn_left.pressed.connect(side_left)
 	btn_right.pressed.connect(side_right)
 	# Quelqu'un joue
@@ -49,7 +53,8 @@ func _ready():
 	Websocket.game_someone_win.connect(_someone_win)
 	
 	# New round
-	#Websocket.game_new_round.connect(_new_round)
+	Websocket.game_new_round.connect(_new_round)
+	Websocket.game_someone_mix_the_dominoes.connect(_hide_mix)
 
 func someone_play(data: Dictionary):
 	Global.update_player_turn(data)
@@ -94,8 +99,8 @@ func someone_pass(data: Dictionary):
 	if data.pseudo == Global.get_info("player", "pseudo"):
 		my_profil.force_end_reflexion_time()
 		return
-	if data.player_turn != Global.get_info("player", "pseudo"):
-		new_turn(data.pseudo)
+	
+	new_turn(data.pseudo)
 
 func new_turn(old_player):
 	var my_pseudo = Global.get_info("player", "pseudo")
@@ -155,22 +160,35 @@ func _game_blocked(data):
 	my_profil.force_end_reflexion_time()
 	for player in data.list_players:
 		if player.pseudo == Global.player_data.pseudo:
-			my_profil.pts_restants.text = "Points restants : \n " + str(player.points_remaining)
+			my_profil.pts_restants.text = "Points restants : " + str(player.points_remaining)
+			my_profil.pts_restants.visible = true
 			continue
 		var profil = players_profiles.get_node(player.pseudo)
-		profil.pts_restants.text = "Points restants : \n " + str(player.points_remaining)	
+		profil.pts_restants.text = "Points restants : " + str(player.points_remaining)	
+		profil.pts_restants.visible = true
 		profil.force_end_reflexion_time()
 		profil.show_list_dominos(player.dominoes)
+		
+	btn_mix.visible = true
 
 func _someone_win(data):
 	print("winnner")
 	Global.game_data.player_turn = ""
+	
+	var player_played = Global.get_player_info(data.pseudo)
+	player_played.domino_count -= 1
+	players_profiles.get_node(data.pseudo).show_dominos_count(player_played.domino_count)
+	add_on_table(data.domino, data.orientation, data.side)
 	
 	my_profil.force_end_reflexion_time()
 	for player in Global.player_list_data:
 		if player.pseudo == Global.player_data.pseudo:
 			continue
 		players_profiles.get_node(player.pseudo).force_end_reflexion_time()
+	
+	Global.update_player_score(data.pseudo)
+	
+	btn_mix.visible = true
 
 func _game_ended(data):
 	Utile.changeScene("lobby")
@@ -264,11 +282,12 @@ func play_domino(id, side):
 
 
 func refresh_after_play(data: Dictionary):
+	if not data.has('type_finish'):
+		return
 	Global.update_player_game_data(data)
 	load_my_dominoes(data.dominoes)
 	load_table(data.table)
 	new_turn(Global.get_info("player", "pseudo"))
-	pass
 
 
 func no_match_turn(data: Dictionary):
@@ -300,3 +319,22 @@ func _on_btn_leave_press():
 		Utile.changeScene("home_menu")
 	else:
 		print(response.body)
+
+
+func _i_mix_the_dominoes():
+	var json = {
+		"action": action_path + "mix_the_dominoes",
+		"data": {}
+	}
+	
+	if Websocket.send_json(json):
+		btn_mix.visible = false
+
+
+func _hide_mix():
+	btn_mix.visible = false
+
+
+func _new_round(data):
+	load_table([])
+	load_player()

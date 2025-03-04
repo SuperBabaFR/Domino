@@ -88,6 +88,10 @@ func update_player_statut(data: Dictionary):
 			return
 	print("joueur à maj non trouvé")
 
+func update_player_score(pseudo):
+	for player_info in player_list_data:
+		if player_info.pseudo == pseudo:
+			player_info["rounds_win"] += 1
 func get_all_players_infos():
 	return player_list_data
 
@@ -117,6 +121,7 @@ func update_scores(data: Dictionary):
 	var pigs = data.results.pigs
 	
 	for player in player_list_data:
+		player.rounds_win = 0
 		if player.pseudo == winner:
 			player.games_win += 1
 			continue

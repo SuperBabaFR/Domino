@@ -80,6 +80,14 @@ theme = ExtResource("6_cidoe")
 value = 50.0
 show_percentage = false
 
+[node name="pts_restants" type="Label" parent="."]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_ngs3a")
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+
 [node name="domino_count" type="BoxContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
@@ -87,10 +95,3 @@ theme_override_constants/separation = 1
 
 [node name="player_time_end" type="Timer" parent="."]
 one_shot = true
-
-[node name="pts_restants" type="Label" parent="."]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("6_ngs3a")
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1

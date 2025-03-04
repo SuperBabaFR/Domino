@@ -66,7 +66,11 @@ func _process(_delta):
 			if typeof(json) != TYPE_DICTIONARY:
 				print("Message JSON invalide :", msg)
 				continue
-
+			
+			if json.has("message"):
+				print(json)
+				return
+			
 			var action: String = json.get("action", null)
 			var data: Dictionary = json.get("data", {})
 			if action == null:

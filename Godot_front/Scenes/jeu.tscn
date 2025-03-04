@@ -12,7 +12,7 @@
 [ext_resource type="Theme" uid="uid://bm8nxsu00rq3s" path="res://theme/boutons_side.tres" id="10_fryho"]
 [ext_resource type="Texture2D" uid="uid://bnk55i21xd864" path="res://Assets/icons/light_icon_side_right.png" id="10_g2og0"]
 
-[node name="Jeu" type="Control" node_paths=PackedStringArray("btn_leave", "btn_pass", "btn_left", "btn_right", "my_profil", "players_profiles", "sides", "dominoes", "table")]
+[node name="Jeu" type="Control" node_paths=PackedStringArray("btn_leave", "btn_pass", "btn_left", "btn_right", "btn_mix", "my_profil", "players_profiles", "sides", "dominoes", "table")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,6 +24,7 @@ btn_leave = NodePath("btn_quitter")
 btn_pass = NodePath("btn_pass")
 btn_left = NodePath("sides/btn_left")
 btn_right = NodePath("sides/btn_right")
+btn_mix = NodePath("btn_mix")
 my_profil = NodePath("Me")
 players_profiles = NodePath("players_profiles")
 sides = NodePath("sides")
@@ -85,7 +86,7 @@ layout_mode = 0
 offset_left = 1032.0
 offset_top = 552.0
 offset_right = 1140.0
-offset_bottom = 688.0
+offset_bottom = 718.0
 
 [node name="players_profiles" type="BoxContainer" parent="."]
 layout_mode = 1
@@ -130,3 +131,12 @@ theme = ExtResource("10_fryho")
 icon = ExtResource("10_g2og0")
 icon_alignment = 1
 expand_icon = true
+
+[node name="btn_mix" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 560.0
+offset_top = 448.0
+offset_right = 738.0
+offset_bottom = 479.0
+text = "Mélanger les dominos"

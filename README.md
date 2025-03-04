@@ -90,7 +90,7 @@ L'API elle est pleinement fonctionnelle
     - **Champs :**
         - `session_name` *(string, optionnel)* → Nom de la session
         - `max_players_count` *(int, optionnel)* → Nombre de joueurs max (2-4)
-        - `reflexion_time` *(int, optionnel)* → Temps de réflexion (20-90 sec)
+        - `reflexion_time` *(int, optionnel)* → Temps de réflexion (20-100 sec)
         - `definitive_leave` *(bool, optionnel)* → Autoriser les départs définitifs
         - `is_public` *(bool, optionnel)* → Session publique ou privée
 - **`GET /sessions`** → Lister les sessions publiques disponibles

@@ -2,12 +2,14 @@ extends Control
 
 var label_settings
 @export var btn_join : Button
+@export var btn_actualiser : Button
 @export var input_code_session: LineEdit
 
 func _ready():
 	load_sessions()
 	label_settings = preload("res://theme/label_settings.tres")
 	btn_join.connect("pressed", _on_rejoindre_pressed)
+	btn_actualiser.connect("pressed", load_sessions)
 	
 
 func load_sessions():
@@ -24,6 +26,12 @@ func load_sessions():
 
 
 func afficher_sessions(sessions):
+	
+	var children = $ScrollContainer/VBoxContainer.get_children()
+	for child in children:
+		child.free()
+	
+	
 	for session in sessions:
 		session["can_join"] = true
 		if session.statut in ["session.is_active", "session.is_full"] or not session.is_public:
@@ -49,7 +57,7 @@ func afficher_sessions(sessions):
 			
 			session_container.add_child(join_button)
 		# Ajoute l'élément entier
-		$VBoxContainer.add_child(session_container)
+		$ScrollContainer/VBoxContainer.add_child(session_container)
 
 
 func _on_btn_retour_pressed():

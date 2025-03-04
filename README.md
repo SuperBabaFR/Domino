@@ -203,10 +203,10 @@ Le client peut envoyer les messages suivants au serveur :
 
 | **Action** | **Description** |
 | --- | --- |
-| `game.pass` | Passer son tour |
-| `session.player_statut` | Modifier son statut (prêt ou non) |
-| `game.mix_the_dominoes` | Mélanger les dominos |
-| `session.chat_message` | Le joueur envoie un message à 1 ou tout les joueurs de la session |
+| `game.pass` | Passer son tour [round_id=int] |
+| `session.player_statut` | Modifier son statut (prêt ou non) [statut_id : 6,7] (6=not_ready, 7=ready) |
+| `game.mix_the_dominoes` | Mélanger les dominos [data : null]|
+| `session.chat_message` | Le joueur envoie un message à 1 ou tout les joueurs de la session [channel : "global" ou "pseudo", message: "text"]|
 
 ## 🎮 Fonctionnalités du Jeu  
 

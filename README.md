@@ -62,7 +62,10 @@ Installer **Godot 4.3** et importer le dossier **Godot_front**
 Le projet s’ouvre directement, prêt à être lancé en **mode debug**.
 Pour utiliser en mode débug il faudra mettre en place tout l'environnement (Serveur Django, BDD PostgreSQL, BD Redis et le worker Celery)
 
-La version exécutable utilise l'api déployée sur Northflank.
+La version exécutable et le projet godot utilisent l'api déployée sur Northflank.
+
+**Notez que le front n'est pas terminé, il n'implémente pas tout ce que l'api peut offrir.**
+L'API elle est pleinement fonctionnelle 
 
 ## 📡 Endpoints API (Django DRF)  
 

@@ -43,7 +43,7 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
 
         # Récupérer la file d'attente
         # Ajouter la tâche avec un ETA
-        result = player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
+        # result = player_pass_task.apply_async((round.player_turn.id, round.id), eta=dt_utc)
 
     else:
         data_next_player = dict(action="game.your_turn",
@@ -54,10 +54,10 @@ def notify_player_for_his_turn(round, session, player_time_end, domino_list=None
                                 )
         notify_websocket.apply_async(args=("player", round.player_turn.id, data_next_player))
         # Ajouter la tâche avec un ETA
-        result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
+        # result = auto_play_domino_task.apply_async((round.player_turn.id, session.id, round.id), eta=dt_utc)
 
-    round.auto_play_task_id = result.id
-    round.save()
+    # round.auto_play_task_id = result.id
+    # round.save()
 
 def revoke_auto_play_task(round):
     if round.auto_play_task_id:

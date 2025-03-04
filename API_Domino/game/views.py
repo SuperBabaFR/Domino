@@ -148,6 +148,11 @@ class PlaceDomino(APIView):
             return Response(dict(code=400, message="Domino non jouable", data=None),
                             status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
 
+        for domino_on_table in table_de_jeu:
+            if domino_on_table['id'] == domino.id:
+                return Response(dict(code=400, message="Domino doublon ....", data=None),
+                                status=status.HTTP_400_BAD_REQUEST)  # Domino non jouable
+
         # Révoque la tâche programmée au plus vite
         revoke_auto_play_task(round)
 

@@ -330,7 +330,10 @@ class SessionConsumer(AsyncWebsocketConsumer):
             print("Round not found")
             return False
 
-        if round.game.id != session.game_id or round.statut.id != 11:
+        print(f'Round id {round.id}, session id : {session.id}, game_id :  {round.game_id}, session GAME id :  {session.game_id_id}')
+        print(f'round statut id : {round.statut_id}')
+
+        if round.game_id != session.game_id_id or round.statut_id != 11:
             print("Round terminé ou round plus de la game")
             return False
 

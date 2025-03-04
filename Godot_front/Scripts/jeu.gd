@@ -50,6 +50,7 @@ func someone_play(data: Dictionary):
 	print("joué à : ", data.side)
 	
 	if data.pseudo == Global.get_info("player", "pseudo"):
+		my_profil.force_end_reflexion_time()
 		return
 	
 	new_turn(data.pseudo)
@@ -75,7 +76,7 @@ func add_on_table(domino, orientation: String, side: String):
 	
 	var my_domino = domino_hand.instantiate()
 	my_domino.name = str(domino)
-	my_domino.load_texture(domino, orientation)
+	my_domino.load_texture(domino, orientation, true)
 	table.add_child(my_domino)
 	if side == "left":
 		table.move_child(my_domino, 0)
@@ -83,14 +84,15 @@ func add_on_table(domino, orientation: String, side: String):
 
 func someone_pass(data: Dictionary):
 	Global.update_player_turn(data)
+	if data.pseudo == Global.get_info("player", "pseudo"):
+		my_profil.force_end_reflexion_time()
+		return
 	if data.player_turn != Global.get_info("player", "pseudo"):
 		new_turn(data.pseudo)
 
 func new_turn(old_player):
 	var my_pseudo = Global.get_info("player", "pseudo")
-	if old_player == my_pseudo:
-		my_profil.force_end_reflexion_time()
-	else:
+	if old_player != my_pseudo:
 		players_profiles.get_node(old_player).force_end_reflexion_time()
 	
 	if Global.game_data.player_turn == my_pseudo:

@@ -241,9 +241,9 @@ Le client peut envoyer les messages suivants au serveur :
   - **À 2 ou 3 joueurs → Celui qui a le plus grand domino commence.**  
 
 #### **Durant la partie**  
-- **Si temps de réflexion écoulé → Un domino valide est joué au hasard par le serveur.**  
+- **Si temps de réflexion écoulé → Un domino valide est joué au hasard par le serveur.** (désactivé)
 - **Boudé :**  
-  - Affichage du message *"Vous êtes boudé"*, délai de 3 à 5s avant de passer son tour.  
+  - Affichage du message *"Vous êtes boudé"*, délai de 3 à 5s avant de passer son tour.  (délai désactivé)
 - **Seuls les dominos jouables sur la table peuvent être posés**.  
 - **Possibilité de jouer un domino à droite ou à gauche**.  
 

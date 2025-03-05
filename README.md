@@ -79,6 +79,7 @@ L'API elle est pleinement fonctionnelle
 - **`POST /access`** → Rafraîchissement du token JWT
     - **Champs :**
         - `refresh_token` *(string, requis)* → Token de rafraîchissement valide
+- **`GET /stats`** → Récupère les stats du joueur (🔒Token requis)
 
 ### 📋 **Sessions** (🔒Token requis)
 

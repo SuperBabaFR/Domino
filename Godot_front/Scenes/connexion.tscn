@@ -1,12 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://dkxwxlk4ubv1d"]
+[gd_scene load_steps=16 format=3 uid="uid://dkxwxlk4ubv1d"]
 
 [ext_resource type="Script" path="res://Scripts/connexion.gd" id="1_ilhuv"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_3r5rs"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_mfnmt"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_fdgqg"]
 [ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_g33av"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="6_14jl7"]
 [ext_resource type="Texture2D" uid="uid://dl7hjc82jccca" path="res://Assets/icons/light_signup_icon.svg" id="6_p7mlh"]
 [ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="6_yna68"]
+[ext_resource type="AudioStream" uid="uid://wkibndxo6iag" path="res://Assets/sfx/change_menu_sfx.mp3" id="9_vlmir"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2y2gg"]
 bg_color = Color(1, 1, 1, 1)
@@ -116,6 +118,9 @@ script = ExtResource("5_fdgqg")
 hover_scale = Vector2(1.05, 1.05)
 click_scale = Vector2(0.95, 0.95)
 
+[node name="sound_effect_component" type="Node" parent="MarginContainer/PanelContainer/Compatiments/btn_connexion"]
+script = ExtResource("6_14jl7")
+
 [node name="inscrire" type="VBoxContainer" parent="MarginContainer/PanelContainer/Compatiments"]
 layout_mode = 2
 
@@ -146,3 +151,7 @@ vertical_icon_alignment = 2
 script = ExtResource("5_fdgqg")
 hover_scale = Vector2(1.05, 1.05)
 click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="MarginContainer/PanelContainer/Compatiments/inscrire/btn_inscription"]
+script = ExtResource("6_14jl7")
+click_fx = ExtResource("9_vlmir")

@@ -76,7 +76,7 @@ uppercase = true
 
 [node name="statut_container" type="HBoxContainer" parent="image_pseudo/name"]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
 
 [node name="statut" type="Label" parent="image_pseudo/name/statut_container"]
 layout_mode = 2
@@ -101,33 +101,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 30
 
-[node name="pigs" type="BoxContainer" parent="scores"]
-layout_mode = 2
-vertical = true
-
-[node name="image_pig" type="TextureRect" parent="scores/pigs"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-texture = ExtResource("8_pvqsm")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="lab_pigs_count" type="Label" parent="scores/pigs"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("8_f3e4w")
-theme_override_font_sizes/font_size = 24
-text = "0"
-horizontal_alignment = 1
-
 [node name="wins" type="BoxContainer" parent="scores"]
 layout_mode = 2
 vertical = true
 
 [node name="image_win" type="TextureRect" parent="scores/wins"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -136,6 +115,27 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="lab_win_count" type="Label" parent="scores/wins"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("8_f3e4w")
+theme_override_font_sizes/font_size = 24
+text = "0"
+horizontal_alignment = 1
+
+[node name="pigs" type="BoxContainer" parent="scores"]
+layout_mode = 2
+vertical = true
+
+[node name="image_pig" type="TextureRect" parent="scores/pigs"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("8_pvqsm")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="lab_pigs_count" type="Label" parent="scores/pigs"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("8_f3e4w")

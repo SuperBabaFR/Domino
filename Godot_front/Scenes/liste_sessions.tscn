@@ -143,6 +143,7 @@ offset_right = 259.0
 grow_horizontal = 2
 
 [node name="btn_back" type="Button" parent="."]
+layout_mode = 0
 offset_left = 29.0
 offset_top = 21.0
 offset_right = 81.0

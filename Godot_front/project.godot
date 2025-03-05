@@ -21,6 +21,7 @@ Global="*res://Scripts/globaux/global.gd"
 Utile="*res://Scripts/globaux/utile.gd"
 API="*res://Scripts/globaux/api.gd"
 Websocket="*res://Scripts/globaux/websocket.gd"
+SFX="*res://Scripts/globaux/SFX.tscn"
 
 [display]
 

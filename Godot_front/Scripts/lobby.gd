@@ -62,6 +62,12 @@ func load_session_info():
 	nb_joueurs.text = "Nombre de joueurs : " + str(joueurs_count) + "/" + str(max_nb_joueurs)
 	reflexion_time.text = "Temps par tours : " + str(reflexion_time_value) + "sec"
 	code_session.text = "CODE : " + Global.get_info("session", "session_code")
+	
+	var my_pseudo = Global.get_info("player", "pseudo")
+	var session_hote = Global.get_info("session", "session_hote")
+	
+	btn_start.visible = (my_pseudo == session_hote)
+	btn_update_session.visible = (my_pseudo == session_hote)
 
 
 func session_updated(data):
@@ -74,9 +80,7 @@ func session_updated(data):
 		if data.session_hote == player.pseudo:
 			profil.toggle_hote(player.pseudo, true)
 		else:
-			profil.toggle_hote(player.pseudo, false)
-			
-	
+			profil.toggle_hote(player.pseudo, false)	
 
 
 func _on_btn_update_press():
@@ -122,7 +126,7 @@ func _set_ready_statut():
 		print("Le statut n'a pas pu être changé")
 		return
 	
-	btn_ready.text = "Retirer Prêt" if is_ready else "Mettre Prêt"
+	btn_ready.text = "Prêt" if is_ready else "Pas Prêt"
 
 func _update_statut(data):
 	if players_profiles.has_node(data.pseudo):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bw41ecw7l4jya"]
+[gd_scene load_steps=20 format=3 uid="uid://bw41ecw7l4jya"]
 
 [ext_resource type="Script" path="res://Scripts/home_menu.gd" id="1_27nal"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_5dn6r"]
@@ -8,10 +8,14 @@
 [ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="5_cqchh"]
 [ext_resource type="Theme" uid="uid://bxoogj41dvgvp" path="res://theme/home_menu.tres" id="6_3o3uo"]
 [ext_resource type="Theme" uid="uid://c0o88anmlcpo0" path="res://theme/profil_game.tres" id="6_pixm3"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="7_1xx2k"]
 [ext_resource type="Texture2D" uid="uid://ccl08xo6uxlh4" path="res://Assets/icons/light-icon-stats.png" id="7_oi4l2"]
 [ext_resource type="FontFile" uid="uid://dprj0e0cx7d1c" path="res://Assets/fonts/Rajdhani-Regular.ttf" id="8_2pfdq"]
+[ext_resource type="AudioStream" uid="uid://bs1bkmbj5puym" path="res://Assets/sfx/hover_nav_sfx.mp3" id="8_nqatk"]
 [ext_resource type="Texture2D" uid="uid://u6k016hoa1hw" path="res://Assets/images/default_profil.jpg" id="8_tc0j7"]
 [ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="11_h0rlq"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="12_2nt7y"]
+[ext_resource type="AudioStream" uid="uid://wkibndxo6iag" path="res://Assets/sfx/change_menu_sfx.mp3" id="15_loxe6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drc81"]
 bg_color = Color(1, 1, 1, 1)
@@ -82,17 +86,26 @@ grow_horizontal = 2
 
 [node name="btn_disconnect" type="Button" parent="."]
 layout_mode = 0
-offset_left = 44.0
-offset_top = 30.0
-offset_right = 134.0
-offset_bottom = 118.0
+offset_left = 31.0
+offset_top = 31.0
+offset_right = 163.0
+offset_bottom = 119.0
 theme = ExtResource("4_05hrk")
-text = "QUITTER"
+text = "Déconnexion"
 icon = ExtResource("5_cqchh")
 flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
+
+[node name="AnimationComponent" type="Node" parent="btn_disconnect"]
+script = ExtResource("12_2nt7y")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="btn_disconnect"]
+script = ExtResource("7_1xx2k")
+hover_fx = ExtResource("8_nqatk")
 
 [node name="séparer" type="BoxContainer" parent="."]
 layout_mode = 1
@@ -342,6 +355,15 @@ size_flags_horizontal = 4
 theme = ExtResource("6_3o3uo")
 text = "Rejoindre"
 
+[node name="AnimationComponent2" type="Node" parent="séparer/btns/btn_join"]
+script = ExtResource("12_2nt7y")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="séparer/btns/btn_join"]
+script = ExtResource("7_1xx2k")
+click_fx = ExtResource("15_loxe6")
+
 [node name="ou" type="Label" parent="séparer/btns"]
 layout_mode = 2
 theme = ExtResource("6_3o3uo")
@@ -363,3 +385,12 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("6_3o3uo")
 text = "Créer"
+
+[node name="AnimationComponent2" type="Node" parent="séparer/btns/btn_create"]
+script = ExtResource("12_2nt7y")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="séparer/btns/btn_create"]
+script = ExtResource("7_1xx2k")
+click_fx = ExtResource("15_loxe6")

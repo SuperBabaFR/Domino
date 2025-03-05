@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpo373l0ho1c7"]
+
+[ext_resource type="Script" path="res://Scripts/globaux/sfx.gd" id="1_csv8j"]
+
+[node name="Sfx" type="Node"]
+script = ExtResource("1_csv8j")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -2.0

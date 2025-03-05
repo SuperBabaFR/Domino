@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cqgd15taqxuqo"]
+[gd_scene load_steps=24 format=3 uid="uid://cqgd15taqxuqo"]
 
 [ext_resource type="Script" path="res://Scripts/lobby.gd" id="1_oddvw"]
 [ext_resource type="PackedScene" uid="uid://doqihpqywa426" path="res://Scenes/Composants/profil.tscn" id="1_powg8"]
@@ -7,13 +7,77 @@
 [ext_resource type="Theme" uid="uid://chpey7qmivu2i" path="res://theme/btn_logout.tres" id="4_065x1"]
 [ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="5_m43xw"]
 [ext_resource type="Theme" uid="uid://7rqwdm07j4v3" path="res://theme/lobby.tres" id="5_pjs1q"]
-[ext_resource type="Texture2D" uid="uid://bg06lrgp8li3x" path="res://Assets/icons/light_play_icon.png" id="6_5j7vq"]
 [ext_resource type="Texture2D" uid="uid://lhbke841yy51" path="res://Assets/icons/light_settings_icon.svg" id="6_pk738"]
+[ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="7_7pxy4"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="7_j2lir"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="7_vkql8"]
+[ext_resource type="AudioStream" uid="uid://bs1bkmbj5puym" path="res://Assets/sfx/hover_nav_sfx.mp3" id="8_85jlp"]
+[ext_resource type="Texture2D" uid="uid://b3wbqxpqlv5ar" path="res://Assets/icons/light_play_icon.png" id="8_c2ccu"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="9_7ajrx"]
 [ext_resource type="LabelSettings" uid="uid://bn4xvoh8u7iik" path="res://theme/label_settings.tres" id="11_c0d5u"]
 [ext_resource type="PackedScene" uid="uid://ckkbnrftons4i" path="res://Scenes/update_session.tscn" id="11_rggrf"]
+[ext_resource type="AudioStream" uid="uid://cmuncxt8p3pk1" path="res://Assets/sfx/click_sfx.mp3" id="11_x0cmx"]
 [ext_resource type="FontFile" uid="uid://dprj0e0cx7d1c" path="res://Assets/fonts/Rajdhani-Regular.ttf" id="12_bptpx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8so2l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6653j"]
+bg_color = Color(0, 0.720339, 0, 1)
+skew = Vector2(0.2, 0)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_32xce"]
+bg_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
+skew = Vector2(0.2, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.303233, 0.303233, 0.303233, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+shadow_color = Color(0, 0, 0, 0.262745)
+shadow_size = 4
+shadow_offset = Vector2(-4, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0t43w"]
+bg_color = Color(0, 0.61532, 0, 1)
+skew = Vector2(0.2, 0)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7v2lv"]
+bg_color = Color(0, 0, 0, 1)
+skew = Vector2(0.2, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.270222, 0.270222, 0.270222, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+shadow_color = Color(0, 0, 0, 0.262745)
+shadow_size = 4
+shadow_offset = Vector2(-4, 4)
 
 [node name="Lobby" type="Control" node_paths=PackedStringArray("btn_leave", "btn_start", "btn_ready", "btn_update_session", "players_profiles", "session_name", "nb_joueurs", "reflexion_time", "code_session")]
 layout_mode = 3
@@ -24,7 +88,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oddvw")
 btn_leave = NodePath("btn_leave")
-btn_start = NodePath("HBoxContainer/btn_start")
+btn_start = NodePath("HBoxContainer/BoxContainer/btn_start")
 btn_ready = NodePath("btn_ready")
 btn_update_session = NodePath("HBoxContainer/BoxContainer/btn_modif_session")
 players_profiles = NodePath("players_profiles")
@@ -53,6 +117,15 @@ icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
 
+[node name="AnimationComponent" type="Node" parent="btn_leave"]
+script = ExtResource("7_vkql8")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="btn_leave"]
+script = ExtResource("7_j2lir")
+hover_fx = ExtResource("8_85jlp")
+
 [node name="ChatTextuel" parent="." instance=ExtResource("4_0wkmg")]
 layout_mode = 1
 anchors_preset = 2
@@ -65,11 +138,29 @@ grow_vertical = 0
 
 [node name="btn_ready" type="Button" parent="."]
 layout_mode = 0
-offset_left = 108.0
-offset_top = 432.0
-offset_right = 228.0
-offset_bottom = 477.0
-text = "Mettre Prêt"
+offset_left = 995.0
+offset_top = 567.0
+offset_right = 1165.0
+offset_bottom = 634.0
+theme_override_fonts/font = ExtResource("7_7pxy4")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8so2l")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_6653j")
+theme_override_styles/hover = SubResource("StyleBoxFlat_32xce")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0t43w")
+theme_override_styles/normal = SubResource("StyleBoxFlat_7v2lv")
+toggle_mode = true
+text = "Pas Prêt"
+
+[node name="AnimationComponent" type="Node" parent="btn_ready"]
+script = ExtResource("7_vkql8")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="btn_ready"]
+script = ExtResource("7_j2lir")
+hover_fx = ExtResource("8_85jlp")
+click_fx = ExtResource("11_x0cmx")
 
 [node name="players_profiles" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -86,12 +177,14 @@ alignment = 1
 
 [node name="HBoxContainer" type="BoxContainer" parent="."]
 layout_mode = 1
-anchors_preset = 12
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 335.0
-offset_top = -169.0
+offset_left = -169.0
+offset_top = -241.0
+offset_right = 169.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(1, 1.00256)
@@ -100,9 +193,28 @@ alignment = 1
 
 [node name="BoxContainer" type="BoxContainer" parent="HBoxContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 10
 alignment = 1
 vertical = true
+
+[node name="btn_start" type="Button" parent="HBoxContainer/BoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("5_pjs1q")
+text = "PLAY"
+icon = ExtResource("8_c2ccu")
+flat = true
+
+[node name="AnimationComponent" type="Node" parent="HBoxContainer/BoxContainer/btn_start"]
+script = ExtResource("7_vkql8")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.9, 0.9)
+
+[node name="sound_effect_component" type="Node" parent="HBoxContainer/BoxContainer/btn_start"]
+script = ExtResource("7_j2lir")
+hover_fx = ExtResource("8_85jlp")
 
 [node name="panel" type="PanelContainer" parent="HBoxContainer/BoxContainer"]
 layout_mode = 2
@@ -117,14 +229,15 @@ theme_override_constants/separation = 20
 [node name="lab_nb_joueurs" type="Label" parent="HBoxContainer/BoxContainer/panel/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("5_pjs1q")
-text = "NOMBRE DE JOUEURS : 0"
+text = "NOMBRE DE JOUEURS : 1/4"
 
 [node name="lab_reflexion_time" type="Label" parent="HBoxContainer/BoxContainer/panel/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("5_pjs1q")
-text = "TEMPS PAR TOURS : 0s"
+text = "TEMPS PAR TOURS : 20s"
 
 [node name="btn_modif_session" type="Button" parent="HBoxContainer/BoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -134,19 +247,15 @@ text = "PARAMETRES DE LA SESSION"
 icon = ExtResource("6_pk738")
 flat = true
 
-[node name="btn_start" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme = ExtResource("5_pjs1q")
-text = "PLAY"
-icon = ExtResource("6_5j7vq")
-flat = true
-
-[node name="AnimationComponent" type="Node" parent="HBoxContainer/btn_start"]
+[node name="AnimationComponent" type="Node" parent="HBoxContainer/BoxContainer/btn_modif_session"]
 script = ExtResource("7_vkql8")
-hover_scale = Vector2(1.1, 1.1)
-click_scale = Vector2(0.9, 0.9)
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="HBoxContainer/BoxContainer/btn_modif_session"]
+script = ExtResource("7_j2lir")
+hover_fx = ExtResource("8_85jlp")
+click_fx = ExtResource("11_x0cmx")
 
 [node name="Title" type="BoxContainer" parent="."]
 layout_mode = 1
@@ -169,7 +278,7 @@ layout_mode = 2
 theme = ExtResource("5_pjs1q")
 theme_override_fonts/font = ExtResource("12_bptpx")
 theme_override_font_sizes/font_size = 40
-text = "LA session de MACO"
+text = "Nom de session"
 horizontal_alignment = 1
 
 [node name="UpdateSession" parent="." instance=ExtResource("11_rggrf")]
@@ -178,11 +287,15 @@ layout_mode = 1
 
 [node name="code_session" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 1
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 23.0
+anchor_bottom = 1.0
+offset_left = -57.0
+offset_top = -23.0
 grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("5_pjs1q")
 text = "CODE : "
 label_settings = ExtResource("11_c0d5u")

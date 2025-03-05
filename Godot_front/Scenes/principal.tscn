@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://bpa4lyv6g6gov"]
+[gd_scene load_steps=11 format=3 uid="uid://bpa4lyv6g6gov"]
 
 [ext_resource type="Script" path="res://Scripts/principal.gd" id="1_rkwun"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_atcly"]
 [ext_resource type="Texture2D" uid="uid://clwp1lw5id0g1" path="res://Assets/images/boutton play.svg" id="3_ftvox"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="3_fxoe0"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_ic8g8"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="6_kwnfd"]
+[ext_resource type="AudioStream" uid="uid://wkibndxo6iag" path="res://Assets/sfx/change_menu_sfx.mp3" id="8_u4ac0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ymlfj"]
 bg_color = Color(1, 1, 1, 1)
@@ -72,3 +74,7 @@ icon = ExtResource("3_ftvox")
 script = ExtResource("5_ic8g8")
 hover_scale = Vector2(1.05, 1.05)
 click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="MarginContainer/VBoxContainer/fond_btn/btn_start"]
+script = ExtResource("6_kwnfd")
+click_fx = ExtResource("8_u4ac0")

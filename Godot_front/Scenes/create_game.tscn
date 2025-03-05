@@ -1,10 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://dei1ltav0d68e"]
+[gd_scene load_steps=18 format=3 uid="uid://dei1ltav0d68e"]
 
 [ext_resource type="Script" path="res://Scripts/create_game.gd" id="1_x4x2d"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_o5l2d"]
 [ext_resource type="Theme" uid="uid://7rcqq16denry" path="res://theme/menu.tres" id="4_otdm2"]
 [ext_resource type="Texture2D" uid="uid://cb17at4x15let" path="res://Assets/icons/light-icon-back.png" id="4_xdxse"]
 [ext_resource type="FontFile" uid="uid://ca8tmv67ys7mb" path="res://Assets/fonts/MajorMonoDisplay-Regular.ttf" id="5_hvp1p"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="6_8rfhb"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="7_82rqg"]
+[ext_resource type="AudioStream" uid="uid://wkibndxo6iag" path="res://Assets/sfx/change_menu_sfx.mp3" id="8_10fgw"]
+[ext_resource type="AudioStream" uid="uid://bs1bkmbj5puym" path="res://Assets/sfx/hover_nav_sfx.mp3" id="8_e26sw"]
+[ext_resource type="AudioStream" uid="uid://cmuncxt8p3pk1" path="res://Assets/sfx/click_sfx.mp3" id="8_rgy0e"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d71ka"]
 
@@ -106,6 +111,16 @@ icon = ExtResource("4_xdxse")
 icon_alignment = 1
 expand_icon = true
 
+[node name="AnimationComponent" type="Node" parent="btn_back"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="btn_back"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_10fgw")
+
 [node name="title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
@@ -167,17 +182,47 @@ theme = ExtResource("4_otdm2")
 toggle_mode = true
 text = "2"
 
+[node name="AnimationComponent" type="Node" parent="all/nb joueurs/btn_2"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/nb joueurs/btn_2"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_rgy0e")
+
 [node name="btn_3" type="Button" parent="all/nb joueurs"]
 layout_mode = 2
 theme = ExtResource("4_otdm2")
 toggle_mode = true
 text = "3"
 
+[node name="AnimationComponent" type="Node" parent="all/nb joueurs/btn_3"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/nb joueurs/btn_3"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_rgy0e")
+
 [node name="btn_4" type="Button" parent="all/nb joueurs"]
 layout_mode = 2
 theme = ExtResource("4_otdm2")
 toggle_mode = true
 text = "4"
+
+[node name="AnimationComponent" type="Node" parent="all/nb joueurs/btn_4"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/nb joueurs/btn_4"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_rgy0e")
 
 [node name="reflexion_time" type="BoxContainer" parent="all"]
 layout_mode = 2
@@ -222,12 +267,32 @@ theme = ExtResource("4_otdm2")
 toggle_mode = true
 text = "Privée"
 
+[node name="AnimationComponent" type="Node" parent="all/public/btn_pv"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/public/btn_pv"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_rgy0e")
+
 [node name="btn_public" type="Button" parent="all/public"]
 custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 theme = ExtResource("4_otdm2")
 toggle_mode = true
 text = "Publique"
+
+[node name="AnimationComponent" type="Node" parent="all/public/btn_public"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/public/btn_public"]
+script = ExtResource("7_82rqg")
+hover_fx = ExtResource("8_e26sw")
+click_fx = ExtResource("8_rgy0e")
 
 [node name="penality" type="BoxContainer" parent="all"]
 layout_mode = 2
@@ -259,6 +324,15 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_f7d65")
 theme_override_styles/normal = SubResource("StyleBoxFlat_btr21")
 text = "RESET"
 
+[node name="AnimationComponent" type="Node" parent="all/btns/btn_reset"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/btns/btn_reset"]
+script = ExtResource("7_82rqg")
+click_fx = ExtResource("8_rgy0e")
+
 [node name="btn_valider" type="Button" parent="all/btns"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
@@ -270,7 +344,14 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_f7d65")
 theme_override_styles/normal = SubResource("StyleBoxFlat_btr21")
 text = "Valider"
 
+[node name="AnimationComponent" type="Node" parent="all/btns/btn_valider"]
+script = ExtResource("6_8rfhb")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
+[node name="sound_effect_component" type="Node" parent="all/btns/btn_valider"]
+script = ExtResource("7_82rqg")
+
 [connection signal="pressed" from="btn_back" to="." method="_on_btn_back_pressed"]
 [connection signal="value_changed" from="all/reflexion_time/slider_reflexion_time" to="." method="_on_slider_reflexion_time_value_changed"]
-[connection signal="pressed" from="all/btns/btn_reset" to="." method="_on_btn_creer_pressed"]
 [connection signal="pressed" from="all/btns/btn_valider" to="." method="_on_btn_creer_pressed"]

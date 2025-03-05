@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://sp366cl6ssob"]
+[gd_scene load_steps=18 format=3 uid="uid://sp366cl6ssob"]
 
 [ext_resource type="Script" path="res://Scripts/inscription.gd" id="1_1mxcp"]
 [ext_resource type="PackedScene" uid="uid://bae11n0hrsgiq" path="res://Scenes/Composants/background_menu.tscn" id="2_605gw"]
@@ -7,8 +7,10 @@
 [ext_resource type="Texture2D" uid="uid://bm0mg1i7ce2jw" path="res://Assets/images/profile_mask.png" id="3_x5kbk"]
 [ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="5_b2dcy"]
 [ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="6_l4bm5"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="6_ysstu"]
 [ext_resource type="FontFile" uid="uid://dlbjjjpeqoogx" path="res://Assets/fonts/Belanosima-Regular.ttf" id="7_qmt8u"]
 [ext_resource type="Texture2D" uid="uid://cuebl2wkoa0hh" path="res://Assets/icons/light_login_icon.svg" id="8_i8mmc"]
+[ext_resource type="AudioStream" uid="uid://wkibndxo6iag" path="res://Assets/sfx/change_menu_sfx.mp3" id="10_rrcgi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5beo"]
 bg_color = Color(1, 1, 1, 1)
@@ -143,6 +145,9 @@ size_flags_horizontal = 4
 theme = ExtResource("5_b2dcy")
 text = "Inscription"
 
+[node name="sound_effect_component" type="Node" parent="MarginContainer/PanelContainer/Compatiments/btn_inscription"]
+script = ExtResource("6_ysstu")
+
 [node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/btn_inscription"]
 script = ExtResource("6_l4bm5")
 hover_scale = Vector2(1.05, 1.05)
@@ -174,6 +179,10 @@ flat = true
 icon_alignment = 1
 vertical_icon_alignment = 2
 
+[node name="sound_effect_component" type="Node" parent="MarginContainer/PanelContainer/Compatiments/connexion/btn_page_connexion"]
+script = ExtResource("6_ysstu")
+click_fx = ExtResource("10_rrcgi")
+
 [node name="AnimationComponent" type="Node" parent="MarginContainer/PanelContainer/Compatiments/connexion/btn_page_connexion"]
 script = ExtResource("6_l4bm5")
 hover_scale = Vector2(1.05, 1.05)
@@ -192,6 +201,10 @@ text = "
 icon = ExtResource("3_qumxb")
 flat = true
 icon_alignment = 1
+
+[node name="sound_effect_component" type="Node" parent="btn_import"]
+script = ExtResource("6_ysstu")
+click_fx = ExtResource("10_rrcgi")
 
 [node name="AnimationComponent" type="Node" parent="btn_import"]
 script = ExtResource("6_l4bm5")

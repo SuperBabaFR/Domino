@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b8qutyen6k6l3"]
+[gd_scene load_steps=13 format=3 uid="uid://b8qutyen6k6l3"]
 
 [ext_resource type="Script" path="res://Scripts/jeu.gd" id="1_xs48l"]
 [ext_resource type="PackedScene" uid="uid://c37skj7ivofx5" path="res://Scenes/Composants/hand_domino.tscn" id="2_lx6xb"]
@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://chpey7qmivu2i" path="res://theme/btn_logout.tres" id="5_18ld6"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="6_5njna"]
 [ext_resource type="Texture2D" uid="uid://prwserrsjpsl" path="res://Assets/icons/light_logout_icon.png" id="6_217uf"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="8_dibxh"]
 [ext_resource type="Texture2D" uid="uid://qu5mus8tnkd" path="res://Assets/icons/light_icon_side_left.png" id="9_see2c"]
 [ext_resource type="Theme" uid="uid://bm8nxsu00rq3s" path="res://theme/boutons_side.tres" id="10_fryho"]
 [ext_resource type="Texture2D" uid="uid://bnk55i21xd864" path="res://Assets/icons/light_icon_side_right.png" id="10_g2og0"]
@@ -53,6 +54,11 @@ flat = true
 icon_alignment = 1
 vertical_icon_alignment = 0
 expand_icon = true
+
+[node name="AnimationComponent" type="Node" parent="btn_quitter"]
+script = ExtResource("8_dibxh")
+hover_scale = Vector2(1.1, 1.1)
+click_scale = Vector2(0.95, 0.95)
 
 [node name="dominos" type="HBoxContainer" parent="."]
 layout_mode = 0

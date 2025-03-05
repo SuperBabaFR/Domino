@@ -45,13 +45,9 @@ python manage.py migrate
 📌 **Lancer le serveur Django :**  
 ```bash
 python manage.py runserver
-```
-L'API est accessible sur **`http://127.0.0.1:8000/`**
-
-📌 **Lancer le serveur Django :**  
-```bash
 celery -A API_Domino worker --log-level=info 
 ```
+L'API est accessible sur **`http://127.0.0.1:8000/`**
 
 ### **2️⃣ Lancer le Front (Godot)**  
 
@@ -62,7 +58,10 @@ Installer **Godot 4.3** et importer le dossier **Godot_front**
 Le projet s’ouvre directement, prêt à être lancé en **mode debug**.
 Pour utiliser en mode débug il faudra mettre en place tout l'environnement (Serveur Django, BDD PostgreSQL, BD Redis et le worker Celery)
 
-La version exécutable utilise l'api déployée sur Northflank.
+La version exécutable et le projet godot utilisent l'api déployée sur Northflank.
+
+**Notez que le front n'est pas terminé, il n'implémente pas tout ce que l'api peut offrir.**
+L'API elle est pleinement fonctionnelle 
 
 ## 📡 Endpoints API (Django DRF)  
 
@@ -80,6 +79,7 @@ La version exécutable utilise l'api déployée sur Northflank.
 - **`POST /access`** → Rafraîchissement du token JWT
     - **Champs :**
         - `refresh_token` *(string, requis)* → Token de rafraîchissement valide
+- **`GET /stats`** → Récupère les stats du joueur (🔒Token requis)
 
 ### 📋 **Sessions** (🔒Token requis)
 
@@ -87,7 +87,7 @@ La version exécutable utilise l'api déployée sur Northflank.
     - **Champs :**
         - `session_name` *(string, optionnel)* → Nom de la session
         - `max_players_count` *(int, optionnel)* → Nombre de joueurs max (2-4)
-        - `reflexion_time` *(int, optionnel)* → Temps de réflexion (20-90 sec)
+        - `reflexion_time` *(int, optionnel)* → Temps de réflexion (20-100 sec)
         - `definitive_leave` *(bool, optionnel)* → Autoriser les départs définitifs
         - `is_public` *(bool, optionnel)* → Session publique ou privée
 - **`GET /sessions`** → Lister les sessions publiques disponibles
@@ -200,10 +200,10 @@ Le client peut envoyer les messages suivants au serveur :
 
 | **Action** | **Description** |
 | --- | --- |
-| `game.pass` | Passer son tour |
-| `session.player_statut` | Modifier son statut (prêt ou non) |
-| `game.mix_the_dominoes` | Mélanger les dominos |
-| `session.chat_message` | Le joueur envoie un message à 1 ou tout les joueurs de la session |
+| `game.pass` | Passer son tour [round_id=int] |
+| `session.player_statut` | Modifier son statut (prêt ou non) [statut_id : 6,7] (6=not_ready, 7=ready) |
+| `game.mix_the_dominoes` | Mélanger les dominos [data : null]|
+| `session.chat_message` | Le joueur envoie un message à 1 ou tout les joueurs de la session [channel : "global" ou "pseudo", message: "text"]|
 
 ## 🎮 Fonctionnalités du Jeu  
 
@@ -242,9 +242,9 @@ Le client peut envoyer les messages suivants au serveur :
   - **À 2 ou 3 joueurs → Celui qui a le plus grand domino commence.**  
 
 #### **Durant la partie**  
-- **Si temps de réflexion écoulé → Un domino valide est joué au hasard par le serveur.**  
+- **Si temps de réflexion écoulé → Un domino valide est joué au hasard par le serveur.** (désactivé)
 - **Boudé :**  
-  - Affichage du message *"Vous êtes boudé"*, délai de 3 à 5s avant de passer son tour.  
+  - Affichage du message *"Vous êtes boudé"*, délai de 3 à 5s avant de passer son tour.  (délai désactivé)
 - **Seuls les dominos jouables sur la table peuvent être posés**.  
 - **Possibilité de jouer un domino à droite ou à gauche**.  
 
@@ -257,13 +257,12 @@ Le client peut envoyer les messages suivants au serveur :
 - **Retour au lobby avec possibilité de relancer une partie.**  
 
 ## 🔗 Liens utiles  
-- **Documentation API :** [Disponible via Postman]  
-- **Rapport académique :** *(ajouter un lien si applicable)*  
+- **Documentation API :** [En cours de réalisation]
 
 ---
 
 🎲 **Projet réalisé en MASTER MIAGE 2ème Année**  
-📅 Dates : **1 Décembre 2024 → 7 mars 2025**  
+📅 Dates : **1 Décembre 2024 → 4 mars 2025**  
 👤 **Développeurs :** 
 - Bastien SINITAMBIRIVOUTIN
 - Nicolas BARBEU

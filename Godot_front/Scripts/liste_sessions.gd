@@ -5,6 +5,8 @@ var label_settings
 @export var btn_actualiser : Button
 @export var input_code_session: LineEdit
 
+@onready var session_line: PackedScene = preload("res://Scenes/Composants/ligne_session.tscn")
+
 func _ready():
 	load_sessions()
 	label_settings = preload("res://theme/label_settings.tres")
@@ -32,32 +34,19 @@ func afficher_sessions(sessions):
 		child.free()
 	
 	
+	
 	for session in sessions:
-		session["can_join"] = true
-		if session.statut in ["session.is_active", "session.is_full"] or not session.is_public:
-			session["can_join"] = false
 		print(session)
 		
-		# Pour chaque session que l'on peut vraiment rejoindre
-		var session_container = HBoxContainer.new()
 		# Nom de la session
-		var session_label = Label.new()
-		session_label.text = session.session_name
-		session_label.set_label_settings(label_settings)
-		session_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		session_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		session_label.custom_minimum_size = Vector2(0, 30)
+		var line = session_line.instantiate()
 		
-		session_container.add_child(session_label)
-		# Bouton rejoindre
-		if session.can_join:
-			var join_button = Button.new()
-			join_button.text = "Rejoindre"
-			join_button.pressed.connect(func(): API.rejoindre_session(session.code))
-			
-			session_container.add_child(join_button)
+		var nb = str(session.player_count) + "/" + str(session.max_players_count)
+		
+		line.load_line(session.session_name, session.session_hote, session.statut, nb, session.is_public)
+
 		# Ajoute l'élément entier
-		$ScrollContainer/VBoxContainer.add_child(session_container)
+		$ScrollContainer/VBoxContainer.add_child(line)
 
 
 func _on_btn_retour_pressed():

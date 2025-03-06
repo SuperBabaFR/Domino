@@ -1,0 +1,137 @@
+[gd_scene load_steps=10 format=3 uid="uid://qevh3ofrlhh4"]
+
+[ext_resource type="Texture2D" uid="uid://bdlfg8hrp457s" path="res://Assets/icons/light_crown_icon_2.png" id="1_ctohr"]
+[ext_resource type="Script" path="res://Scenes/Composants/ligne_session.gd" id="1_gyqu8"]
+[ext_resource type="Texture2D" uid="uid://b0s4kukiv1426" path="res://Assets/icons/light_person_icon.png" id="1_v6ujd"]
+[ext_resource type="FontFile" uid="uid://bggh1yw7dveem" path="res://Assets/fonts/Bungee-Regular.ttf" id="2_muc2j"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hfst5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bmjj3"]
+content_margin_left = 30.0
+content_margin_top = 5.0
+content_margin_right = 30.0
+content_margin_bottom = 5.0
+bg_color = Color(0.407843, 0.396078, 0.396078, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ujbnw"]
+content_margin_left = 30.0
+content_margin_top = 5.0
+content_margin_right = 30.0
+content_margin_bottom = 5.0
+bg_color = Color(0.231373, 0.882353, 0.32549, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k6sew"]
+content_margin_left = 30.0
+content_margin_top = 5.0
+content_margin_right = 30.0
+content_margin_bottom = 5.0
+bg_color = Color(0.7438, 0.976669, 0.592706, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sxqn5"]
+content_margin_left = 30.0
+content_margin_top = 5.0
+content_margin_right = 30.0
+content_margin_bottom = 5.0
+bg_color = Color(0.568627, 0.882353, 0.32549, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="LigneSession" type="HBoxContainer" node_paths=PackedStringArray("s_name", "hote", "statut", "joueurs", "btn_rejoindre")]
+offset_right = 601.0
+offset_bottom = 88.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+alignment = 1
+script = ExtResource("1_gyqu8")
+s_name = NodePath("VBoxContainer/session_name")
+hote = NodePath("VBoxContainer/HBoxContainer/session_hote")
+statut = NodePath("session_statut")
+joueurs = NodePath("joueurs/nb_joueurs")
+btn_rejoindre = NodePath("rejoindre_btn")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="session_name" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_muc2j")
+theme_override_font_sizes/font_size = 25
+text = "PAS DE RALENTIR"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="icon_crown" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_ctohr")
+
+[node name="session_hote" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.454902, 0.45098, 0.45098, 1)
+theme_override_fonts/font = ExtResource("2_muc2j")
+theme_override_font_sizes/font_size = 18
+text = "HÔTE : ACK_PHOTO"
+
+[node name="session_statut" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0.576471, 0.0666667, 1)
+theme_override_fonts/font = ExtResource("2_muc2j")
+theme_override_font_sizes/font_size = 25
+text = "OPEN"
+horizontal_alignment = 1
+
+[node name="rejoindre_btn" type="Button" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_muc2j")
+theme_override_font_sizes/font_size = 27
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hfst5")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bmjj3")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxFlat_ujbnw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_k6sew")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ujbnw")
+theme_override_styles/normal = SubResource("StyleBoxFlat_sxqn5")
+text = "Rejoindre"
+
+[node name="joueurs" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="joueurs"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("1_v6ujd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="nb_joueurs" type="Label" parent="joueurs"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_muc2j")
+theme_override_font_sizes/font_size = 25
+text = "1/4"
+horizontal_alignment = 1

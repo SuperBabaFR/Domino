@@ -76,6 +76,8 @@ func someone_play(data: Dictionary):
 func add_on_table(domino, orientation: String, side: String):
 	var this_table = Global.game_data.table
 	
+	print("j'ajoute sur la table le domino : ", domino)
+	
 	if typeof(Global.game_data.table) == TYPE_STRING:
 		this_table = str_to_var(Global.game_data.table)
 	

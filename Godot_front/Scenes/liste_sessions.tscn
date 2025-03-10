@@ -1,11 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://dxw04cxgsixf0"]
+[gd_scene load_steps=18 format=3 uid="uid://dxw04cxgsixf0"]
 
 [ext_resource type="Script" path="res://Scripts/liste_sessions.gd" id="1_8p1yd"]
 [ext_resource type="PackedScene" uid="uid://djwl8qa1crgq7" path="res://Scenes/Composants/background_game.tscn" id="2_qyvrb"]
 [ext_resource type="Theme" uid="uid://bjqekpvhrjx88" path="res://theme/formulaires_theme.tres" id="3_ccd2w"]
+[ext_resource type="Script" path="res://Scripts/classes/SoundEffect.gd" id="4_uyryc"]
 [ext_resource type="PackedScene" uid="uid://3mtnbk5eamcd" path="res://Scenes/Composants/GameTitle.tscn" id="4_yq0c1"]
+[ext_resource type="Script" path="res://Scripts/classes/animation_component.gd" id="5_uc505"]
 [ext_resource type="Texture2D" uid="uid://cb17at4x15let" path="res://Assets/icons/light-icon-back.png" id="5_vn0wl"]
 [ext_resource type="Theme" uid="uid://7rcqq16denry" path="res://theme/menu.tres" id="6_rqvam"]
+[ext_resource type="AudioStream" uid="uid://cmuncxt8p3pk1" path="res://Assets/sfx/click_sfx.mp3" id="9_fy4oa"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dphqi"]
 
@@ -42,16 +45,7 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bhen"]
-content_margin_left = 10.0
-content_margin_top = 5.0
-content_margin_right = 10.0
-content_margin_bottom = 5.0
-bg_color = Color(0.178007, 0.161216, 0.16124, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t0d3g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fp4da"]
 content_margin_left = 10.0
@@ -59,6 +53,17 @@ content_margin_top = 5.0
 content_margin_right = 10.0
 content_margin_bottom = 5.0
 bg_color = Color(0.22334, 0.203453, 0.203481, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5bhen"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.178007, 0.161216, 0.16124, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -130,6 +135,14 @@ offset_bottom = 695.0
 theme = ExtResource("3_ccd2w")
 text = "Valider"
 
+[node name="sound_effect_component" type="Node" parent="btn_join"]
+script = ExtResource("4_uyryc")
+
+[node name="AnimationComponent" type="Node" parent="btn_join"]
+script = ExtResource("5_uc505")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
 [node name="GameTitle" parent="." instance=ExtResource("4_yq0c1")]
 layout_mode = 1
 anchors_preset = 5
@@ -154,6 +167,14 @@ icon = ExtResource("5_vn0wl")
 icon_alignment = 1
 expand_icon = true
 
+[node name="sound_effect_component" type="Node" parent="btn_back"]
+script = ExtResource("4_uyryc")
+
+[node name="AnimationComponent" type="Node" parent="btn_back"]
+script = ExtResource("5_uc505")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
+
 [node name="btn_actualiser" type="Button" parent="."]
 layout_mode = 0
 offset_left = 523.0
@@ -161,9 +182,20 @@ offset_top = 624.0
 offset_right = 789.0
 offset_bottom = 682.0
 theme = ExtResource("6_rqvam")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_t0d3g")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_fp4da")
 theme_override_styles/hover = SubResource("StyleBoxFlat_5bhen")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fp4da")
 theme_override_styles/normal = SubResource("StyleBoxFlat_a7cv6")
 text = "ACTUALISER"
+
+[node name="sound_effect_component" type="Node" parent="btn_actualiser"]
+script = ExtResource("4_uyryc")
+click_fx = ExtResource("9_fy4oa")
+
+[node name="AnimationComponent" type="Node" parent="btn_actualiser"]
+script = ExtResource("5_uc505")
+hover_scale = Vector2(1.05, 1.05)
+click_scale = Vector2(0.95, 0.95)
 
 [connection signal="pressed" from="btn_back" to="." method="_on_btn_retour_pressed"]

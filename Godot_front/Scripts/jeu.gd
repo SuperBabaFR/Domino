@@ -284,9 +284,10 @@ func play_domino(id, side):
 
 
 func refresh_after_play(data: Dictionary):
-	if not data.has('type_finish'):
+	if data.has('type_finish'):
 		return
 	Global.update_player_game_data(data)
+	print(data)
 	load_my_dominoes(data.dominoes)
 	load_table(data.table)
 	new_turn(Global.get_info("player", "pseudo"))

@@ -8,6 +8,11 @@ extends HBoxContainer
 
 @onready var icon = preload("res://Assets/icons/light_lock_icon.svg")
 
+var code = ""
+
+func _ready():
+	btn_rejoindre.connect("pressed", join_game)
+
 func load_line(session_name, session_hote, p_statut, nb_j, public):
 	s_name.text = session_name
 	hote.text = "HÔTE : " + session_hote
@@ -38,3 +43,8 @@ func load_line(session_name, session_hote, p_statut, nb_j, public):
 		btn_rejoindre.text = "PRIVATE"
 		btn_rejoindre.disabled = true
 		
+func join_game():
+	if code == "":
+		print("Veuillez remplir tous les champs ") #Afficher le message à l'utilisateur a la place du print
+		return
+	API.rejoindre_session(code)

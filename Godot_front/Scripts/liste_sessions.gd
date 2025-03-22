@@ -33,13 +33,13 @@ func afficher_sessions(sessions):
 	for child in children:
 		child.free()
 	
-	
-	
 	for session in sessions:
 		print(session)
 		
 		# Nom de la session
 		var line = session_line.instantiate()
+		
+		line.code = session.code
 		
 		var nb = str(session.player_count) + "/" + str(session.max_players_count)
 		
